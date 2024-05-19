@@ -19,8 +19,8 @@ ySpreadsheet.push(["","",""]); */
 yHeaders.push(["XYZ","XYZ","XYZ"]); */
 
 //const yDoc = new Y.Doc();
-const ySpreadsheet = [[]];
-const yHeaders = [];
+let ySpreadsheet = [[]];
+let yHeaders = [];
 //const wsProvider = new WebsocketProvider('ws://localhost:1234', 'naive', yDoc);
 
 export const Example = () => {
@@ -39,7 +39,7 @@ export const Example = () => {
   function initialize() { 
     for (let i = 0; i < 3; i++) {
       yHeaders.push(["XYZ"]);
-      const yRow = (['','','']);
+      const yRow = Y.Array.from(['','','']);
       ySpreadsheet.push([yRow]);
     }
   }
@@ -87,9 +87,27 @@ export const Example = () => {
 
   const { db } = useElectric();
   const results = [];
-  results[1] = useLiveQuery(db.colmap.liveMany());
+  results[1]  = useLiveQuery(db.colmap.liveMany());
   results[2] = useLiveQuery(db.rowmap.liveMany());
   results[3] = useLiveQuery(db.contentmap.liveMany());
+
+  
+  /* console.log("colmaps", results[1]);
+  console.log("rowmaps", results[2]);
+  console.log("content", results[3]); */
+  /* useEffect(() => {
+    const syncItems = async () => {
+      // Resolves when the shape subscription has been established.
+      const shape = await db.items.sync()
+      const shapeRow = await db.rowmap.sync()
+      // Resolves when the data has been synced into the local database.
+      await shape.synced
+      await shapeRow.synced
+    }
+    console.log("here",projects);
+    syncItems()
+  }, [])
+ */
 
   const addItem = async () => {
     await db.items.create({
@@ -165,40 +183,52 @@ export const Example = () => {
 
   const handleHeaderBlur = (colIndex, value) => {
     yHeaders[colIndex].push([value]);
-    yHeaders.splice(colIndex, 0, [value]);
   }
 
   // - Row & column insertion
   const handleInsertRow = (index) => {
     console.log(index,"index");
-    const yRow = [];
+    const yRow = new Y.Array();
     console.log("before ySpreadsheet",ySpreadsheet);
     console.log("yRow",yRow);
-    //yRow.push(Array.apply(null, ...Array(yHeaders.length)).map(function () {return ""}))
+    yRow.push(Array.apply(null, ...Array(yHeaders.length)).map(function () {return ""}))
     //ySpreadsheet.insert(index, [yRow]);
     
-    for(let i = 0 ; i < yHeaders.length ; i++) {
-      yRow.push("");
-    }
-    ySpreadsheet.splice(index, 0, yRow);
+    ySpreadsheet.splice(index, 0, [yRow]);
     
     console.log("after appending ySpreadsheet",ySpreadsheet);
     rebuildSpreadsheet();
   }
 
   const handleInsertCol = (index) => {
-    
-    yHeaders.splice(index,0, ["XYZ"]);
-    console.log("handle insert column" , typeof ySpreadsheet[0]);
-    for (let i = 0; i < ySpreadsheet.length; i++) {
-      console.log("inside for loop" , typeof ySpreadsheet[i],ySpreadsheet[i].value);
-      if (ySpreadsheet[i]) {
-        ySpreadsheet[i].splice(index, 0, '');
-      } else {
-        ySpreadsheet[i] = '';
-      }
+    /* let index;
+    console.log("element", element, typeof element)
+    if (typeof element == 'undefined') {
+      index = 0;
+    }else {
+      index = element[0].length;
     }
-    rebuildSpreadsheet();
+    yHeaders.slice(index,0).concat(["XYZ"]);
+    if (ySpreadsheet.length == 'undefined'){
+      ySpreadsheet[0].push(['']);
+      return;
+    }
+    for (let i = 0; i < ySpreadsheet.length; i++) {
+      ySpreadsheet[i][index].push(['']);
+    } */
+    /* let index;
+    console.log("element", element, typeof element)
+    if (element === 'undefined') {
+      index = 0;
+    }else {
+      index = element.get(0).length;
+    } */
+    
+
+    yHeaders.splice(index,0, ["XYZ"]);
+    for (let i = 0; i < ySpreadsheet.length; i++) {
+      ySpreadsheet[i].splice(index,0, ['']);
+    }
   }
 
   const handleDeleteCol = (index) => {
