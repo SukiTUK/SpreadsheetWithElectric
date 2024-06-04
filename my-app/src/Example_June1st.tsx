@@ -13,26 +13,20 @@ import './Example.css'
 import { WebsocketProvider } from 'y-websocket';
 
 
-/* const ySpreadsheet = [];
-ySpreadsheet.push(["","",""]); */
-/* const yHeaders = [];
-yHeaders.push(["XYZ","XYZ","XYZ"]); */
-
-//const yDoc = new Y.Doc();
-const ySpreadsheet = [];
+let ySpreadsheet = [];
 const yHeaders = [];
 //const wsProvider = new WebsocketProvider('ws://localhost:1234', 'naive', yDoc);
-let spreadsheetWithIds = [];
+let handleInsertColFlag = 0;
+let handleInsertRowFlag = 0;
+let contentChangeFlag = 0;
 
 export const Example = () => {
   
   // Initialization of the JSX display -- if possible, read from the yDoc, otherwise generate the default
   const [spreadsheet, setSpreadsheet] = useState([
-    
     ]);
 
   const [headers, setHeaders] = useState([
-    /* "XYZ","XYZ","XYZ" */
   ]);
 
   function initialize() { 
@@ -47,12 +41,7 @@ export const Example = () => {
 
   useEffect(() => {
     // Track & update connection status to properly update document on connection change.
-    if (ySpreadsheet.length === 0) {
-        initialize();
-      } else {
-        rebuildSpreadsheet();
-  
-      }
+
     const syncItems = async () => {
       // Resolves when the shape subscription has been established.
       const shape = await db.items.sync()
@@ -65,37 +54,93 @@ export const Example = () => {
       await shapeCol.synced
       await shapeContent.synced
     }
-    //console.log("here",projects);
     syncItems();
-    // yArray observers. Handle structural changes
-    //ySpreadsheet.observeDeep(() => rebuildSpreadsheet());
-    //yHeaders.observe(() => rebuildSpreadsheet());
-  }, []);
+    
+    if (ySpreadsheet.length === 0) {
+      syncItems();
+      rebuildSpreadsheet();
+      } else {
+        rebuildSpreadsheet();
+  
+      }
+  }, [handleInsertRowFlag]);
+
+ 
 
   function rebuildSpreadsheet() {
     setHeaders(yHeaders);
+    let rowResultsByPosAscending = [];
+    let colResultsByPosAscending = [];
+    let contentResultsByPosAscending = [];
+    let columnIds = [];
+    let rowIds = [];
+    let lastRowElementPos, rowLength, lastColumnElementPos, colLength;
     
-    const newSpreadsheet = Array(ySpreadsheet.length);
-    for (let i = 0; i < ySpreadsheet.length; i++) {
-      newSpreadsheet[i] = Array.apply(null, ...Array(ySpreadsheet[i].length)).map(function () {return undefined});
+    if(rowmap.results) {
+      rowResultsByPosAscending = 
+        rowmap.results.slice().sort((a, b) => a.pos - b.pos);
+      lastRowElementPos = rowResultsByPosAscending[rowResultsByPosAscending.length].pos;
+      rowLength = lastRowElementPos+1;
     }
-    ySpreadsheet.forEach((row,rowIndex) => row.forEach((value,colIndex) => newSpreadsheet[rowIndex][colIndex] = value))
-    setSpreadsheet(newSpreadsheet);
+    if(colmap.results) {
+      colResultsByPosAscending = 
+        colmap.results.slice().sort((a, b) => a.pos - b.pos);
+      lastColumnElementPos = colResultsByPosAscending[colResultsByPosAscending.length].pos;
+      colLength = lastColumnElementPos+1;
+    }
+
     
-  if(rowmap.results && colmap.results) {
-    console.log("here inside rebuild");
-    for( let i = 0; i < colmap.results.length+1; i++ ) {
-        for ( let j = 0; j < rowmap.results.length+1; j++) {
-          for ( let k = 0; k < content.length+1; k++) {
-            if ( colmap.results[i].id == content.results[k]['colIndex'] && rowmap.results[j].id == content.results[k]['rowIndex'] ) {
-              spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, content.results[k]['content']]);
-              console.log("spreadsheetwithIDs", spreadsheetWithIds);
-            } 
+    console.log("different length ", colLength,rowLength);
+    
+    for ( let i = 0; i < colLength ; i ++ ) {
+      columnIds[i] = colResultsByPosAscending[i].id;
+    }
+    for ( let i = 0; i < rowLength ; i ++ ) {
+      rowIds[i] = rowResultsByPosAscending[i].id;
+    }
+
+    let newSpreadsheet = Array(rowLength);
+    if(colLength) {
+      for (let i = 0; i < rowLength; i++) {
+        newSpreadsheet[i] = Array.apply(null, ...Array(colLength)).map(function () {return undefined});
+      }
+    }
+    
+    if( columnIds.length == 0 ) {
+      if ( rowIds.length == 0) {
+        ySpreadsheet = newSpreadsheet;
+        setSpreadsheet(ySpreadsheet);
+        return;
+      }
+      if ( rowIds.length != 0 ) {
+        for( let i = 0; i < colLength; i++ ) {
+          newSpreadsheet[i][0] = "undefined";
+          ySpreadsheet = newSpreadsheet;
+          setSpreadsheet(ySpreadsheet);
+          return;
         }
+      }
     }
-}
+    if( columnIds.length != 0 && rowIds.length != 0 ) {
+      for( let i = 0; i < colLength; i++ ) {
+        for ( let j = 0; j < rowLength; j++) {
+          for ( let k = 0; k < content.length; k++) {
+            if ( columnIds[i] == content.results[k]['colIndex'] && rowIds[j] == content.results[k]['rowIndex'] ) {
+              newSpreadsheet[j][i] = content.results[k]['content'];
+              console.log("newSpreadsheet[j][i]", newSpreadsheet[j][i]);
+            } 
+          }
+          if (content.length == 0) {
+            newSpreadsheet[j][i] = " ";
+          }
+        }
+      }
+    }
+     /*
+    ySpreadsheet.forEach((row,rowIndex) => row.forEach((value,colIndex) => newSpreadsheet[rowIndex][colIndex] = value)) */
+    ySpreadsheet = newSpreadsheet;
+    setSpreadsheet(ySpreadsheet);
   }
-}
 
   const { db } = useElectric();
   const results = [];
@@ -109,6 +154,7 @@ export const Example = () => {
   const colmap: Col[] = resultsColMap ?? []
   const rowmap: Row[] = resultsRowMap ?? []
   const content: Contentmap[] = resultsContentMap ?? []
+  
 
   const addItem = async () => {
     await db.items.create({
@@ -136,53 +182,30 @@ export const Example = () => {
     })
   }
 
-  const addContentMap = async (element) => {
+  const addContentMap = async (rowID, colID, value) => {
     await db.contentmap.create({
       data: {
-        rowIndex: element[0],
-        colIndex: element[1],
-        content: element[2],
+        rowIndex: rowID,
+        colIndex: colID,
+        content: value,
       },
     })
   }
-
-  const projects = db.rawQuery({
-    sql: 'select * from Rowmap where pos = ?',
-    bindParams: ['1']
-  })
 
   const clearItems = async () => {
     await db.items.deleteMany()
   }
   
+  
   const updatedContentMap = async(element) => {
-    await db.contentmap.update({
+    await db.contentmap.create({
     data: {
-      content: element[2],
-    },
-    where: {
-        rowIndex: element[0],
-        colIndex: element[1],
-    },
-  });
-}
-
-  /* const updatedContentMap = async(element) => {
-    await db.contentmap.upsert({
-    create: {
       rowIndex: element[0],
       colIndex: element[1],
       content: element[2],
     },
-    update: {
-        content: element[2],
-      },
-    where: {
-        rowIndex: element[0],
-        colIndex: element[1],
-      },
   });
-} */
+}
 
   const updatedRowMap = async(element) => {
     await db.rowmap.upsert({
@@ -213,9 +236,7 @@ const updatedColMap = async(element) => {
   },
 });
 }
-
-
-  // Context menu context for the column and row context menus, respectively
+  
   const columnContextMenuItems = [
     { text: "Insert left", image: "https://cdn-icons-png.flaticon.com/512/7601/7601881.png" },
     { text: "Delete column", image: "https://cdn-icons-png.flaticon.com/512/7794/7794583.png" },
@@ -243,27 +264,66 @@ const updatedColMap = async(element) => {
 
   // - Row & column insertion
   const handleInsertRow = (index) => {
+    let rowMapFound = 0;
     console.log(index,"index");
     const yRow = [];
-    console.log("before ySpreadsheet",ySpreadsheet);
-    console.log("yRow",yRow);
     //yRow.push(Array.apply(null, ...Array(yHeaders.length)).map(function () {return ""}))
     //ySpreadsheet.insert(index, [yRow]);
-    
     for(let i = 0 ; i < yHeaders.length ; i++) {
       yRow.push("");
     }
     ySpreadsheet.splice(index, 0, yRow);
-    
-    console.log("after appending ySpreadsheet",ySpreadsheet);
-    rebuildSpreadsheet();
+    //rebuildSpreadsheet();
+    handleInsertRowFlag = 1;
+
+    //resultsRowMap.results[0]
+   
+    /* On insert row:
+    1. Generate new rowId and assign index position
+    2. Idea*/
     const rowID = genUUID();
-    addRow(index, rowID);
+    const position = index;
     
+    const rowResultsByPosAscending = 
+    rowmap.results.slice().sort((a, b) => a.pos - b.pos);
+    if (rowResultsByPosAscending.length == 0) {
+      rowResultsByPosAscending.push([rowID, position]);
+    } else {
+    rowResultsByPosAscending.forEach(element => {
+      if(element.pos == index && rowMapFound == 0) {
+        rowMapFound = 1;
+        rowResultsByPosAscending.push([rowID, position]);
+      }
+      if(rowMapFound == 1 && element.pos != index) {
+        rowResultsByPosAscending.pos = rowResultsByPosAscending.pos + 1;
+      }
+    })
+  }
+    const colResultsByPosAscending = colmap.results.slice().sort((a, b) => a.pos - b.pos);
+    const contentResults = [];
+    if (colmap.results) {
+      colResultsByPosAscending.forEach(element => {
+        if (element.id) {
+          contentResults.push([rowID, element[0], " "] );
+        }
+      });
+    }
+    
+    rowResultsByPosAscending.forEach(element => {
+      updatedRowMap(element);
+  });
+
+  if (colmap.results) {
+  contentResults.forEach(element => {
+    updatedContentMap(element);
+  });
+}
+  rowMapFound = 0;
+  rebuildSpreadsheet();
   }
 
   const handleInsertCol = (index) => {
-    
+    let colMapFound = 0;
     yHeaders.splice(index,0, ["XYZ"]);
     console.log("handle insert column" , typeof ySpreadsheet[0]);
     for (let i = 0; i < ySpreadsheet.length; i++) {
@@ -274,9 +334,46 @@ const updatedColMap = async(element) => {
         ySpreadsheet[i] = '';
       }
     }
-    rebuildSpreadsheet();
+
     const colID = genUUID();
-    addCol(index, colID);
+    const position = index;
+    const colResultsByPosAscending = 
+    colmap.results.slice().sort((a, b) => a.pos - b.pos);
+    
+    if (colResultsByPosAscending.length == 0) {
+      colResultsByPosAscending.push([colID, position]);
+    } else {
+      colResultsByPosAscending.forEach(element => {
+      if(element.pos == index && colMapFound == 0) {
+        console.log("found it inside colmap forloop", colResultsByPosAscending);
+        colMapFound = 1;
+        colResultsByPosAscending.push([colID, position]);
+      }
+      if(colMapFound == 1 && element.pos != index) {
+        console.log("found it inside colmap forloop", colResultsByPosAscending);
+        colResultsByPosAscending.pos = colResultsByPosAscending.pos + 1;
+      }
+    })
+  }
+    const rowResultsByPosAscending = 
+    rowmap.results.slice().sort((a, b) => a.pos - b.pos);
+    const contentResults = [];
+    rowResultsByPosAscending.forEach(element => {
+      if (element.id) {
+        contentResults.push([element.id, colID, ""] );
+      }
+    });
+    console.log("contentResults ", contentResults);
+    colResultsByPosAscending.forEach(element => {
+      updatedColMap(element);
+    console.log("updatedColMap", updatedColMap);
+  });
+  contentResults.forEach(element => {
+    updatedContentMap(element);
+  });
+  
+  colMapFound = 0;
+  rebuildSpreadsheet();
   }
 
   const handleDeleteCol = (index) => {
@@ -292,7 +389,6 @@ const updatedColMap = async(element) => {
   };
 
   const handleCellBlur = (rowIndex, colIndex, value) => {
-    console.log("handle cell blur starts here>>>");
     if (typeof(ySpreadsheet[rowIndex])!== 'undefined' && value === ySpreadsheet[rowIndex][colIndex]) return;
     if (typeof(ySpreadsheet[rowIndex])=== 'undefined') {
       ySpreadsheet[rowIndex] = ["", "", ""];
@@ -306,60 +402,13 @@ const updatedColMap = async(element) => {
     addRow(rowIndex, rowID);
     addCol(colIndex, colID);
     addContentMap(rowID, colID, value); */
+
     const contentResults = [];
-    let columnID, rowID;
-    if(colmap.results) {
-        for (let i=0; i < colmap.results.length; i++) {
-            console.log("colmap.results[i].pos", typeof colmap.results[i].pos, typeof colIndex);
-            if(colmap.results[i].pos == colIndex) {
-                columnID = colmap.results[i].id;
-            }
-        }
-    }
-    if(rowmap.results) {
-        for (let i=0; i < rowmap.results.length; i++) {
-            if(rowmap.results[i].pos == rowIndex) {
-                rowID = rowmap.results[i].id;
-            }
-        }
-    }
-    let contentResultsFlag = 0;
-    contentResults.push([rowID, columnID, value]);
-    if (content.results.length !=0) {
-        console.log("content.results.length !=0", content.results)
-        for (let i=0; i < content.results.length; i++) {
-            if(content.results[i]['rowIndex'] == rowID && content.results[i]['colIndex'] == columnID) {
-                console.log("content.results[i]['rowIndex'], content.results[i]['colIndex'], rowID, ColumnID", content.results[i]['rowIndex'], content.results[i]['colIndex'], rowID, columnID);
-                if(content.results[i]['content'].length != 0) {
-                    contentResults.forEach(element => {
-                        console.log("content.results[i], element", content.results[i], element);
-                        updatedContentMap(element);
-                        contentResultsFlag = 1;
-                        return;
-                    });
-                } else{
-                    console.log("element updatedContentMap", element)
-                    contentResults.forEach(element => {
-                        addContentMap(element);
-                        contentResultsFlag = 1;
-                        return;
-                    });
-                }
-            }
-        }
-    }
-    if(contentResultsFlag == 1) {
-        return;
-    }
-    if(contentResultsFlag == 0) {
     contentResults.forEach(element => {
-        console.log("element", element);
-        addContentMap(element);
+      updatedContentMap();
     });
-}
-    console.log("handle cell blur ends here>>>");
     
-}
+  }
 
   // - Context menu selections
   function handleColumnContextMenuClick (index) {
@@ -380,9 +429,7 @@ const updatedColMap = async(element) => {
     switch(index) {
       case 0:
       case 2:
-        
         handleInsertRow(rowOpenIndex + (index/2));
-        
         break;
       case 1:
         ySpreadsheet.delete(rowOpenIndex);
@@ -456,6 +503,7 @@ const updatedColMap = async(element) => {
           </tr>
         </thead>  
         <tbody>
+          
           {spreadsheet.map((row, rowIndex) => 
             <tr key={rowIndex}>
               <th onContextMenu={event => handleRowHeaderContextMenu(event, rowIndex)}>{rowIndex+1}</th>
