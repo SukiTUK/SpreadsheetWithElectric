@@ -43,9 +43,50 @@ export const Example = () => {
     } */
   }
 
+  function collectIdentifiers() {
+    if (colmap.results && rowmap.results) {
+    console.log("here inside rebuild");
+    if (colmap.results.length == 0) {
+        console.log("colmap.results.length == 0", colmap.results.length)
+        if (rowmap.results.length !=0) {
+            console.log("rowmap.results.length !=0", rowmap.results.length)
+            console.log("rowmap.results", rowmap.results);
+            for ( let j = 0; j < rowmap.results.length; j++) {
+                spreadsheetWithIds.push(['', '', rowmap.results[j].id,j, '']);
+                console.log("spreadsheetwithIDs", spreadsheetWithIds);
+            }
+        }
+    } else if (colmap.results.length != 0 && rowmap.results.length !=0) {
+        console.log("colmap.results.length != 0 && rowmap.results.length !=0",colmap.results.length, rowmap.results.length )
+        if (content.length !=0 ) {
+            console.log("rowmap.results", rowmap.results);
+            console.log("colmap.results", colmap.results);
+            console.log("content.results", content.results);
+            for ( let k = 0; k < content.length; k++) {
+                if ( colmap.results[i].id == content.results[k]['colIndex'] && rowmap.results[j].id == content.results[k]['rowIndex'] ) {
+                  spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, content.results[k]['content']]);
+                  console.log("spreadsheetwithIDs", spreadsheetWithIds);
+                } 
+            }
+        } else {
+            spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, '']);
+            console.log("spreadsheetwithIDs", spreadsheetWithIds);
+        }
+          
+    } else if (rowmap.results.length == 0 && colmap.results.length != 0) {
+        console.log("rowmap.results.length == 0 && colmap.results.length != 0",colmap.results.length, rowmap.results.length )
+        for ( let j = 0; j < colmap.results.length; j++) {   
+            console.log("colmap.results", colmap.results);
+            spreadsheetWithIds.push([colmap.results[j].id, j, '','', '']);
+            console.log("spreadsheetwithIDs", spreadsheetWithIds);
+        }
+    }
+  }
+}
   const [connectionStatus, setConnectionStatus] = useState('');
 
   useEffect(() => {
+    
     // Track & update connection status to properly update document on connection change.
     if (ySpreadsheet.length === 0) {
         initialize();
@@ -74,7 +115,7 @@ export const Example = () => {
 
   function rebuildSpreadsheet() {
     setHeaders(yHeaders);
-    
+    collectIdentifiers();
     const newSpreadsheet = Array(ySpreadsheet.length);
     for (let i = 0; i < ySpreadsheet.length; i++) {
       newSpreadsheet[i] = Array.apply(null, ...Array(ySpreadsheet[i].length)).map(function () {return undefined});
@@ -82,19 +123,7 @@ export const Example = () => {
     ySpreadsheet.forEach((row,rowIndex) => row.forEach((value,colIndex) => newSpreadsheet[rowIndex][colIndex] = value))
     setSpreadsheet(newSpreadsheet);
     
-  if(rowmap.results && colmap.results) {
-    console.log("here inside rebuild");
-    for( let i = 0; i < colmap.results.length+1; i++ ) {
-        for ( let j = 0; j < rowmap.results.length+1; j++) {
-          for ( let k = 0; k < content.length+1; k++) {
-            if ( colmap.results[i].id == content.results[k]['colIndex'] && rowmap.results[j].id == content.results[k]['rowIndex'] ) {
-              spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, content.results[k]['content']]);
-              console.log("spreadsheetwithIDs", spreadsheetWithIds);
-            } 
-        }
-    }
-}
-  }
+    
 }
 
   const { db } = useElectric();
@@ -161,8 +190,8 @@ export const Example = () => {
       content: element[2],
     },
     where: {
-        rowIndex: element[0],
-        colIndex: element[1],
+        rowindex: element[0],
+        colindex: element[1],
     },
   });
 }
