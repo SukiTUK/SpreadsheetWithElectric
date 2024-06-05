@@ -168,8 +168,8 @@ export const Example = () => {
   const addContentMap = async (element) => {
     await db.contentmap.create({
       data: {
-        rowIndex: element[0],
-        colIndex: element[1],
+        rowindex: element[0],
+        colindex: element[1],
         content: element[2],
       },
     })
