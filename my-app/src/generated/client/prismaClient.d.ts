@@ -35,11 +35,11 @@ export type Contentmap = {
   /**
    * @zod.string.uuid()
    */
-  rowIndex: string
+  rowindex: string
   /**
    * @zod.string.uuid()
    */
-  colIndex: string
+  colindex: string
   content: string | null
 }
 
@@ -2004,40 +2004,40 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapMinAggregateOutputType = {
-    rowIndex: string | null
-    colIndex: string | null
+    rowindex: string | null
+    colindex: string | null
     content: string | null
   }
 
   export type ContentmapMaxAggregateOutputType = {
-    rowIndex: string | null
-    colIndex: string | null
+    rowindex: string | null
+    colindex: string | null
     content: string | null
   }
 
   export type ContentmapCountAggregateOutputType = {
-    rowIndex: number
-    colIndex: number
+    rowindex: number
+    colindex: number
     content: number
     _all: number
   }
 
 
   export type ContentmapMinAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
+    rowindex?: true
+    colindex?: true
     content?: true
   }
 
   export type ContentmapMaxAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
+    rowindex?: true
+    colindex?: true
     content?: true
   }
 
   export type ContentmapCountAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
+    rowindex?: true
+    colindex?: true
     content?: true
     _all?: true
   }
@@ -2121,8 +2121,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   export type ContentmapGroupByOutputType = {
-    rowIndex: string
-    colIndex: string
+    rowindex: string
+    colindex: string
     content: string | null
     _count: ContentmapCountAggregateOutputType | null
     _min: ContentmapMinAggregateOutputType | null
@@ -2144,8 +2144,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   export type ContentmapSelect = {
-    rowIndex?: boolean
-    colIndex?: boolean
+    rowindex?: boolean
+    colindex?: boolean
     content?: boolean
     colmap?: boolean | ColmapArgs
     rowmap?: boolean | RowmapArgs
@@ -2261,8 +2261,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
      * // Get first 10 Contentmaps
      * const contentmaps = await prisma.contentmap.findMany({ take: 10 })
      * 
-     * // Only select the `rowIndex`
-     * const contentmapWithRowIndexOnly = await prisma.contentmap.findMany({ select: { rowIndex: true } })
+     * // Only select the `rowindex`
+     * const contentmapWithRowindexOnly = await prisma.contentmap.findMany({ select: { rowindex: true } })
      * 
     **/
     findMany<T extends ContentmapFindManyArgs>(
@@ -4908,8 +4908,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   export const ContentmapScalarFieldEnum: {
-    rowIndex: 'rowIndex',
-    colIndex: 'colIndex',
+    rowindex: 'rowindex',
+    colindex: 'colindex',
     content: 'content'
   };
 
@@ -5003,28 +5003,28 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     AND?: Enumerable<ContentmapWhereInput>
     OR?: Enumerable<ContentmapWhereInput>
     NOT?: Enumerable<ContentmapWhereInput>
-    rowIndex?: UuidFilter | string
-    colIndex?: UuidFilter | string
+    rowindex?: UuidFilter | string
+    colindex?: UuidFilter | string
     content?: StringNullableFilter | string | null
     colmap?: XOR<ColmapRelationFilter, ColmapWhereInput>
     rowmap?: XOR<RowmapRelationFilter, RowmapWhereInput>
   }
 
   export type ContentmapOrderByWithRelationInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+    rowindex?: SortOrder
+    colindex?: SortOrder
     content?: SortOrder
     colmap?: ColmapOrderByWithRelationInput
     rowmap?: RowmapOrderByWithRelationInput
   }
 
   export type ContentmapWhereUniqueInput = {
-    rowIndex_colIndex?: ContentmapRowIndexColIndexCompoundUniqueInput
+    rowindex_colindex?: ContentmapRowindexColindexCompoundUniqueInput
   }
 
   export type ContentmapOrderByWithAggregationInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+    rowindex?: SortOrder
+    colindex?: SortOrder
     content?: SortOrder
     _count?: ContentmapCountOrderByAggregateInput
     _max?: ContentmapMaxOrderByAggregateInput
@@ -5035,8 +5035,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     AND?: Enumerable<ContentmapScalarWhereWithAggregatesInput>
     OR?: Enumerable<ContentmapScalarWhereWithAggregatesInput>
     NOT?: Enumerable<ContentmapScalarWhereWithAggregatesInput>
-    rowIndex?: UuidWithAggregatesFilter | string
-    colIndex?: UuidWithAggregatesFilter | string
+    rowindex?: UuidWithAggregatesFilter | string
+    colindex?: UuidWithAggregatesFilter | string
     content?: StringNullableWithAggregatesFilter | string | null
   }
 
@@ -5152,8 +5152,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedCreateInput = {
-    rowIndex: string
-    colIndex: string
+    rowindex: string
+    colindex: string
     content?: string | null
   }
 
@@ -5164,14 +5164,14 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedUpdateInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
-    colIndex?: StringFieldUpdateOperationsInput | string
+    rowindex?: StringFieldUpdateOperationsInput | string
+    colindex?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ContentmapCreateManyInput = {
-    rowIndex: string
-    colIndex: string
+    rowindex: string
+    colindex: string
     content?: string | null
   }
 
@@ -5180,8 +5180,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedUpdateManyInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
-    colIndex?: StringFieldUpdateOperationsInput | string
+    rowindex?: StringFieldUpdateOperationsInput | string
+    colindex?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -5364,26 +5364,26 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     isNot?: RowmapWhereInput
   }
 
-  export type ContentmapRowIndexColIndexCompoundUniqueInput = {
-    rowIndex: string
-    colIndex: string
+  export type ContentmapRowindexColindexCompoundUniqueInput = {
+    rowindex: string
+    colindex: string
   }
 
   export type ContentmapCountOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+    rowindex?: SortOrder
+    colindex?: SortOrder
     content?: SortOrder
   }
 
   export type ContentmapMaxOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+    rowindex?: SortOrder
+    colindex?: SortOrder
     content?: SortOrder
   }
 
   export type ContentmapMinOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+    rowindex?: SortOrder
+    colindex?: SortOrder
     content?: SortOrder
   }
 
@@ -5743,7 +5743,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedCreateWithoutColmapInput = {
-    rowIndex: string
+    rowindex: string
     content?: string | null
   }
 
@@ -5777,8 +5777,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     AND?: Enumerable<ContentmapScalarWhereInput>
     OR?: Enumerable<ContentmapScalarWhereInput>
     NOT?: Enumerable<ContentmapScalarWhereInput>
-    rowIndex?: UuidFilter | string
-    colIndex?: UuidFilter | string
+    rowindex?: UuidFilter | string
+    colindex?: UuidFilter | string
     content?: StringNullableFilter | string | null
   }
 
@@ -5848,7 +5848,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedCreateWithoutRowmapInput = {
-    colIndex: string
+    colindex: string
     content?: string | null
   }
 
@@ -5879,7 +5879,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapCreateManyColmapInput = {
-    rowIndex: string
+    rowindex: string
     content?: string | null
   }
 
@@ -5889,17 +5889,17 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedUpdateWithoutColmapInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
+    rowindex?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ContentmapUncheckedUpdateManyWithoutContentmapInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
+    rowindex?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ContentmapCreateManyRowmapInput = {
-    colIndex: string
+    colindex: string
     content?: string | null
   }
 
@@ -5909,7 +5909,7 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export type ContentmapUncheckedUpdateWithoutRowmapInput = {
-    colIndex?: StringFieldUpdateOperationsInput | string
+    colindex?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
