@@ -16,20 +16,20 @@ CREATE TABLE IF NOT EXISTS items (
 );
 
 CREATE TABLE IF NOT EXISTS rowmap (
-  "id" UUID PRIMARY KEY NOT NULL,
-  "pos" integer
+  id UUID PRIMARY KEY NOT NULL,
+  pos integer
 );
 
 CREATE TABLE IF NOT EXISTS colmap (
-  "id" UUID PRIMARY KEY NOT NULL,
-  "pos" integer
+  id UUID PRIMARY KEY NOT NULL,
+  pos integer
 );
 
 CREATE TABLE IF NOT EXISTS contentmap (
-  "rowIndex" UUID NOT NULL REFERENCES rowmap("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "colIndex" UUID NOT NULL REFERENCES colmap("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "content" TEXT,
-  PRIMARY KEY("rowIndex","colIndex")
+  rowIndex UUID NOT NULL REFERENCES rowmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  colIndex UUID NOT NULL REFERENCES colmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  content TEXT,
+  PRIMARY KEY(rowIndex,colIndex)
 );
 
 -- ⚡
