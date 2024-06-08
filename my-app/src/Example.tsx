@@ -165,7 +165,7 @@ export const Example = () => {
     })
   }
 
-  const addContentMap = async (element) => {
+  /* const addContentMap = async (element) => {
     await db.contentmap.create({
       data: {
         rowIndex: element[0],
@@ -173,7 +173,7 @@ export const Example = () => {
         content: element[2],
       },
     })
-  }
+  } */
 
   const projects = db.rawQuery({
     sql: 'select * from Rowmap where pos = ?',
@@ -184,7 +184,7 @@ export const Example = () => {
     await db.items.deleteMany()
   }
   
-  const updatedContentMap = async(element) => {
+  /* const updatedContentMap = async(element) => {
     await db.contentmap.update({
     data: {
       content: element[2],
@@ -194,24 +194,24 @@ export const Example = () => {
         colindex: element[1],
     },
   });
-}
+} */
 
-  /* const updatedContentMap = async(element) => {
+  const updatedContentMap = async(element) => {
     await db.contentmap.upsert({
     create: {
-      rowIndex: element[0],
-      colIndex: element[1],
+      rowindex: element[0],
+      colindex: element[1],
       content: element[2],
     },
     update: {
         content: element[2],
       },
     where: {
-        rowIndex: element[0],
-        colIndex: element[1],
+        rowindex: element[0],
+        colindex: element[1],
       },
   });
-} */
+}
 
   const updatedRowMap = async(element) => {
     await db.rowmap.upsert({
@@ -359,25 +359,25 @@ const updatedColMap = async(element) => {
         for (let i=0; i < content.results.length; i++) {
             if(content.results[i]['rowIndex'] == rowID && content.results[i]['colIndex'] == columnID) {
                 console.log("content.results[i]['rowIndex'], content.results[i]['colIndex'], rowID, ColumnID", content.results[i]['rowIndex'], content.results[i]['colIndex'], rowID, columnID);
-                if(content.results[i]['content'].length != 0) {
-                    contentResults.forEach(element => {
-                        console.log("content.results[i], element", content.results[i], element);
-                        updatedContentMap(element);
-                        contentResultsFlag = 1;
-                        return;
-                    });
-                } else{
+                //if(content.results[i]['content'].length != 0) { // here you were checking if there is a content and if the length was not zero - it meant that you should be updating the tuple and not adding a new tuple
+                contentResults.forEach(element => {
+                    console.log("content.results[i], element", content.results[i], element);
+                    updatedContentMap(element);
+                    contentResultsFlag = 1;
+                    return;
+                });
+                /* } else{
                     console.log("element updatedContentMap", element)
                     contentResults.forEach(element => {
                         addContentMap(element);
                         contentResultsFlag = 1;
                         return;
                     });
-                }
+                } */
             }
         }
     }
-    if(contentResultsFlag == 1) {
+    /* if(contentResultsFlag == 1) {
         return;
     }
     if(contentResultsFlag == 0) {
@@ -385,7 +385,7 @@ const updatedColMap = async(element) => {
         console.log("element", element);
         addContentMap(element);
     });
-}
+} */
     console.log("handle cell blur ends here>>>");
     
 }
