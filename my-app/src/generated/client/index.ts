@@ -14,7 +14,7 @@ import migrations from './migrations';
 
 export const ColmapScalarFieldEnumSchema = z.enum(['id','pos']);
 
-export const ContentmapScalarFieldEnumSchema = z.enum(['rowIndex','colIndex','content']);
+export const ContentmapScalarFieldEnumSchema = z.enum(['rowindex','colindex','content']);
 
 export const ItemsScalarFieldEnumSchema = z.enum(['value']);
 
@@ -45,8 +45,8 @@ export type Colmap = z.infer<typeof ColmapSchema>
 /////////////////////////////////////////
 
 export const ContentmapSchema = z.object({
-  rowIndex: z.string().uuid(),
-  colIndex: z.string().uuid(),
+  rowindex: z.string().uuid(),
+  colindex: z.string().uuid(),
   content: z.string().nullable(),
 })
 
@@ -119,8 +119,8 @@ export const ContentmapArgsSchema: z.ZodType<Prisma.ContentmapArgs> = z.object({
 }).strict();
 
 export const ContentmapSelectSchema: z.ZodType<Prisma.ContentmapSelect> = z.object({
-  rowIndex: z.boolean().optional(),
-  colIndex: z.boolean().optional(),
+  rowindex: z.boolean().optional(),
+  colindex: z.boolean().optional(),
   content: z.boolean().optional(),
   colmap: z.union([z.boolean(),z.lazy(() => ColmapArgsSchema)]).optional(),
   rowmap: z.union([z.boolean(),z.lazy(() => RowmapArgsSchema)]).optional(),
@@ -207,28 +207,28 @@ export const ContentmapWhereInputSchema: z.ZodType<Prisma.ContentmapWhereInput> 
   AND: z.union([ z.lazy(() => ContentmapWhereInputSchema),z.lazy(() => ContentmapWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => ContentmapWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ContentmapWhereInputSchema),z.lazy(() => ContentmapWhereInputSchema).array() ]).optional(),
-  rowIndex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  colIndex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  rowindex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  colindex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   colmap: z.union([ z.lazy(() => ColmapRelationFilterSchema),z.lazy(() => ColmapWhereInputSchema) ]).optional(),
   rowmap: z.union([ z.lazy(() => RowmapRelationFilterSchema),z.lazy(() => RowmapWhereInputSchema) ]).optional(),
 }).strict();
 
 export const ContentmapOrderByWithRelationInputSchema: z.ZodType<Prisma.ContentmapOrderByWithRelationInput> = z.object({
-  rowIndex: z.lazy(() => SortOrderSchema).optional(),
-  colIndex: z.lazy(() => SortOrderSchema).optional(),
+  rowindex: z.lazy(() => SortOrderSchema).optional(),
+  colindex: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   colmap: z.lazy(() => ColmapOrderByWithRelationInputSchema).optional(),
   rowmap: z.lazy(() => RowmapOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const ContentmapWhereUniqueInputSchema: z.ZodType<Prisma.ContentmapWhereUniqueInput> = z.object({
-  rowIndex_colIndex: z.lazy(() => ContentmapRowIndexColIndexCompoundUniqueInputSchema).optional()
+  rowindex_colindex: z.lazy(() => ContentmapRowindexColindexCompoundUniqueInputSchema).optional()
 }).strict();
 
 export const ContentmapOrderByWithAggregationInputSchema: z.ZodType<Prisma.ContentmapOrderByWithAggregationInput> = z.object({
-  rowIndex: z.lazy(() => SortOrderSchema).optional(),
-  colIndex: z.lazy(() => SortOrderSchema).optional(),
+  rowindex: z.lazy(() => SortOrderSchema).optional(),
+  colindex: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => ContentmapCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => ContentmapMaxOrderByAggregateInputSchema).optional(),
@@ -239,8 +239,8 @@ export const ContentmapScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Co
   AND: z.union([ z.lazy(() => ContentmapScalarWhereWithAggregatesInputSchema),z.lazy(() => ContentmapScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   OR: z.lazy(() => ContentmapScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ContentmapScalarWhereWithAggregatesInputSchema),z.lazy(() => ContentmapScalarWhereWithAggregatesInputSchema).array() ]).optional(),
-  rowIndex: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
-  colIndex: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  rowindex: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
+  colindex: z.union([ z.lazy(() => UuidWithAggregatesFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
@@ -356,8 +356,8 @@ export const ContentmapCreateInputSchema: z.ZodType<Prisma.ContentmapCreateInput
 }).strict();
 
 export const ContentmapUncheckedCreateInputSchema: z.ZodType<Prisma.ContentmapUncheckedCreateInput> = z.object({
-  rowIndex: z.string().uuid(),
-  colIndex: z.string().uuid(),
+  rowindex: z.string().uuid(),
+  colindex: z.string().uuid(),
   content: z.string().optional().nullable()
 }).strict();
 
@@ -368,14 +368,14 @@ export const ContentmapUpdateInputSchema: z.ZodType<Prisma.ContentmapUpdateInput
 }).strict();
 
 export const ContentmapUncheckedUpdateInputSchema: z.ZodType<Prisma.ContentmapUncheckedUpdateInput> = z.object({
-  rowIndex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  colIndex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rowindex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  colindex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const ContentmapCreateManyInputSchema: z.ZodType<Prisma.ContentmapCreateManyInput> = z.object({
-  rowIndex: z.string().uuid(),
-  colIndex: z.string().uuid(),
+  rowindex: z.string().uuid(),
+  colindex: z.string().uuid(),
   content: z.string().optional().nullable()
 }).strict();
 
@@ -384,8 +384,8 @@ export const ContentmapUpdateManyMutationInputSchema: z.ZodType<Prisma.Contentma
 }).strict();
 
 export const ContentmapUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ContentmapUncheckedUpdateManyInput> = z.object({
-  rowIndex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  colIndex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rowindex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  colindex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -568,26 +568,26 @@ export const RowmapRelationFilterSchema: z.ZodType<Prisma.RowmapRelationFilter> 
   isNot: z.lazy(() => RowmapWhereInputSchema).optional()
 }).strict();
 
-export const ContentmapRowIndexColIndexCompoundUniqueInputSchema: z.ZodType<Prisma.ContentmapRowIndexColIndexCompoundUniqueInput> = z.object({
-  rowIndex: z.string(),
-  colIndex: z.string()
+export const ContentmapRowindexColindexCompoundUniqueInputSchema: z.ZodType<Prisma.ContentmapRowindexColindexCompoundUniqueInput> = z.object({
+  rowindex: z.string(),
+  colindex: z.string()
 }).strict();
 
 export const ContentmapCountOrderByAggregateInputSchema: z.ZodType<Prisma.ContentmapCountOrderByAggregateInput> = z.object({
-  rowIndex: z.lazy(() => SortOrderSchema).optional(),
-  colIndex: z.lazy(() => SortOrderSchema).optional(),
+  rowindex: z.lazy(() => SortOrderSchema).optional(),
+  colindex: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const ContentmapMaxOrderByAggregateInputSchema: z.ZodType<Prisma.ContentmapMaxOrderByAggregateInput> = z.object({
-  rowIndex: z.lazy(() => SortOrderSchema).optional(),
-  colIndex: z.lazy(() => SortOrderSchema).optional(),
+  rowindex: z.lazy(() => SortOrderSchema).optional(),
+  colindex: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const ContentmapMinOrderByAggregateInputSchema: z.ZodType<Prisma.ContentmapMinOrderByAggregateInput> = z.object({
-  rowIndex: z.lazy(() => SortOrderSchema).optional(),
-  colIndex: z.lazy(() => SortOrderSchema).optional(),
+  rowindex: z.lazy(() => SortOrderSchema).optional(),
+  colindex: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -947,7 +947,7 @@ export const ContentmapCreateWithoutColmapInputSchema: z.ZodType<Prisma.Contentm
 }).strict();
 
 export const ContentmapUncheckedCreateWithoutColmapInputSchema: z.ZodType<Prisma.ContentmapUncheckedCreateWithoutColmapInput> = z.object({
-  rowIndex: z.string(),
+  rowindex: z.string(),
   content: z.string().optional().nullable()
 }).strict();
 
@@ -981,8 +981,8 @@ export const ContentmapScalarWhereInputSchema: z.ZodType<Prisma.ContentmapScalar
   AND: z.union([ z.lazy(() => ContentmapScalarWhereInputSchema),z.lazy(() => ContentmapScalarWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => ContentmapScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ContentmapScalarWhereInputSchema),z.lazy(() => ContentmapScalarWhereInputSchema).array() ]).optional(),
-  rowIndex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
-  colIndex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  rowindex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
+  colindex: z.union([ z.lazy(() => UuidFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
@@ -1052,7 +1052,7 @@ export const ContentmapCreateWithoutRowmapInputSchema: z.ZodType<Prisma.Contentm
 }).strict();
 
 export const ContentmapUncheckedCreateWithoutRowmapInputSchema: z.ZodType<Prisma.ContentmapUncheckedCreateWithoutRowmapInput> = z.object({
-  colIndex: z.string(),
+  colindex: z.string(),
   content: z.string().optional().nullable()
 }).strict();
 
@@ -1083,7 +1083,7 @@ export const ContentmapUpdateManyWithWhereWithoutRowmapInputSchema: z.ZodType<Pr
 }).strict();
 
 export const ContentmapCreateManyColmapInputSchema: z.ZodType<Prisma.ContentmapCreateManyColmapInput> = z.object({
-  rowIndex: z.string().uuid(),
+  rowindex: z.string().uuid(),
   content: z.string().optional().nullable()
 }).strict();
 
@@ -1093,17 +1093,17 @@ export const ContentmapUpdateWithoutColmapInputSchema: z.ZodType<Prisma.Contentm
 }).strict();
 
 export const ContentmapUncheckedUpdateWithoutColmapInputSchema: z.ZodType<Prisma.ContentmapUncheckedUpdateWithoutColmapInput> = z.object({
-  rowIndex: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rowindex: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const ContentmapUncheckedUpdateManyWithoutContentmapInputSchema: z.ZodType<Prisma.ContentmapUncheckedUpdateManyWithoutContentmapInput> = z.object({
-  rowIndex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  rowindex: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const ContentmapCreateManyRowmapInputSchema: z.ZodType<Prisma.ContentmapCreateManyRowmapInput> = z.object({
-  colIndex: z.string().uuid(),
+  colindex: z.string().uuid(),
   content: z.string().optional().nullable()
 }).strict();
 
@@ -1113,7 +1113,7 @@ export const ContentmapUpdateWithoutRowmapInputSchema: z.ZodType<Prisma.Contentm
 }).strict();
 
 export const ContentmapUncheckedUpdateWithoutRowmapInputSchema: z.ZodType<Prisma.ContentmapUncheckedUpdateWithoutRowmapInput> = z.object({
-  colIndex: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  colindex: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -1586,11 +1586,11 @@ export const tableSchemas = {
   contentmap: {
     fields: new Map([
       [
-        "rowIndex",
+        "rowindex",
         "UUID"
       ],
       [
-        "colIndex",
+        "colindex",
         "UUID"
       ],
       [
@@ -1599,8 +1599,8 @@ export const tableSchemas = {
       ]
     ]),
     relations: [
-      new Relation("colmap", "colIndex", "id", "colmap", "ColmapToContentmap", "one"),
-      new Relation("rowmap", "rowIndex", "id", "rowmap", "ContentmapToRowmap", "one"),
+      new Relation("colmap", "colindex", "id", "colmap", "ColmapToContentmap", "one"),
+      new Relation("rowmap", "rowindex", "id", "rowmap", "ContentmapToRowmap", "one"),
     ],
     modelSchema: (ContentmapCreateInputSchema as any)
       .partial()
