@@ -3,7 +3,7 @@ import './App.css'
 import './style.css'
 
 import { ElectricProvider } from './ElectricProvider'
-import { Example } from './Example'
+import { Example } from './Example_stildalf'
 
 export default function App() {
   return (

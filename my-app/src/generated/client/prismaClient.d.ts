@@ -28,6 +28,24 @@ export type Colmap = {
 }
 
 /**
+ * Model Content
+ * 
+ */
+export type Content = {
+  id: string
+  sheet_id: string
+  /**
+   * @zod.number.int().gte(-32768).lte(32767)
+   */
+  row: number
+  /**
+   * @zod.number.int().gte(-32768).lte(32767)
+   */
+  col: number
+  content: string | null
+}
+
+/**
  * Model Contentmap
  * 
  */
@@ -64,6 +82,22 @@ export type Rowmap = {
    * @zod.number.int().gte(-2147483648).lte(2147483647)
    */
   pos: number | null
+}
+
+/**
+ * Model Sheets
+ * 
+ */
+export type Sheets = {
+  id: string
+  /**
+   * @zod.number.int().gte(-32768).lte(32767)
+   */
+  rows: number
+  /**
+   * @zod.number.int().gte(-32768).lte(32767)
+   */
+  cols: number
 }
 
 
@@ -195,6 +229,16 @@ export class PrismaClient<
   get colmap(): Prisma.ColmapDelegate<GlobalReject>;
 
   /**
+   * `prisma.content`: Exposes CRUD operations for the **Content** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Contents
+    * const contents = await prisma.content.findMany()
+    * ```
+    */
+  get content(): Prisma.ContentDelegate<GlobalReject>;
+
+  /**
    * `prisma.contentmap`: Exposes CRUD operations for the **Contentmap** model.
     * Example usage:
     * ```ts
@@ -223,6 +267,16 @@ export class PrismaClient<
     * ```
     */
   get rowmap(): Prisma.RowmapDelegate<GlobalReject>;
+
+  /**
+   * `prisma.sheets`: Exposes CRUD operations for the **Sheets** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sheets
+    * const sheets = await prisma.sheets.findMany()
+    * ```
+    */
+  get sheets(): Prisma.SheetsDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -708,9 +762,11 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export const ModelName: {
     Colmap: 'Colmap',
+    Content: 'Content',
     Contentmap: 'Contentmap',
     Items: 'Items',
-    Rowmap: 'Rowmap'
+    Rowmap: 'Rowmap',
+    Sheets: 'Sheets'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -959,6 +1015,50 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
      * 
     **/
     select?: RowmapCountOutputTypeSelect | null
+  }
+
+
+
+  /**
+   * Count Type SheetsCountOutputType
+   */
+
+
+  export type SheetsCountOutputType = {
+    content: number
+  }
+
+  export type SheetsCountOutputTypeSelect = {
+    content?: boolean
+  }
+
+  export type SheetsCountOutputTypeGetPayload<S extends boolean | null | undefined | SheetsCountOutputTypeArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? SheetsCountOutputType :
+    S extends undefined ? never :
+    S extends { include: any } & (SheetsCountOutputTypeArgs)
+    ? SheetsCountOutputType 
+    : S extends { select: any } & (SheetsCountOutputTypeArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+    P extends keyof SheetsCountOutputType ? SheetsCountOutputType[P] : never
+  } 
+      : SheetsCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * SheetsCountOutputType without action
+   */
+  export type SheetsCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the SheetsCountOutputType
+     * 
+    **/
+    select?: SheetsCountOutputTypeSelect | null
   }
 
 
@@ -1988,6 +2088,1032 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
      * 
     **/
     include?: ColmapInclude | null
+  }
+
+
+
+  /**
+   * Model Content
+   */
+
+
+  export type AggregateContent = {
+    _count: ContentCountAggregateOutputType | null
+    _avg: ContentAvgAggregateOutputType | null
+    _sum: ContentSumAggregateOutputType | null
+    _min: ContentMinAggregateOutputType | null
+    _max: ContentMaxAggregateOutputType | null
+  }
+
+  export type ContentAvgAggregateOutputType = {
+    row: number | null
+    col: number | null
+  }
+
+  export type ContentSumAggregateOutputType = {
+    row: number | null
+    col: number | null
+  }
+
+  export type ContentMinAggregateOutputType = {
+    id: string | null
+    sheet_id: string | null
+    row: number | null
+    col: number | null
+    content: string | null
+  }
+
+  export type ContentMaxAggregateOutputType = {
+    id: string | null
+    sheet_id: string | null
+    row: number | null
+    col: number | null
+    content: string | null
+  }
+
+  export type ContentCountAggregateOutputType = {
+    id: number
+    sheet_id: number
+    row: number
+    col: number
+    content: number
+    _all: number
+  }
+
+
+  export type ContentAvgAggregateInputType = {
+    row?: true
+    col?: true
+  }
+
+  export type ContentSumAggregateInputType = {
+    row?: true
+    col?: true
+  }
+
+  export type ContentMinAggregateInputType = {
+    id?: true
+    sheet_id?: true
+    row?: true
+    col?: true
+    content?: true
+  }
+
+  export type ContentMaxAggregateInputType = {
+    id?: true
+    sheet_id?: true
+    row?: true
+    col?: true
+    content?: true
+  }
+
+  export type ContentCountAggregateInputType = {
+    id?: true
+    sheet_id?: true
+    row?: true
+    col?: true
+    content?: true
+    _all?: true
+  }
+
+  export type ContentAggregateArgs = {
+    /**
+     * Filter which Content to aggregate.
+     * 
+    **/
+    where?: ContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contents to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<ContentOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: ContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contents from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contents.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Contents
+    **/
+    _count?: true | ContentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ContentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ContentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContentMaxAggregateInputType
+  }
+
+  export type GetContentAggregateType<T extends ContentAggregateArgs> = {
+        [P in keyof T & keyof AggregateContent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContent[P]>
+      : GetScalarType<T[P], AggregateContent[P]>
+  }
+
+
+
+
+  export type ContentGroupByArgs = {
+    where?: ContentWhereInput
+    orderBy?: Enumerable<ContentOrderByWithAggregationInput>
+    by: Array<ContentScalarFieldEnum>
+    having?: ContentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContentCountAggregateInputType | true
+    _avg?: ContentAvgAggregateInputType
+    _sum?: ContentSumAggregateInputType
+    _min?: ContentMinAggregateInputType
+    _max?: ContentMaxAggregateInputType
+  }
+
+
+  export type ContentGroupByOutputType = {
+    id: string
+    sheet_id: string
+    row: number
+    col: number
+    content: string | null
+    _count: ContentCountAggregateOutputType | null
+    _avg: ContentAvgAggregateOutputType | null
+    _sum: ContentSumAggregateOutputType | null
+    _min: ContentMinAggregateOutputType | null
+    _max: ContentMaxAggregateOutputType | null
+  }
+
+  type GetContentGroupByPayload<T extends ContentGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<ContentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContentGroupByOutputType[P]>
+            : GetScalarType<T[P], ContentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContentSelect = {
+    id?: boolean
+    sheet_id?: boolean
+    row?: boolean
+    col?: boolean
+    content?: boolean
+    sheets?: boolean | SheetsArgs
+  }
+
+
+  export type ContentInclude = {
+    sheets?: boolean | SheetsArgs
+  } 
+
+  export type ContentGetPayload<S extends boolean | null | undefined | ContentArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? Content :
+    S extends undefined ? never :
+    S extends { include: any } & (ContentArgs | ContentFindManyArgs)
+    ? Content  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'sheets' ? SheetsGetPayload<S['include'][P]> :  never
+  } 
+    : S extends { select: any } & (ContentArgs | ContentFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'sheets' ? SheetsGetPayload<S['select'][P]> :  P extends keyof Content ? Content[P] : never
+  } 
+      : Content
+
+
+  type ContentCountArgs = Merge<
+    Omit<ContentFindManyArgs, 'select' | 'include'> & {
+      select?: ContentCountAggregateInputType | true
+    }
+  >
+
+  export interface ContentDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Content that matches the filter.
+     * @param {ContentFindUniqueArgs} args - Arguments to find a Content
+     * @example
+     * // Get one Content
+     * const content = await prisma.content.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends ContentFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, ContentFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Content'> extends True ? Prisma__ContentClient<ContentGetPayload<T>> : Prisma__ContentClient<ContentGetPayload<T> | null, null>
+
+    /**
+     * Find one Content that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {ContentFindUniqueOrThrowArgs} args - Arguments to find a Content
+     * @example
+     * // Get one Content
+     * const content = await prisma.content.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends ContentFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, ContentFindUniqueOrThrowArgs>
+    ): Prisma__ContentClient<ContentGetPayload<T>>
+
+    /**
+     * Find the first Content that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentFindFirstArgs} args - Arguments to find a Content
+     * @example
+     * // Get one Content
+     * const content = await prisma.content.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends ContentFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, ContentFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Content'> extends True ? Prisma__ContentClient<ContentGetPayload<T>> : Prisma__ContentClient<ContentGetPayload<T> | null, null>
+
+    /**
+     * Find the first Content that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentFindFirstOrThrowArgs} args - Arguments to find a Content
+     * @example
+     * // Get one Content
+     * const content = await prisma.content.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends ContentFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, ContentFindFirstOrThrowArgs>
+    ): Prisma__ContentClient<ContentGetPayload<T>>
+
+    /**
+     * Find zero or more Contents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contents
+     * const contents = await prisma.content.findMany()
+     * 
+     * // Get first 10 Contents
+     * const contents = await prisma.content.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contentWithIdOnly = await prisma.content.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends ContentFindManyArgs>(
+      args?: SelectSubset<T, ContentFindManyArgs>
+    ): PrismaPromise<Array<ContentGetPayload<T>>>
+
+    /**
+     * Create a Content.
+     * @param {ContentCreateArgs} args - Arguments to create a Content.
+     * @example
+     * // Create one Content
+     * const Content = await prisma.content.create({
+     *   data: {
+     *     // ... data to create a Content
+     *   }
+     * })
+     * 
+    **/
+    create<T extends ContentCreateArgs>(
+      args: SelectSubset<T, ContentCreateArgs>
+    ): Prisma__ContentClient<ContentGetPayload<T>>
+
+    /**
+     * Create many Contents.
+     *     @param {ContentCreateManyArgs} args - Arguments to create many Contents.
+     *     @example
+     *     // Create many Contents
+     *     const content = await prisma.content.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends ContentCreateManyArgs>(
+      args?: SelectSubset<T, ContentCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Content.
+     * @param {ContentDeleteArgs} args - Arguments to delete one Content.
+     * @example
+     * // Delete one Content
+     * const Content = await prisma.content.delete({
+     *   where: {
+     *     // ... filter to delete one Content
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends ContentDeleteArgs>(
+      args: SelectSubset<T, ContentDeleteArgs>
+    ): Prisma__ContentClient<ContentGetPayload<T>>
+
+    /**
+     * Update one Content.
+     * @param {ContentUpdateArgs} args - Arguments to update one Content.
+     * @example
+     * // Update one Content
+     * const content = await prisma.content.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends ContentUpdateArgs>(
+      args: SelectSubset<T, ContentUpdateArgs>
+    ): Prisma__ContentClient<ContentGetPayload<T>>
+
+    /**
+     * Delete zero or more Contents.
+     * @param {ContentDeleteManyArgs} args - Arguments to filter Contents to delete.
+     * @example
+     * // Delete a few Contents
+     * const { count } = await prisma.content.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends ContentDeleteManyArgs>(
+      args?: SelectSubset<T, ContentDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contents
+     * const content = await prisma.content.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends ContentUpdateManyArgs>(
+      args: SelectSubset<T, ContentUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Content.
+     * @param {ContentUpsertArgs} args - Arguments to update or create a Content.
+     * @example
+     * // Update or create a Content
+     * const content = await prisma.content.upsert({
+     *   create: {
+     *     // ... data to create a Content
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Content we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends ContentUpsertArgs>(
+      args: SelectSubset<T, ContentUpsertArgs>
+    ): Prisma__ContentClient<ContentGetPayload<T>>
+
+    /**
+     * Count the number of Contents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentCountArgs} args - Arguments to filter Contents to count.
+     * @example
+     * // Count the number of Contents
+     * const count = await prisma.content.count({
+     *   where: {
+     *     // ... the filter for the Contents we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContentCountArgs>(
+      args?: Subset<T, ContentCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Content.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContentAggregateArgs>(args: Subset<T, ContentAggregateArgs>): PrismaPromise<GetContentAggregateType<T>>
+
+    /**
+     * Group by Content.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContentGroupByArgs['orderBy'] }
+        : { orderBy?: ContentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContentGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Content.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__ContentClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    sheets<T extends SheetsArgs= {}>(args?: Subset<T, SheetsArgs>): Prisma__SheetsClient<SheetsGetPayload<T> | Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Content base type for findUnique actions
+   */
+  export type ContentFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * Filter, which Content to fetch.
+     * 
+    **/
+    where: ContentWhereUniqueInput
+  }
+
+  /**
+   * Content findUnique
+   */
+  export interface ContentFindUniqueArgs extends ContentFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Content findUniqueOrThrow
+   */
+  export type ContentFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * Filter, which Content to fetch.
+     * 
+    **/
+    where: ContentWhereUniqueInput
+  }
+
+
+  /**
+   * Content base type for findFirst actions
+   */
+  export type ContentFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * Filter, which Content to fetch.
+     * 
+    **/
+    where?: ContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contents to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<ContentOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contents.
+     * 
+    **/
+    cursor?: ContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contents from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contents.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contents.
+     * 
+    **/
+    distinct?: Enumerable<ContentScalarFieldEnum>
+  }
+
+  /**
+   * Content findFirst
+   */
+  export interface ContentFindFirstArgs extends ContentFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Content findFirstOrThrow
+   */
+  export type ContentFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * Filter, which Content to fetch.
+     * 
+    **/
+    where?: ContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contents to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<ContentOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contents.
+     * 
+    **/
+    cursor?: ContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contents from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contents.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contents.
+     * 
+    **/
+    distinct?: Enumerable<ContentScalarFieldEnum>
+  }
+
+
+  /**
+   * Content findMany
+   */
+  export type ContentFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * Filter, which Contents to fetch.
+     * 
+    **/
+    where?: ContentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contents to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<ContentOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Contents.
+     * 
+    **/
+    cursor?: ContentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contents from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contents.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<ContentScalarFieldEnum>
+  }
+
+
+  /**
+   * Content create
+   */
+  export type ContentCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * The data needed to create a Content.
+     * 
+    **/
+    data: XOR<ContentCreateInput, ContentUncheckedCreateInput>
+  }
+
+
+  /**
+   * Content createMany
+   */
+  export type ContentCreateManyArgs = {
+    /**
+     * The data used to create many Contents.
+     * 
+    **/
+    data: Enumerable<ContentCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Content update
+   */
+  export type ContentUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * The data needed to update a Content.
+     * 
+    **/
+    data: XOR<ContentUpdateInput, ContentUncheckedUpdateInput>
+    /**
+     * Choose, which Content to update.
+     * 
+    **/
+    where: ContentWhereUniqueInput
+  }
+
+
+  /**
+   * Content updateMany
+   */
+  export type ContentUpdateManyArgs = {
+    /**
+     * The data used to update Contents.
+     * 
+    **/
+    data: XOR<ContentUpdateManyMutationInput, ContentUncheckedUpdateManyInput>
+    /**
+     * Filter which Contents to update
+     * 
+    **/
+    where?: ContentWhereInput
+  }
+
+
+  /**
+   * Content upsert
+   */
+  export type ContentUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * The filter to search for the Content to update in case it exists.
+     * 
+    **/
+    where: ContentWhereUniqueInput
+    /**
+     * In case the Content found by the `where` argument doesn't exist, create a new Content with this data.
+     * 
+    **/
+    create: XOR<ContentCreateInput, ContentUncheckedCreateInput>
+    /**
+     * In case the Content was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<ContentUpdateInput, ContentUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Content delete
+   */
+  export type ContentDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    /**
+     * Filter which Content to delete.
+     * 
+    **/
+    where: ContentWhereUniqueInput
+  }
+
+
+  /**
+   * Content deleteMany
+   */
+  export type ContentDeleteManyArgs = {
+    /**
+     * Filter which Contents to delete
+     * 
+    **/
+    where?: ContentWhereInput
+  }
+
+
+  /**
+   * Content without action
+   */
+  export type ContentArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
   }
 
 
@@ -4893,6 +6019,1043 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   /**
+   * Model Sheets
+   */
+
+
+  export type AggregateSheets = {
+    _count: SheetsCountAggregateOutputType | null
+    _avg: SheetsAvgAggregateOutputType | null
+    _sum: SheetsSumAggregateOutputType | null
+    _min: SheetsMinAggregateOutputType | null
+    _max: SheetsMaxAggregateOutputType | null
+  }
+
+  export type SheetsAvgAggregateOutputType = {
+    rows: number | null
+    cols: number | null
+  }
+
+  export type SheetsSumAggregateOutputType = {
+    rows: number | null
+    cols: number | null
+  }
+
+  export type SheetsMinAggregateOutputType = {
+    id: string | null
+    rows: number | null
+    cols: number | null
+  }
+
+  export type SheetsMaxAggregateOutputType = {
+    id: string | null
+    rows: number | null
+    cols: number | null
+  }
+
+  export type SheetsCountAggregateOutputType = {
+    id: number
+    rows: number
+    cols: number
+    _all: number
+  }
+
+
+  export type SheetsAvgAggregateInputType = {
+    rows?: true
+    cols?: true
+  }
+
+  export type SheetsSumAggregateInputType = {
+    rows?: true
+    cols?: true
+  }
+
+  export type SheetsMinAggregateInputType = {
+    id?: true
+    rows?: true
+    cols?: true
+  }
+
+  export type SheetsMaxAggregateInputType = {
+    id?: true
+    rows?: true
+    cols?: true
+  }
+
+  export type SheetsCountAggregateInputType = {
+    id?: true
+    rows?: true
+    cols?: true
+    _all?: true
+  }
+
+  export type SheetsAggregateArgs = {
+    /**
+     * Filter which Sheets to aggregate.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Sheets
+    **/
+    _count?: true | SheetsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SheetsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SheetsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SheetsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SheetsMaxAggregateInputType
+  }
+
+  export type GetSheetsAggregateType<T extends SheetsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSheets]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSheets[P]>
+      : GetScalarType<T[P], AggregateSheets[P]>
+  }
+
+
+
+
+  export type SheetsGroupByArgs = {
+    where?: SheetsWhereInput
+    orderBy?: Enumerable<SheetsOrderByWithAggregationInput>
+    by: Array<SheetsScalarFieldEnum>
+    having?: SheetsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SheetsCountAggregateInputType | true
+    _avg?: SheetsAvgAggregateInputType
+    _sum?: SheetsSumAggregateInputType
+    _min?: SheetsMinAggregateInputType
+    _max?: SheetsMaxAggregateInputType
+  }
+
+
+  export type SheetsGroupByOutputType = {
+    id: string
+    rows: number
+    cols: number
+    _count: SheetsCountAggregateOutputType | null
+    _avg: SheetsAvgAggregateOutputType | null
+    _sum: SheetsSumAggregateOutputType | null
+    _min: SheetsMinAggregateOutputType | null
+    _max: SheetsMaxAggregateOutputType | null
+  }
+
+  type GetSheetsGroupByPayload<T extends SheetsGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<SheetsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SheetsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SheetsGroupByOutputType[P]>
+            : GetScalarType<T[P], SheetsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SheetsSelect = {
+    id?: boolean
+    rows?: boolean
+    cols?: boolean
+    content?: boolean | Sheets$contentArgs
+    _count?: boolean | SheetsCountOutputTypeArgs
+  }
+
+
+  export type SheetsInclude = {
+    content?: boolean | Sheets$contentArgs
+    _count?: boolean | SheetsCountOutputTypeArgs
+  } 
+
+  export type SheetsGetPayload<S extends boolean | null | undefined | SheetsArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? Sheets :
+    S extends undefined ? never :
+    S extends { include: any } & (SheetsArgs | SheetsFindManyArgs)
+    ? Sheets  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'content' ? Array < ContentGetPayload<S['include'][P]>>  :
+        P extends '_count' ? SheetsCountOutputTypeGetPayload<S['include'][P]> :  never
+  } 
+    : S extends { select: any } & (SheetsArgs | SheetsFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'content' ? Array < ContentGetPayload<S['select'][P]>>  :
+        P extends '_count' ? SheetsCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Sheets ? Sheets[P] : never
+  } 
+      : Sheets
+
+
+  type SheetsCountArgs = Merge<
+    Omit<SheetsFindManyArgs, 'select' | 'include'> & {
+      select?: SheetsCountAggregateInputType | true
+    }
+  >
+
+  export interface SheetsDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Sheets that matches the filter.
+     * @param {SheetsFindUniqueArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends SheetsFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, SheetsFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Sheets'> extends True ? Prisma__SheetsClient<SheetsGetPayload<T>> : Prisma__SheetsClient<SheetsGetPayload<T> | null, null>
+
+    /**
+     * Find one Sheets that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {SheetsFindUniqueOrThrowArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends SheetsFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, SheetsFindUniqueOrThrowArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Find the first Sheets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsFindFirstArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends SheetsFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, SheetsFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Sheets'> extends True ? Prisma__SheetsClient<SheetsGetPayload<T>> : Prisma__SheetsClient<SheetsGetPayload<T> | null, null>
+
+    /**
+     * Find the first Sheets that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsFindFirstOrThrowArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends SheetsFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, SheetsFindFirstOrThrowArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Find zero or more Sheets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sheets
+     * const sheets = await prisma.sheets.findMany()
+     * 
+     * // Get first 10 Sheets
+     * const sheets = await prisma.sheets.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sheetsWithIdOnly = await prisma.sheets.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends SheetsFindManyArgs>(
+      args?: SelectSubset<T, SheetsFindManyArgs>
+    ): PrismaPromise<Array<SheetsGetPayload<T>>>
+
+    /**
+     * Create a Sheets.
+     * @param {SheetsCreateArgs} args - Arguments to create a Sheets.
+     * @example
+     * // Create one Sheets
+     * const Sheets = await prisma.sheets.create({
+     *   data: {
+     *     // ... data to create a Sheets
+     *   }
+     * })
+     * 
+    **/
+    create<T extends SheetsCreateArgs>(
+      args: SelectSubset<T, SheetsCreateArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Create many Sheets.
+     *     @param {SheetsCreateManyArgs} args - Arguments to create many Sheets.
+     *     @example
+     *     // Create many Sheets
+     *     const sheets = await prisma.sheets.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends SheetsCreateManyArgs>(
+      args?: SelectSubset<T, SheetsCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Sheets.
+     * @param {SheetsDeleteArgs} args - Arguments to delete one Sheets.
+     * @example
+     * // Delete one Sheets
+     * const Sheets = await prisma.sheets.delete({
+     *   where: {
+     *     // ... filter to delete one Sheets
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends SheetsDeleteArgs>(
+      args: SelectSubset<T, SheetsDeleteArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Update one Sheets.
+     * @param {SheetsUpdateArgs} args - Arguments to update one Sheets.
+     * @example
+     * // Update one Sheets
+     * const sheets = await prisma.sheets.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends SheetsUpdateArgs>(
+      args: SelectSubset<T, SheetsUpdateArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Delete zero or more Sheets.
+     * @param {SheetsDeleteManyArgs} args - Arguments to filter Sheets to delete.
+     * @example
+     * // Delete a few Sheets
+     * const { count } = await prisma.sheets.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends SheetsDeleteManyArgs>(
+      args?: SelectSubset<T, SheetsDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sheets
+     * const sheets = await prisma.sheets.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends SheetsUpdateManyArgs>(
+      args: SelectSubset<T, SheetsUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Sheets.
+     * @param {SheetsUpsertArgs} args - Arguments to update or create a Sheets.
+     * @example
+     * // Update or create a Sheets
+     * const sheets = await prisma.sheets.upsert({
+     *   create: {
+     *     // ... data to create a Sheets
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sheets we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends SheetsUpsertArgs>(
+      args: SelectSubset<T, SheetsUpsertArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Count the number of Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsCountArgs} args - Arguments to filter Sheets to count.
+     * @example
+     * // Count the number of Sheets
+     * const count = await prisma.sheets.count({
+     *   where: {
+     *     // ... the filter for the Sheets we want to count
+     *   }
+     * })
+    **/
+    count<T extends SheetsCountArgs>(
+      args?: Subset<T, SheetsCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SheetsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SheetsAggregateArgs>(args: Subset<T, SheetsAggregateArgs>): PrismaPromise<GetSheetsAggregateType<T>>
+
+    /**
+     * Group by Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SheetsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SheetsGroupByArgs['orderBy'] }
+        : { orderBy?: SheetsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SheetsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSheetsGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Sheets.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__SheetsClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    content<T extends Sheets$contentArgs= {}>(args?: Subset<T, Sheets$contentArgs>): PrismaPromise<Array<ContentGetPayload<T>>| Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Sheets base type for findUnique actions
+   */
+  export type SheetsFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+  /**
+   * Sheets findUnique
+   */
+  export interface SheetsFindUniqueArgs extends SheetsFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Sheets findUniqueOrThrow
+   */
+  export type SheetsFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+
+  /**
+   * Sheets base type for findFirst actions
+   */
+  export type SheetsFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sheets.
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sheets.
+     * 
+    **/
+    distinct?: Enumerable<SheetsScalarFieldEnum>
+  }
+
+  /**
+   * Sheets findFirst
+   */
+  export interface SheetsFindFirstArgs extends SheetsFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Sheets findFirstOrThrow
+   */
+  export type SheetsFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sheets.
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sheets.
+     * 
+    **/
+    distinct?: Enumerable<SheetsScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets findMany
+   */
+  export type SheetsFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Sheets.
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<SheetsScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets create
+   */
+  export type SheetsCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * The data needed to create a Sheets.
+     * 
+    **/
+    data: XOR<SheetsCreateInput, SheetsUncheckedCreateInput>
+  }
+
+
+  /**
+   * Sheets createMany
+   */
+  export type SheetsCreateManyArgs = {
+    /**
+     * The data used to create many Sheets.
+     * 
+    **/
+    data: Enumerable<SheetsCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Sheets update
+   */
+  export type SheetsUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * The data needed to update a Sheets.
+     * 
+    **/
+    data: XOR<SheetsUpdateInput, SheetsUncheckedUpdateInput>
+    /**
+     * Choose, which Sheets to update.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+
+  /**
+   * Sheets updateMany
+   */
+  export type SheetsUpdateManyArgs = {
+    /**
+     * The data used to update Sheets.
+     * 
+    **/
+    data: XOR<SheetsUpdateManyMutationInput, SheetsUncheckedUpdateManyInput>
+    /**
+     * Filter which Sheets to update
+     * 
+    **/
+    where?: SheetsWhereInput
+  }
+
+
+  /**
+   * Sheets upsert
+   */
+  export type SheetsUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * The filter to search for the Sheets to update in case it exists.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+    /**
+     * In case the Sheets found by the `where` argument doesn't exist, create a new Sheets with this data.
+     * 
+    **/
+    create: XOR<SheetsCreateInput, SheetsUncheckedCreateInput>
+    /**
+     * In case the Sheets was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<SheetsUpdateInput, SheetsUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Sheets delete
+   */
+  export type SheetsDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter which Sheets to delete.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+
+  /**
+   * Sheets deleteMany
+   */
+  export type SheetsDeleteManyArgs = {
+    /**
+     * Filter which Sheets to delete
+     * 
+    **/
+    where?: SheetsWhereInput
+  }
+
+
+  /**
+   * Sheets.content
+   */
+  export type Sheets$contentArgs = {
+    /**
+     * Select specific fields to fetch from the Content
+     * 
+    **/
+    select?: ContentSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ContentInclude | null
+    where?: ContentWhereInput
+    orderBy?: Enumerable<ContentOrderByWithRelationInput>
+    cursor?: ContentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<ContentScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets without action
+   */
+  export type SheetsArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -4905,6 +7068,17 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   };
 
   export type ColmapScalarFieldEnum = (typeof ColmapScalarFieldEnum)[keyof typeof ColmapScalarFieldEnum]
+
+
+  export const ContentScalarFieldEnum: {
+    id: 'id',
+    sheet_id: 'sheet_id',
+    row: 'row',
+    col: 'col',
+    content: 'content'
+  };
+
+  export type ContentScalarFieldEnum = (typeof ContentScalarFieldEnum)[keyof typeof ContentScalarFieldEnum]
 
 
   export const ContentmapScalarFieldEnum: {
@@ -4937,6 +7111,15 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   };
 
   export type RowmapScalarFieldEnum = (typeof RowmapScalarFieldEnum)[keyof typeof RowmapScalarFieldEnum]
+
+
+  export const SheetsScalarFieldEnum: {
+    id: 'id',
+    rows: 'rows',
+    cols: 'cols'
+  };
+
+  export type SheetsScalarFieldEnum = (typeof SheetsScalarFieldEnum)[keyof typeof SheetsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4997,6 +7180,55 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     NOT?: Enumerable<ColmapScalarWhereWithAggregatesInput>
     id?: UuidWithAggregatesFilter | string
     pos?: IntNullableWithAggregatesFilter | number | null
+  }
+
+  export type ContentWhereInput = {
+    AND?: Enumerable<ContentWhereInput>
+    OR?: Enumerable<ContentWhereInput>
+    NOT?: Enumerable<ContentWhereInput>
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    row?: IntFilter | number
+    col?: IntFilter | number
+    content?: StringNullableFilter | string | null
+    sheets?: XOR<SheetsRelationFilter, SheetsWhereInput>
+  }
+
+  export type ContentOrderByWithRelationInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row?: SortOrder
+    col?: SortOrder
+    content?: SortOrder
+    sheets?: SheetsOrderByWithRelationInput
+  }
+
+  export type ContentWhereUniqueInput = {
+    id?: string
+  }
+
+  export type ContentOrderByWithAggregationInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row?: SortOrder
+    col?: SortOrder
+    content?: SortOrder
+    _count?: ContentCountOrderByAggregateInput
+    _avg?: ContentAvgOrderByAggregateInput
+    _max?: ContentMaxOrderByAggregateInput
+    _min?: ContentMinOrderByAggregateInput
+    _sum?: ContentSumOrderByAggregateInput
+  }
+
+  export type ContentScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<ContentScalarWhereWithAggregatesInput>
+    OR?: Enumerable<ContentScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<ContentScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    sheet_id?: StringWithAggregatesFilter | string
+    row?: IntWithAggregatesFilter | number
+    col?: IntWithAggregatesFilter | number
+    content?: StringNullableWithAggregatesFilter | string | null
   }
 
   export type ContentmapWhereInput = {
@@ -5106,6 +7338,47 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     pos?: IntNullableWithAggregatesFilter | number | null
   }
 
+  export type SheetsWhereInput = {
+    AND?: Enumerable<SheetsWhereInput>
+    OR?: Enumerable<SheetsWhereInput>
+    NOT?: Enumerable<SheetsWhereInput>
+    id?: StringFilter | string
+    rows?: IntFilter | number
+    cols?: IntFilter | number
+    content?: ContentListRelationFilter
+  }
+
+  export type SheetsOrderByWithRelationInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    content?: ContentOrderByRelationAggregateInput
+  }
+
+  export type SheetsWhereUniqueInput = {
+    id?: string
+  }
+
+  export type SheetsOrderByWithAggregationInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    _count?: SheetsCountOrderByAggregateInput
+    _avg?: SheetsAvgOrderByAggregateInput
+    _max?: SheetsMaxOrderByAggregateInput
+    _min?: SheetsMinOrderByAggregateInput
+    _sum?: SheetsSumOrderByAggregateInput
+  }
+
+  export type SheetsScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<SheetsScalarWhereWithAggregatesInput>
+    OR?: Enumerable<SheetsScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<SheetsScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    rows?: IntWithAggregatesFilter | number
+    cols?: IntWithAggregatesFilter | number
+  }
+
   export type ColmapCreateInput = {
     id: string
     pos?: number | null
@@ -5143,6 +7416,61 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   export type ColmapUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     pos?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ContentCreateInput = {
+    id: string
+    row: number
+    col: number
+    content?: string | null
+    sheets: SheetsCreateNestedOneWithoutContentInput
+  }
+
+  export type ContentUncheckedCreateInput = {
+    id: string
+    sheet_id: string
+    row: number
+    col: number
+    content?: string | null
+  }
+
+  export type ContentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    sheets?: SheetsUpdateOneRequiredWithoutContentNestedInput
+  }
+
+  export type ContentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ContentCreateManyInput = {
+    id: string
+    sheet_id: string
+    row: number
+    col: number
+    content?: string | null
+  }
+
+  export type ContentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ContentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ContentmapCreateInput = {
@@ -5252,6 +7580,52 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     pos?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type SheetsCreateInput = {
+    id: string
+    rows: number
+    cols: number
+    content?: ContentCreateNestedManyWithoutSheetsInput
+  }
+
+  export type SheetsUncheckedCreateInput = {
+    id: string
+    rows: number
+    cols: number
+    content?: ContentUncheckedCreateNestedManyWithoutSheetsInput
+  }
+
+  export type SheetsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    content?: ContentUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type SheetsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    content?: ContentUncheckedUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type SheetsCreateManyInput = {
+    id: string
+    rows: number
+    cols: number
+  }
+
+  export type SheetsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type SheetsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+  }
+
   export type UuidFilter = {
     equals?: string
     in?: Enumerable<string>
@@ -5339,6 +7713,32 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     _max?: NestedIntNullableFilter
   }
 
+  export type StringFilter = {
+    equals?: string
+    in?: Enumerable<string>
+    notIn?: Enumerable<string>
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringFilter | string
+  }
+
+  export type IntFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntFilter | number
+  }
+
   export type StringNullableFilter = {
     equals?: string | null
     in?: Enumerable<string> | null
@@ -5352,6 +7752,97 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     endsWith?: string
     mode?: QueryMode
     not?: NestedStringNullableFilter | string | null
+  }
+
+  export type SheetsRelationFilter = {
+    is?: SheetsWhereInput
+    isNot?: SheetsWhereInput
+  }
+
+  export type ContentCountOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row?: SortOrder
+    col?: SortOrder
+    content?: SortOrder
+  }
+
+  export type ContentAvgOrderByAggregateInput = {
+    row?: SortOrder
+    col?: SortOrder
+  }
+
+  export type ContentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row?: SortOrder
+    col?: SortOrder
+    content?: SortOrder
+  }
+
+  export type ContentMinOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row?: SortOrder
+    col?: SortOrder
+    content?: SortOrder
+  }
+
+  export type ContentSumOrderByAggregateInput = {
+    row?: SortOrder
+    col?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter = {
+    equals?: string
+    in?: Enumerable<string>
+    notIn?: Enumerable<string>
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringWithAggregatesFilter | string
+    _count?: NestedIntFilter
+    _min?: NestedStringFilter
+    _max?: NestedStringFilter
+  }
+
+  export type IntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
+  }
+
+  export type StringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
   }
 
   export type ColmapRelationFilter = {
@@ -5387,39 +7878,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     content?: SortOrder
   }
 
-  export type StringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
-  }
-
-  export type StringFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    mode?: QueryMode
-    not?: NestedStringFilter | string
-  }
-
   export type ItemsCountOrderByAggregateInput = {
     value?: SortOrder
   }
@@ -5430,24 +7888,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type ItemsMinOrderByAggregateInput = {
     value?: SortOrder
-  }
-
-  export type StringWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
   }
 
   export type RowmapCountOrderByAggregateInput = {
@@ -5471,6 +7911,44 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type RowmapSumOrderByAggregateInput = {
     pos?: SortOrder
+  }
+
+  export type ContentListRelationFilter = {
+    every?: ContentWhereInput
+    some?: ContentWhereInput
+    none?: ContentWhereInput
+  }
+
+  export type ContentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SheetsCountOrderByAggregateInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+  }
+
+  export type SheetsAvgOrderByAggregateInput = {
+    rows?: SortOrder
+    cols?: SortOrder
+  }
+
+  export type SheetsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+  }
+
+  export type SheetsMinOrderByAggregateInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+  }
+
+  export type SheetsSumOrderByAggregateInput = {
+    rows?: SortOrder
+    cols?: SortOrder
   }
 
   export type ContentmapCreateNestedManyWithoutColmapInput = {
@@ -5527,6 +8005,32 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     deleteMany?: Enumerable<ContentmapScalarWhereInput>
   }
 
+  export type SheetsCreateNestedOneWithoutContentInput = {
+    create?: XOR<SheetsCreateWithoutContentInput, SheetsUncheckedCreateWithoutContentInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutContentInput
+    connect?: SheetsWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type SheetsUpdateOneRequiredWithoutContentNestedInput = {
+    create?: XOR<SheetsCreateWithoutContentInput, SheetsUncheckedCreateWithoutContentInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutContentInput
+    upsert?: SheetsUpsertWithoutContentInput
+    connect?: SheetsWhereUniqueInput
+    update?: XOR<SheetsUpdateWithoutContentInput, SheetsUncheckedUpdateWithoutContentInput>
+  }
+
   export type ColmapCreateNestedOneWithoutContentmapInput = {
     create?: XOR<ColmapCreateWithoutContentmapInput, ColmapUncheckedCreateWithoutContentmapInput>
     connectOrCreate?: ColmapCreateOrConnectWithoutContentmapInput
@@ -5537,10 +8041,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     create?: XOR<RowmapCreateWithoutContentmapInput, RowmapUncheckedCreateWithoutContentmapInput>
     connectOrCreate?: RowmapCreateOrConnectWithoutContentmapInput
     connect?: RowmapWhereUniqueInput
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type ColmapUpdateOneRequiredWithoutContentmapNestedInput = {
@@ -5599,6 +8099,48 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     update?: Enumerable<ContentmapUpdateWithWhereUniqueWithoutRowmapInput>
     updateMany?: Enumerable<ContentmapUpdateManyWithWhereWithoutRowmapInput>
     deleteMany?: Enumerable<ContentmapScalarWhereInput>
+  }
+
+  export type ContentCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<ContentCreateWithoutSheetsInput>, Enumerable<ContentUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ContentCreateOrConnectWithoutSheetsInput>
+    createMany?: ContentCreateManySheetsInputEnvelope
+    connect?: Enumerable<ContentWhereUniqueInput>
+  }
+
+  export type ContentUncheckedCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<ContentCreateWithoutSheetsInput>, Enumerable<ContentUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ContentCreateOrConnectWithoutSheetsInput>
+    createMany?: ContentCreateManySheetsInputEnvelope
+    connect?: Enumerable<ContentWhereUniqueInput>
+  }
+
+  export type ContentUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<ContentCreateWithoutSheetsInput>, Enumerable<ContentUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ContentCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<ContentUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: ContentCreateManySheetsInputEnvelope
+    set?: Enumerable<ContentWhereUniqueInput>
+    disconnect?: Enumerable<ContentWhereUniqueInput>
+    delete?: Enumerable<ContentWhereUniqueInput>
+    connect?: Enumerable<ContentWhereUniqueInput>
+    update?: Enumerable<ContentUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<ContentUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<ContentScalarWhereInput>
+  }
+
+  export type ContentUncheckedUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<ContentCreateWithoutSheetsInput>, Enumerable<ContentUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ContentCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<ContentUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: ContentCreateManySheetsInputEnvelope
+    set?: Enumerable<ContentWhereUniqueInput>
+    disconnect?: Enumerable<ContentWhereUniqueInput>
+    delete?: Enumerable<ContentWhereUniqueInput>
+    connect?: Enumerable<ContentWhereUniqueInput>
+    update?: Enumerable<ContentUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<ContentUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<ContentScalarWhereInput>
   }
 
   export type NestedUuidFilter = {
@@ -5703,23 +8245,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     not?: NestedStringNullableFilter | string | null
   }
 
-  export type NestedStringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
-  }
-
   export type NestedStringWithAggregatesFilter = {
     equals?: string
     in?: Enumerable<string>
@@ -5735,6 +8260,50 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     _count?: NestedIntFilter
     _min?: NestedStringFilter
     _max?: NestedStringFilter
+  }
+
+  export type NestedIntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
+  }
+
+  export type NestedFloatFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatFilter | number
+  }
+
+  export type NestedStringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
   }
 
   export type ContentmapCreateWithoutColmapInput = {
@@ -5780,6 +8349,40 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     rowindex?: UuidFilter | string
     colindex?: UuidFilter | string
     content?: StringNullableFilter | string | null
+  }
+
+  export type SheetsCreateWithoutContentInput = {
+    id: string
+    rows: number
+    cols: number
+  }
+
+  export type SheetsUncheckedCreateWithoutContentInput = {
+    id: string
+    rows: number
+    cols: number
+  }
+
+  export type SheetsCreateOrConnectWithoutContentInput = {
+    where: SheetsWhereUniqueInput
+    create: XOR<SheetsCreateWithoutContentInput, SheetsUncheckedCreateWithoutContentInput>
+  }
+
+  export type SheetsUpsertWithoutContentInput = {
+    update: XOR<SheetsUpdateWithoutContentInput, SheetsUncheckedUpdateWithoutContentInput>
+    create: XOR<SheetsCreateWithoutContentInput, SheetsUncheckedCreateWithoutContentInput>
+  }
+
+  export type SheetsUpdateWithoutContentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type SheetsUncheckedUpdateWithoutContentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
   }
 
   export type ColmapCreateWithoutContentmapInput = {
@@ -5878,6 +8481,57 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     data: XOR<ContentmapUpdateManyMutationInput, ContentmapUncheckedUpdateManyWithoutContentmapInput>
   }
 
+  export type ContentCreateWithoutSheetsInput = {
+    id: string
+    row: number
+    col: number
+    content?: string | null
+  }
+
+  export type ContentUncheckedCreateWithoutSheetsInput = {
+    id: string
+    row: number
+    col: number
+    content?: string | null
+  }
+
+  export type ContentCreateOrConnectWithoutSheetsInput = {
+    where: ContentWhereUniqueInput
+    create: XOR<ContentCreateWithoutSheetsInput, ContentUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type ContentCreateManySheetsInputEnvelope = {
+    data: Enumerable<ContentCreateManySheetsInput>
+    skipDuplicates?: boolean
+  }
+
+  export type ContentUpsertWithWhereUniqueWithoutSheetsInput = {
+    where: ContentWhereUniqueInput
+    update: XOR<ContentUpdateWithoutSheetsInput, ContentUncheckedUpdateWithoutSheetsInput>
+    create: XOR<ContentCreateWithoutSheetsInput, ContentUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type ContentUpdateWithWhereUniqueWithoutSheetsInput = {
+    where: ContentWhereUniqueInput
+    data: XOR<ContentUpdateWithoutSheetsInput, ContentUncheckedUpdateWithoutSheetsInput>
+  }
+
+  export type ContentUpdateManyWithWhereWithoutSheetsInput = {
+    where: ContentScalarWhereInput
+    data: XOR<ContentUpdateManyMutationInput, ContentUncheckedUpdateManyWithoutContentInput>
+  }
+
+  export type ContentScalarWhereInput = {
+    AND?: Enumerable<ContentScalarWhereInput>
+    OR?: Enumerable<ContentScalarWhereInput>
+    NOT?: Enumerable<ContentScalarWhereInput>
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    row?: IntFilter | number
+    col?: IntFilter | number
+    content?: StringNullableFilter | string | null
+  }
+
   export type ContentmapCreateManyColmapInput = {
     rowindex: string
     content?: string | null
@@ -5910,6 +8564,34 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type ContentmapUncheckedUpdateWithoutRowmapInput = {
     colindex?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ContentCreateManySheetsInput = {
+    id: string
+    row: number
+    col: number
+    content?: string | null
+  }
+
+  export type ContentUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ContentUncheckedUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ContentUncheckedUpdateManyWithoutContentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    row?: IntFieldUpdateOperationsInput | number
+    col?: IntFieldUpdateOperationsInput | number
     content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

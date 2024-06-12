@@ -38,6 +38,11 @@ const ElectricProviderComponent = ({
       }
 
       setElectric(client)
+
+      const { synced: syncSheets } = await client.db.sheets.sync();
+      const { synced: syncContent } = await client.db.content.sync();
+      await syncSheets;
+      await syncContent;
     }
 
     init()
