@@ -11,6 +11,8 @@ import { Contentmap as Content } from './generated/client'
 import { useElectric } from './ElectricProvider'
 import './Example.css'
 import { WebsocketProvider } from 'y-websocket';
+import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
+import { schema } from './generated/client'
 
 
 /* const ySpreadsheet = [];
@@ -25,7 +27,18 @@ const yHeaders = [];
 let spreadsheetWithIds = [];
 
 export const Example = () => {
-  
+    /* const conn = ElectricDatabase.init('my.db');
+    const config = {
+        url: "http://localhost:5133",
+        debug: true
+      }
+const electric = electrify(conn, schema, config); */
+
+/* if (config.debug) {
+  const { addToolbar } = import('@electric-sql/debug-toolbar')
+  addToolbar(electric)
+} */
+
   // Initialization of the JSX display -- if possible, read from the yDoc, otherwise generate the default
   const [spreadsheet, setSpreadsheet] = useState([
     
@@ -44,13 +57,13 @@ export const Example = () => {
   }
 
   function collectIdentifiers() {
-    if (colmap.results && rowmap.results) {
-    console.log("here inside rebuild");
+    spreadsheetWithIds = [];
+    console.log("here inside collectIdentifiers");
     if (colmap.results.length == 0) {
         console.log("colmap.results.length == 0", colmap.results.length)
         if (rowmap.results.length !=0) {
-            console.log("rowmap.results.length !=0", rowmap.results.length)
-            console.log("rowmap.results", rowmap.results);
+            /* console.log("rowmap.results.length !=0", rowmap.results.length)
+            console.log("rowmap.results", rowmap.results); */
             for ( let j = 0; j < rowmap.results.length; j++) {
                 spreadsheetWithIds.push(['', '', rowmap.results[j].id,j, '']);
                 console.log("spreadsheetwithIDs", spreadsheetWithIds);
@@ -58,30 +71,37 @@ export const Example = () => {
         }
     } else if (colmap.results.length != 0 && rowmap.results.length !=0) {
         console.log("colmap.results.length != 0 && rowmap.results.length !=0",colmap.results.length, rowmap.results.length )
-        if (content.length !=0 ) {
-            console.log("rowmap.results", rowmap.results);
+        
+            /* console.log("rowmap.results", rowmap.results);
             console.log("colmap.results", colmap.results);
-            console.log("content.results", content.results);
-            for ( let k = 0; k < content.length; k++) {
-                if ( colmap.results[i].id == content.results[k]['colIndex'] && rowmap.results[j].id == content.results[k]['rowIndex'] ) {
-                  spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, content.results[k]['content']]);
-                  console.log("spreadsheetwithIDs", spreadsheetWithIds);
-                } 
+            console.log("content.results", content.results); */
+            for (let i = 0; i < colmap.results.length; i++) {
+                for (let j =0; j < rowmap.results.length; j++) {
+                    for ( let k = 0; k < content.results.length; k++) {
+                      if (content.results.length !=0 ) {
+                        //console.log("colmap.results[i].id , content.results[k]['colindex']", colmap.results[i].id, content.results[k]['colindex'], rowmap.results[j].id, content.results[k]['rowindex'])
+                        if ( colmap.results[i].id == content.results[k]['colindex'] && rowmap.results[j].id == content.results[k]['rowindex'] ) {
+                          spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, content.results[k]['content']]);
+                          console.log("spreadsheetwithIDs", spreadsheetWithIds);
+                        } 
+                    } else {
+                      spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, '']);
+                      //console.log("spreadsheetwithIDs", spreadsheetWithIds);
+                  }
+                }
             }
-        } else {
-            spreadsheetWithIds.push([colmap.results[i].id, i, rowmap.results[j].id,j, '']);
-            console.log("spreadsheetwithIDs", spreadsheetWithIds);
-        }
+            
+        } 
           
     } else if (rowmap.results.length == 0 && colmap.results.length != 0) {
         console.log("rowmap.results.length == 0 && colmap.results.length != 0",colmap.results.length, rowmap.results.length )
         for ( let j = 0; j < colmap.results.length; j++) {   
-            console.log("colmap.results", colmap.results);
+            //console.log("colmap.results", colmap.results);
             spreadsheetWithIds.push([colmap.results[j].id, j, '','', '']);
             console.log("spreadsheetwithIDs", spreadsheetWithIds);
         }
     }
-  }
+  
 }
   const [connectionStatus, setConnectionStatus] = useState('');
 
@@ -116,11 +136,12 @@ export const Example = () => {
   function rebuildSpreadsheet() {
     setHeaders(yHeaders);
     collectIdentifiers();
+    console.log("spreadsheetwithIDs", spreadsheetWithIds);
     const newSpreadsheet = Array(ySpreadsheet.length);
     for (let i = 0; i < ySpreadsheet.length; i++) {
       newSpreadsheet[i] = Array.apply(null, ...Array(ySpreadsheet[i].length)).map(function () {return undefined});
     }
-    ySpreadsheet.forEach((row,rowIndex) => row.forEach((value,colIndex) => newSpreadsheet[rowIndex][colIndex] = value))
+    ySpreadsheet.forEach((row,rowindex) => row.forEach((value,colindex) => newSpreadsheet[rowindex][colindex] = value))
     setSpreadsheet(newSpreadsheet);
     
     
@@ -357,8 +378,8 @@ const updatedColMap = async(element) => {
     if (content.results.length !=0) {
         console.log("content.results.length !=0", content.results)
         for (let i=0; i < content.results.length; i++) {
-            if(content.results[i]['rowIndex'] == rowID && content.results[i]['colIndex'] == columnID) {
-                console.log("content.results[i]['rowIndex'], content.results[i]['colIndex'], rowID, ColumnID", content.results[i]['rowIndex'], content.results[i]['colIndex'], rowID, columnID);
+            if(content.results[i]['rowindex'] == rowID && content.results[i]['colindex'] == columnID) {
+                console.log("content.results[i]['rowindex'], content.results[i]['colindex'], rowID, ColumnID", content.results[i]['rowindex'], content.results[i]['colindex'], rowID, columnID);
                 if(content.results[i]['content'].length != 0) {
                     contentResults.forEach(element => {
                         console.log("content.results[i], element", content.results[i], element);
