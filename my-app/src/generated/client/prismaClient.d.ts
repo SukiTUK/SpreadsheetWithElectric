@@ -13,42 +13,26 @@ type UnwrapTuple<Tuple extends readonly unknown[]> = {
 
 
 /**
- * Model Colmap
+ * Model Cellmap
  * 
  */
-export type Colmap = {
-  /**
-   * @zod.string.uuid()
-   */
+export type Cellmap = {
   id: string
-  /**
-   * @zod.number.int().gte(-2147483648).lte(2147483647)
-   */
-  pos: number | null
-}
-
-/**
- * Model Contentmap
- * 
- */
-export type Contentmap = {
-  /**
-   * @zod.string.uuid()
-   */
-  rowIndex: string
-  /**
-   * @zod.string.uuid()
-   */
-  colIndex: string
+  sheet_id: string
+  row_id: string
+  col_id: string
   content: string | null
 }
 
 /**
- * Model Items
+ * Model Colmap
  * 
  */
-export type Items = {
-  value: string
+export type Colmap = {
+  id: string
+  sheet_id: string
+  startmarker: string
+  endmarker: string
 }
 
 /**
@@ -56,14 +40,32 @@ export type Items = {
  * 
  */
 export type Rowmap = {
-  /**
-   * @zod.string.uuid()
-   */
+  id: string
+  sheet_id: string
+  startmarker: string
+  endmarker: string
+}
+
+/**
+ * Model Sheets
+ * 
+ */
+export type Sheets = {
   id: string
   /**
-   * @zod.number.int().gte(-2147483648).lte(2147483647)
+   * @zod.number.int().gte(-32768).lte(32767)
    */
-  pos: number | null
+  rows: number
+  /**
+   * @zod.number.int().gte(-32768).lte(32767)
+   */
+  cols: number
+  startrow: string | null
+  endrow: string | null
+  startrol: string | null
+  endrol: string | null
+  created_at: Date
+  title: string | null
 }
 
 
@@ -74,8 +76,8 @@ export type Rowmap = {
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Colmaps
- * const colmaps = await prisma.colmap.findMany()
+ * // Fetch zero or more Cellmaps
+ * const cellmaps = await prisma.cellmap.findMany()
  * ```
  *
  * 
@@ -95,8 +97,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Colmaps
-   * const colmaps = await prisma.colmap.findMany()
+   * // Fetch zero or more Cellmaps
+   * const cellmaps = await prisma.cellmap.findMany()
    * ```
    *
    * 
@@ -185,6 +187,16 @@ export class PrismaClient<
   $transaction<R>(fn: (prisma: Prisma.TransactionClient) => Promise<R>, options?: {maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel}): Promise<R>;
 
       /**
+   * `prisma.cellmap`: Exposes CRUD operations for the **Cellmap** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Cellmaps
+    * const cellmaps = await prisma.cellmap.findMany()
+    * ```
+    */
+  get cellmap(): Prisma.CellmapDelegate<GlobalReject>;
+
+  /**
    * `prisma.colmap`: Exposes CRUD operations for the **Colmap** model.
     * Example usage:
     * ```ts
@@ -195,26 +207,6 @@ export class PrismaClient<
   get colmap(): Prisma.ColmapDelegate<GlobalReject>;
 
   /**
-   * `prisma.contentmap`: Exposes CRUD operations for the **Contentmap** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Contentmaps
-    * const contentmaps = await prisma.contentmap.findMany()
-    * ```
-    */
-  get contentmap(): Prisma.ContentmapDelegate<GlobalReject>;
-
-  /**
-   * `prisma.items`: Exposes CRUD operations for the **Items** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Items
-    * const items = await prisma.items.findMany()
-    * ```
-    */
-  get items(): Prisma.ItemsDelegate<GlobalReject>;
-
-  /**
    * `prisma.rowmap`: Exposes CRUD operations for the **Rowmap** model.
     * Example usage:
     * ```ts
@@ -223,6 +215,16 @@ export class PrismaClient<
     * ```
     */
   get rowmap(): Prisma.RowmapDelegate<GlobalReject>;
+
+  /**
+   * `prisma.sheets`: Exposes CRUD operations for the **Sheets** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sheets
+    * const sheets = await prisma.sheets.findMany()
+    * ```
+    */
+  get sheets(): Prisma.SheetsDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -707,10 +709,10 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
   export const ModelName: {
+    Cellmap: 'Cellmap',
     Colmap: 'Colmap',
-    Contentmap: 'Contentmap',
-    Items: 'Items',
-    Rowmap: 'Rowmap'
+    Rowmap: 'Rowmap',
+    Sheets: 'Sheets'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -881,11 +883,11 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   export type ColmapCountOutputType = {
-    contentmap: number
+    cellmap: number
   }
 
   export type ColmapCountOutputTypeSelect = {
-    contentmap?: boolean
+    cellmap?: boolean
   }
 
   export type ColmapCountOutputTypeGetPayload<S extends boolean | null | undefined | ColmapCountOutputTypeArgs> =
@@ -925,11 +927,11 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   export type RowmapCountOutputType = {
-    contentmap: number
+    cellmap: number
   }
 
   export type RowmapCountOutputTypeSelect = {
-    contentmap?: boolean
+    cellmap?: boolean
   }
 
   export type RowmapCountOutputTypeGetPayload<S extends boolean | null | undefined | RowmapCountOutputTypeArgs> =
@@ -964,8 +966,1056 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   /**
+   * Count Type SheetsCountOutputType
+   */
+
+
+  export type SheetsCountOutputType = {
+    cellmap: number
+    colmap: number
+    rowmap: number
+  }
+
+  export type SheetsCountOutputTypeSelect = {
+    cellmap?: boolean
+    colmap?: boolean
+    rowmap?: boolean
+  }
+
+  export type SheetsCountOutputTypeGetPayload<S extends boolean | null | undefined | SheetsCountOutputTypeArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? SheetsCountOutputType :
+    S extends undefined ? never :
+    S extends { include: any } & (SheetsCountOutputTypeArgs)
+    ? SheetsCountOutputType 
+    : S extends { select: any } & (SheetsCountOutputTypeArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+    P extends keyof SheetsCountOutputType ? SheetsCountOutputType[P] : never
+  } 
+      : SheetsCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * SheetsCountOutputType without action
+   */
+  export type SheetsCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the SheetsCountOutputType
+     * 
+    **/
+    select?: SheetsCountOutputTypeSelect | null
+  }
+
+
+
+  /**
    * Models
    */
+
+  /**
+   * Model Cellmap
+   */
+
+
+  export type AggregateCellmap = {
+    _count: CellmapCountAggregateOutputType | null
+    _min: CellmapMinAggregateOutputType | null
+    _max: CellmapMaxAggregateOutputType | null
+  }
+
+  export type CellmapMinAggregateOutputType = {
+    id: string | null
+    sheet_id: string | null
+    row_id: string | null
+    col_id: string | null
+    content: string | null
+  }
+
+  export type CellmapMaxAggregateOutputType = {
+    id: string | null
+    sheet_id: string | null
+    row_id: string | null
+    col_id: string | null
+    content: string | null
+  }
+
+  export type CellmapCountAggregateOutputType = {
+    id: number
+    sheet_id: number
+    row_id: number
+    col_id: number
+    content: number
+    _all: number
+  }
+
+
+  export type CellmapMinAggregateInputType = {
+    id?: true
+    sheet_id?: true
+    row_id?: true
+    col_id?: true
+    content?: true
+  }
+
+  export type CellmapMaxAggregateInputType = {
+    id?: true
+    sheet_id?: true
+    row_id?: true
+    col_id?: true
+    content?: true
+  }
+
+  export type CellmapCountAggregateInputType = {
+    id?: true
+    sheet_id?: true
+    row_id?: true
+    col_id?: true
+    content?: true
+    _all?: true
+  }
+
+  export type CellmapAggregateArgs = {
+    /**
+     * Filter which Cellmap to aggregate.
+     * 
+    **/
+    where?: CellmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cellmaps to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: CellmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cellmaps from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cellmaps.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Cellmaps
+    **/
+    _count?: true | CellmapCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CellmapMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CellmapMaxAggregateInputType
+  }
+
+  export type GetCellmapAggregateType<T extends CellmapAggregateArgs> = {
+        [P in keyof T & keyof AggregateCellmap]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCellmap[P]>
+      : GetScalarType<T[P], AggregateCellmap[P]>
+  }
+
+
+
+
+  export type CellmapGroupByArgs = {
+    where?: CellmapWhereInput
+    orderBy?: Enumerable<CellmapOrderByWithAggregationInput>
+    by: Array<CellmapScalarFieldEnum>
+    having?: CellmapScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CellmapCountAggregateInputType | true
+    _min?: CellmapMinAggregateInputType
+    _max?: CellmapMaxAggregateInputType
+  }
+
+
+  export type CellmapGroupByOutputType = {
+    id: string
+    sheet_id: string
+    row_id: string
+    col_id: string
+    content: string | null
+    _count: CellmapCountAggregateOutputType | null
+    _min: CellmapMinAggregateOutputType | null
+    _max: CellmapMaxAggregateOutputType | null
+  }
+
+  type GetCellmapGroupByPayload<T extends CellmapGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<CellmapGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CellmapGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CellmapGroupByOutputType[P]>
+            : GetScalarType<T[P], CellmapGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CellmapSelect = {
+    id?: boolean
+    sheet_id?: boolean
+    row_id?: boolean
+    col_id?: boolean
+    content?: boolean
+    colmap?: boolean | ColmapArgs
+    rowmap?: boolean | RowmapArgs
+    sheets?: boolean | SheetsArgs
+  }
+
+
+  export type CellmapInclude = {
+    colmap?: boolean | ColmapArgs
+    rowmap?: boolean | RowmapArgs
+    sheets?: boolean | SheetsArgs
+  } 
+
+  export type CellmapGetPayload<S extends boolean | null | undefined | CellmapArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? Cellmap :
+    S extends undefined ? never :
+    S extends { include: any } & (CellmapArgs | CellmapFindManyArgs)
+    ? Cellmap  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'colmap' ? ColmapGetPayload<S['include'][P]> :
+        P extends 'rowmap' ? RowmapGetPayload<S['include'][P]> :
+        P extends 'sheets' ? SheetsGetPayload<S['include'][P]> :  never
+  } 
+    : S extends { select: any } & (CellmapArgs | CellmapFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'colmap' ? ColmapGetPayload<S['select'][P]> :
+        P extends 'rowmap' ? RowmapGetPayload<S['select'][P]> :
+        P extends 'sheets' ? SheetsGetPayload<S['select'][P]> :  P extends keyof Cellmap ? Cellmap[P] : never
+  } 
+      : Cellmap
+
+
+  type CellmapCountArgs = Merge<
+    Omit<CellmapFindManyArgs, 'select' | 'include'> & {
+      select?: CellmapCountAggregateInputType | true
+    }
+  >
+
+  export interface CellmapDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Cellmap that matches the filter.
+     * @param {CellmapFindUniqueArgs} args - Arguments to find a Cellmap
+     * @example
+     * // Get one Cellmap
+     * const cellmap = await prisma.cellmap.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends CellmapFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, CellmapFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Cellmap'> extends True ? Prisma__CellmapClient<CellmapGetPayload<T>> : Prisma__CellmapClient<CellmapGetPayload<T> | null, null>
+
+    /**
+     * Find one Cellmap that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {CellmapFindUniqueOrThrowArgs} args - Arguments to find a Cellmap
+     * @example
+     * // Get one Cellmap
+     * const cellmap = await prisma.cellmap.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends CellmapFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, CellmapFindUniqueOrThrowArgs>
+    ): Prisma__CellmapClient<CellmapGetPayload<T>>
+
+    /**
+     * Find the first Cellmap that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapFindFirstArgs} args - Arguments to find a Cellmap
+     * @example
+     * // Get one Cellmap
+     * const cellmap = await prisma.cellmap.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends CellmapFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, CellmapFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Cellmap'> extends True ? Prisma__CellmapClient<CellmapGetPayload<T>> : Prisma__CellmapClient<CellmapGetPayload<T> | null, null>
+
+    /**
+     * Find the first Cellmap that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapFindFirstOrThrowArgs} args - Arguments to find a Cellmap
+     * @example
+     * // Get one Cellmap
+     * const cellmap = await prisma.cellmap.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends CellmapFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, CellmapFindFirstOrThrowArgs>
+    ): Prisma__CellmapClient<CellmapGetPayload<T>>
+
+    /**
+     * Find zero or more Cellmaps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Cellmaps
+     * const cellmaps = await prisma.cellmap.findMany()
+     * 
+     * // Get first 10 Cellmaps
+     * const cellmaps = await prisma.cellmap.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cellmapWithIdOnly = await prisma.cellmap.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends CellmapFindManyArgs>(
+      args?: SelectSubset<T, CellmapFindManyArgs>
+    ): PrismaPromise<Array<CellmapGetPayload<T>>>
+
+    /**
+     * Create a Cellmap.
+     * @param {CellmapCreateArgs} args - Arguments to create a Cellmap.
+     * @example
+     * // Create one Cellmap
+     * const Cellmap = await prisma.cellmap.create({
+     *   data: {
+     *     // ... data to create a Cellmap
+     *   }
+     * })
+     * 
+    **/
+    create<T extends CellmapCreateArgs>(
+      args: SelectSubset<T, CellmapCreateArgs>
+    ): Prisma__CellmapClient<CellmapGetPayload<T>>
+
+    /**
+     * Create many Cellmaps.
+     *     @param {CellmapCreateManyArgs} args - Arguments to create many Cellmaps.
+     *     @example
+     *     // Create many Cellmaps
+     *     const cellmap = await prisma.cellmap.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends CellmapCreateManyArgs>(
+      args?: SelectSubset<T, CellmapCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Cellmap.
+     * @param {CellmapDeleteArgs} args - Arguments to delete one Cellmap.
+     * @example
+     * // Delete one Cellmap
+     * const Cellmap = await prisma.cellmap.delete({
+     *   where: {
+     *     // ... filter to delete one Cellmap
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends CellmapDeleteArgs>(
+      args: SelectSubset<T, CellmapDeleteArgs>
+    ): Prisma__CellmapClient<CellmapGetPayload<T>>
+
+    /**
+     * Update one Cellmap.
+     * @param {CellmapUpdateArgs} args - Arguments to update one Cellmap.
+     * @example
+     * // Update one Cellmap
+     * const cellmap = await prisma.cellmap.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends CellmapUpdateArgs>(
+      args: SelectSubset<T, CellmapUpdateArgs>
+    ): Prisma__CellmapClient<CellmapGetPayload<T>>
+
+    /**
+     * Delete zero or more Cellmaps.
+     * @param {CellmapDeleteManyArgs} args - Arguments to filter Cellmaps to delete.
+     * @example
+     * // Delete a few Cellmaps
+     * const { count } = await prisma.cellmap.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends CellmapDeleteManyArgs>(
+      args?: SelectSubset<T, CellmapDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cellmaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Cellmaps
+     * const cellmap = await prisma.cellmap.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends CellmapUpdateManyArgs>(
+      args: SelectSubset<T, CellmapUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Cellmap.
+     * @param {CellmapUpsertArgs} args - Arguments to update or create a Cellmap.
+     * @example
+     * // Update or create a Cellmap
+     * const cellmap = await prisma.cellmap.upsert({
+     *   create: {
+     *     // ... data to create a Cellmap
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Cellmap we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends CellmapUpsertArgs>(
+      args: SelectSubset<T, CellmapUpsertArgs>
+    ): Prisma__CellmapClient<CellmapGetPayload<T>>
+
+    /**
+     * Count the number of Cellmaps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapCountArgs} args - Arguments to filter Cellmaps to count.
+     * @example
+     * // Count the number of Cellmaps
+     * const count = await prisma.cellmap.count({
+     *   where: {
+     *     // ... the filter for the Cellmaps we want to count
+     *   }
+     * })
+    **/
+    count<T extends CellmapCountArgs>(
+      args?: Subset<T, CellmapCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CellmapCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Cellmap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CellmapAggregateArgs>(args: Subset<T, CellmapAggregateArgs>): PrismaPromise<GetCellmapAggregateType<T>>
+
+    /**
+     * Group by Cellmap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CellmapGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CellmapGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CellmapGroupByArgs['orderBy'] }
+        : { orderBy?: CellmapGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CellmapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCellmapGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Cellmap.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__CellmapClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    colmap<T extends ColmapArgs= {}>(args?: Subset<T, ColmapArgs>): Prisma__ColmapClient<ColmapGetPayload<T> | Null>;
+
+    rowmap<T extends RowmapArgs= {}>(args?: Subset<T, RowmapArgs>): Prisma__RowmapClient<RowmapGetPayload<T> | Null>;
+
+    sheets<T extends SheetsArgs= {}>(args?: Subset<T, SheetsArgs>): Prisma__SheetsClient<SheetsGetPayload<T> | Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Cellmap base type for findUnique actions
+   */
+  export type CellmapFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * Filter, which Cellmap to fetch.
+     * 
+    **/
+    where: CellmapWhereUniqueInput
+  }
+
+  /**
+   * Cellmap findUnique
+   */
+  export interface CellmapFindUniqueArgs extends CellmapFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Cellmap findUniqueOrThrow
+   */
+  export type CellmapFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * Filter, which Cellmap to fetch.
+     * 
+    **/
+    where: CellmapWhereUniqueInput
+  }
+
+
+  /**
+   * Cellmap base type for findFirst actions
+   */
+  export type CellmapFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * Filter, which Cellmap to fetch.
+     * 
+    **/
+    where?: CellmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cellmaps to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Cellmaps.
+     * 
+    **/
+    cursor?: CellmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cellmaps from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cellmaps.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Cellmaps.
+     * 
+    **/
+    distinct?: Enumerable<CellmapScalarFieldEnum>
+  }
+
+  /**
+   * Cellmap findFirst
+   */
+  export interface CellmapFindFirstArgs extends CellmapFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Cellmap findFirstOrThrow
+   */
+  export type CellmapFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * Filter, which Cellmap to fetch.
+     * 
+    **/
+    where?: CellmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cellmaps to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Cellmaps.
+     * 
+    **/
+    cursor?: CellmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cellmaps from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cellmaps.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Cellmaps.
+     * 
+    **/
+    distinct?: Enumerable<CellmapScalarFieldEnum>
+  }
+
+
+  /**
+   * Cellmap findMany
+   */
+  export type CellmapFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * Filter, which Cellmaps to fetch.
+     * 
+    **/
+    where?: CellmapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Cellmaps to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Cellmaps.
+     * 
+    **/
+    cursor?: CellmapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Cellmaps from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Cellmaps.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<CellmapScalarFieldEnum>
+  }
+
+
+  /**
+   * Cellmap create
+   */
+  export type CellmapCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * The data needed to create a Cellmap.
+     * 
+    **/
+    data: XOR<CellmapCreateInput, CellmapUncheckedCreateInput>
+  }
+
+
+  /**
+   * Cellmap createMany
+   */
+  export type CellmapCreateManyArgs = {
+    /**
+     * The data used to create many Cellmaps.
+     * 
+    **/
+    data: Enumerable<CellmapCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Cellmap update
+   */
+  export type CellmapUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * The data needed to update a Cellmap.
+     * 
+    **/
+    data: XOR<CellmapUpdateInput, CellmapUncheckedUpdateInput>
+    /**
+     * Choose, which Cellmap to update.
+     * 
+    **/
+    where: CellmapWhereUniqueInput
+  }
+
+
+  /**
+   * Cellmap updateMany
+   */
+  export type CellmapUpdateManyArgs = {
+    /**
+     * The data used to update Cellmaps.
+     * 
+    **/
+    data: XOR<CellmapUpdateManyMutationInput, CellmapUncheckedUpdateManyInput>
+    /**
+     * Filter which Cellmaps to update
+     * 
+    **/
+    where?: CellmapWhereInput
+  }
+
+
+  /**
+   * Cellmap upsert
+   */
+  export type CellmapUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * The filter to search for the Cellmap to update in case it exists.
+     * 
+    **/
+    where: CellmapWhereUniqueInput
+    /**
+     * In case the Cellmap found by the `where` argument doesn't exist, create a new Cellmap with this data.
+     * 
+    **/
+    create: XOR<CellmapCreateInput, CellmapUncheckedCreateInput>
+    /**
+     * In case the Cellmap was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<CellmapUpdateInput, CellmapUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Cellmap delete
+   */
+  export type CellmapDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    /**
+     * Filter which Cellmap to delete.
+     * 
+    **/
+    where: CellmapWhereUniqueInput
+  }
+
+
+  /**
+   * Cellmap deleteMany
+   */
+  export type CellmapDeleteManyArgs = {
+    /**
+     * Filter which Cellmaps to delete
+     * 
+    **/
+    where?: CellmapWhereInput
+  }
+
+
+  /**
+   * Cellmap without action
+   */
+  export type CellmapArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+  }
+
+
 
   /**
    * Model Colmap
@@ -974,58 +2024,52 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type AggregateColmap = {
     _count: ColmapCountAggregateOutputType | null
-    _avg: ColmapAvgAggregateOutputType | null
-    _sum: ColmapSumAggregateOutputType | null
     _min: ColmapMinAggregateOutputType | null
     _max: ColmapMaxAggregateOutputType | null
   }
 
-  export type ColmapAvgAggregateOutputType = {
-    pos: number | null
-  }
-
-  export type ColmapSumAggregateOutputType = {
-    pos: number | null
-  }
-
   export type ColmapMinAggregateOutputType = {
     id: string | null
-    pos: number | null
+    sheet_id: string | null
+    startmarker: string | null
+    endmarker: string | null
   }
 
   export type ColmapMaxAggregateOutputType = {
     id: string | null
-    pos: number | null
+    sheet_id: string | null
+    startmarker: string | null
+    endmarker: string | null
   }
 
   export type ColmapCountAggregateOutputType = {
     id: number
-    pos: number
+    sheet_id: number
+    startmarker: number
+    endmarker: number
     _all: number
   }
 
 
-  export type ColmapAvgAggregateInputType = {
-    pos?: true
-  }
-
-  export type ColmapSumAggregateInputType = {
-    pos?: true
-  }
-
   export type ColmapMinAggregateInputType = {
     id?: true
-    pos?: true
+    sheet_id?: true
+    startmarker?: true
+    endmarker?: true
   }
 
   export type ColmapMaxAggregateInputType = {
     id?: true
-    pos?: true
+    sheet_id?: true
+    startmarker?: true
+    endmarker?: true
   }
 
   export type ColmapCountAggregateInputType = {
     id?: true
-    pos?: true
+    sheet_id?: true
+    startmarker?: true
+    endmarker?: true
     _all?: true
   }
 
@@ -1072,18 +2116,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: ColmapAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ColmapSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: ColmapMinAggregateInputType
@@ -1114,8 +2146,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     take?: number
     skip?: number
     _count?: ColmapCountAggregateInputType | true
-    _avg?: ColmapAvgAggregateInputType
-    _sum?: ColmapSumAggregateInputType
     _min?: ColmapMinAggregateInputType
     _max?: ColmapMaxAggregateInputType
   }
@@ -1123,10 +2153,10 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type ColmapGroupByOutputType = {
     id: string
-    pos: number | null
+    sheet_id: string
+    startmarker: string
+    endmarker: string
     _count: ColmapCountAggregateOutputType | null
-    _avg: ColmapAvgAggregateOutputType | null
-    _sum: ColmapSumAggregateOutputType | null
     _min: ColmapMinAggregateOutputType | null
     _max: ColmapMaxAggregateOutputType | null
   }
@@ -1147,14 +2177,18 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type ColmapSelect = {
     id?: boolean
-    pos?: boolean
-    contentmap?: boolean | Colmap$contentmapArgs
+    sheet_id?: boolean
+    startmarker?: boolean
+    endmarker?: boolean
+    cellmap?: boolean | Colmap$cellmapArgs
+    sheets?: boolean | SheetsArgs
     _count?: boolean | ColmapCountOutputTypeArgs
   }
 
 
   export type ColmapInclude = {
-    contentmap?: boolean | Colmap$contentmapArgs
+    cellmap?: boolean | Colmap$cellmapArgs
+    sheets?: boolean | SheetsArgs
     _count?: boolean | ColmapCountOutputTypeArgs
   } 
 
@@ -1165,13 +2199,15 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     S extends { include: any } & (ColmapArgs | ColmapFindManyArgs)
     ? Colmap  & {
     [P in TruthyKeys<S['include']>]:
-        P extends 'contentmap' ? Array < ContentmapGetPayload<S['include'][P]>>  :
+        P extends 'cellmap' ? Array < CellmapGetPayload<S['include'][P]>>  :
+        P extends 'sheets' ? SheetsGetPayload<S['include'][P]> :
         P extends '_count' ? ColmapCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (ColmapArgs | ColmapFindManyArgs)
       ? {
     [P in TruthyKeys<S['select']>]:
-        P extends 'contentmap' ? Array < ContentmapGetPayload<S['select'][P]>>  :
+        P extends 'cellmap' ? Array < CellmapGetPayload<S['select'][P]>>  :
+        P extends 'sheets' ? SheetsGetPayload<S['select'][P]> :
         P extends '_count' ? ColmapCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Colmap ? Colmap[P] : never
   } 
       : Colmap
@@ -1546,7 +2582,9 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
-    contentmap<T extends Colmap$contentmapArgs= {}>(args?: Subset<T, Colmap$contentmapArgs>): PrismaPromise<Array<ContentmapGetPayload<T>>| Null>;
+    cellmap<T extends Colmap$cellmapArgs= {}>(args?: Subset<T, Colmap$cellmapArgs>): PrismaPromise<Array<CellmapGetPayload<T>>| Null>;
+
+    sheets<T extends SheetsArgs= {}>(args?: Subset<T, SheetsArgs>): Prisma__SheetsClient<SheetsGetPayload<T> | Null>;
 
     private get _document();
     /**
@@ -1952,25 +2990,25 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   /**
-   * Colmap.contentmap
+   * Colmap.cellmap
    */
-  export type Colmap$contentmapArgs = {
+  export type Colmap$cellmapArgs = {
     /**
-     * Select specific fields to fetch from the Contentmap
+     * Select specific fields to fetch from the Cellmap
      * 
     **/
-    select?: ContentmapSelect | null
+    select?: CellmapSelect | null
     /**
      * Choose, which related nodes to fetch as well.
      * 
     **/
-    include?: ContentmapInclude | null
-    where?: ContentmapWhereInput
-    orderBy?: Enumerable<ContentmapOrderByWithRelationInput>
-    cursor?: ContentmapWhereUniqueInput
+    include?: CellmapInclude | null
+    where?: CellmapWhereInput
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    cursor?: CellmapWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: Enumerable<ContentmapScalarFieldEnum>
+    distinct?: Enumerable<CellmapScalarFieldEnum>
   }
 
 
@@ -1993,1939 +3031,58 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   /**
-   * Model Contentmap
-   */
-
-
-  export type AggregateContentmap = {
-    _count: ContentmapCountAggregateOutputType | null
-    _min: ContentmapMinAggregateOutputType | null
-    _max: ContentmapMaxAggregateOutputType | null
-  }
-
-  export type ContentmapMinAggregateOutputType = {
-    rowIndex: string | null
-    colIndex: string | null
-    content: string | null
-  }
-
-  export type ContentmapMaxAggregateOutputType = {
-    rowIndex: string | null
-    colIndex: string | null
-    content: string | null
-  }
-
-  export type ContentmapCountAggregateOutputType = {
-    rowIndex: number
-    colIndex: number
-    content: number
-    _all: number
-  }
-
-
-  export type ContentmapMinAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
-    content?: true
-  }
-
-  export type ContentmapMaxAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
-    content?: true
-  }
-
-  export type ContentmapCountAggregateInputType = {
-    rowIndex?: true
-    colIndex?: true
-    content?: true
-    _all?: true
-  }
-
-  export type ContentmapAggregateArgs = {
-    /**
-     * Filter which Contentmap to aggregate.
-     * 
-    **/
-    where?: ContentmapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contentmaps to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ContentmapOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     * 
-    **/
-    cursor?: ContentmapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contentmaps from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contentmaps.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Contentmaps
-    **/
-    _count?: true | ContentmapCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ContentmapMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ContentmapMaxAggregateInputType
-  }
-
-  export type GetContentmapAggregateType<T extends ContentmapAggregateArgs> = {
-        [P in keyof T & keyof AggregateContentmap]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateContentmap[P]>
-      : GetScalarType<T[P], AggregateContentmap[P]>
-  }
-
-
-
-
-  export type ContentmapGroupByArgs = {
-    where?: ContentmapWhereInput
-    orderBy?: Enumerable<ContentmapOrderByWithAggregationInput>
-    by: Array<ContentmapScalarFieldEnum>
-    having?: ContentmapScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ContentmapCountAggregateInputType | true
-    _min?: ContentmapMinAggregateInputType
-    _max?: ContentmapMaxAggregateInputType
-  }
-
-
-  export type ContentmapGroupByOutputType = {
-    rowIndex: string
-    colIndex: string
-    content: string | null
-    _count: ContentmapCountAggregateOutputType | null
-    _min: ContentmapMinAggregateOutputType | null
-    _max: ContentmapMaxAggregateOutputType | null
-  }
-
-  type GetContentmapGroupByPayload<T extends ContentmapGroupByArgs> = PrismaPromise<
-    Array<
-      PickArray<ContentmapGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ContentmapGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ContentmapGroupByOutputType[P]>
-            : GetScalarType<T[P], ContentmapGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ContentmapSelect = {
-    rowIndex?: boolean
-    colIndex?: boolean
-    content?: boolean
-    colmap?: boolean | ColmapArgs
-    rowmap?: boolean | RowmapArgs
-  }
-
-
-  export type ContentmapInclude = {
-    colmap?: boolean | ColmapArgs
-    rowmap?: boolean | RowmapArgs
-  } 
-
-  export type ContentmapGetPayload<S extends boolean | null | undefined | ContentmapArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Contentmap :
-    S extends undefined ? never :
-    S extends { include: any } & (ContentmapArgs | ContentmapFindManyArgs)
-    ? Contentmap  & {
-    [P in TruthyKeys<S['include']>]:
-        P extends 'colmap' ? ColmapGetPayload<S['include'][P]> :
-        P extends 'rowmap' ? RowmapGetPayload<S['include'][P]> :  never
-  } 
-    : S extends { select: any } & (ContentmapArgs | ContentmapFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-        P extends 'colmap' ? ColmapGetPayload<S['select'][P]> :
-        P extends 'rowmap' ? RowmapGetPayload<S['select'][P]> :  P extends keyof Contentmap ? Contentmap[P] : never
-  } 
-      : Contentmap
-
-
-  type ContentmapCountArgs = Merge<
-    Omit<ContentmapFindManyArgs, 'select' | 'include'> & {
-      select?: ContentmapCountAggregateInputType | true
-    }
-  >
-
-  export interface ContentmapDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-    /**
-     * Find zero or one Contentmap that matches the filter.
-     * @param {ContentmapFindUniqueArgs} args - Arguments to find a Contentmap
-     * @example
-     * // Get one Contentmap
-     * const contentmap = await prisma.contentmap.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUnique<T extends ContentmapFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, ContentmapFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Contentmap'> extends True ? Prisma__ContentmapClient<ContentmapGetPayload<T>> : Prisma__ContentmapClient<ContentmapGetPayload<T> | null, null>
-
-    /**
-     * Find one Contentmap that matches the filter or throw an error  with `error.code='P2025'` 
-     *     if no matches were found.
-     * @param {ContentmapFindUniqueOrThrowArgs} args - Arguments to find a Contentmap
-     * @example
-     * // Get one Contentmap
-     * const contentmap = await prisma.contentmap.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends ContentmapFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, ContentmapFindUniqueOrThrowArgs>
-    ): Prisma__ContentmapClient<ContentmapGetPayload<T>>
-
-    /**
-     * Find the first Contentmap that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapFindFirstArgs} args - Arguments to find a Contentmap
-     * @example
-     * // Get one Contentmap
-     * const contentmap = await prisma.contentmap.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirst<T extends ContentmapFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, ContentmapFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Contentmap'> extends True ? Prisma__ContentmapClient<ContentmapGetPayload<T>> : Prisma__ContentmapClient<ContentmapGetPayload<T> | null, null>
-
-    /**
-     * Find the first Contentmap that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapFindFirstOrThrowArgs} args - Arguments to find a Contentmap
-     * @example
-     * // Get one Contentmap
-     * const contentmap = await prisma.contentmap.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends ContentmapFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, ContentmapFindFirstOrThrowArgs>
-    ): Prisma__ContentmapClient<ContentmapGetPayload<T>>
-
-    /**
-     * Find zero or more Contentmaps that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapFindManyArgs=} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Contentmaps
-     * const contentmaps = await prisma.contentmap.findMany()
-     * 
-     * // Get first 10 Contentmaps
-     * const contentmaps = await prisma.contentmap.findMany({ take: 10 })
-     * 
-     * // Only select the `rowIndex`
-     * const contentmapWithRowIndexOnly = await prisma.contentmap.findMany({ select: { rowIndex: true } })
-     * 
-    **/
-    findMany<T extends ContentmapFindManyArgs>(
-      args?: SelectSubset<T, ContentmapFindManyArgs>
-    ): PrismaPromise<Array<ContentmapGetPayload<T>>>
-
-    /**
-     * Create a Contentmap.
-     * @param {ContentmapCreateArgs} args - Arguments to create a Contentmap.
-     * @example
-     * // Create one Contentmap
-     * const Contentmap = await prisma.contentmap.create({
-     *   data: {
-     *     // ... data to create a Contentmap
-     *   }
-     * })
-     * 
-    **/
-    create<T extends ContentmapCreateArgs>(
-      args: SelectSubset<T, ContentmapCreateArgs>
-    ): Prisma__ContentmapClient<ContentmapGetPayload<T>>
-
-    /**
-     * Create many Contentmaps.
-     *     @param {ContentmapCreateManyArgs} args - Arguments to create many Contentmaps.
-     *     @example
-     *     // Create many Contentmaps
-     *     const contentmap = await prisma.contentmap.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
-     *     
-    **/
-    createMany<T extends ContentmapCreateManyArgs>(
-      args?: SelectSubset<T, ContentmapCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Contentmap.
-     * @param {ContentmapDeleteArgs} args - Arguments to delete one Contentmap.
-     * @example
-     * // Delete one Contentmap
-     * const Contentmap = await prisma.contentmap.delete({
-     *   where: {
-     *     // ... filter to delete one Contentmap
-     *   }
-     * })
-     * 
-    **/
-    delete<T extends ContentmapDeleteArgs>(
-      args: SelectSubset<T, ContentmapDeleteArgs>
-    ): Prisma__ContentmapClient<ContentmapGetPayload<T>>
-
-    /**
-     * Update one Contentmap.
-     * @param {ContentmapUpdateArgs} args - Arguments to update one Contentmap.
-     * @example
-     * // Update one Contentmap
-     * const contentmap = await prisma.contentmap.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    update<T extends ContentmapUpdateArgs>(
-      args: SelectSubset<T, ContentmapUpdateArgs>
-    ): Prisma__ContentmapClient<ContentmapGetPayload<T>>
-
-    /**
-     * Delete zero or more Contentmaps.
-     * @param {ContentmapDeleteManyArgs} args - Arguments to filter Contentmaps to delete.
-     * @example
-     * // Delete a few Contentmaps
-     * const { count } = await prisma.contentmap.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-    **/
-    deleteMany<T extends ContentmapDeleteManyArgs>(
-      args?: SelectSubset<T, ContentmapDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Contentmaps.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Contentmaps
-     * const contentmap = await prisma.contentmap.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    updateMany<T extends ContentmapUpdateManyArgs>(
-      args: SelectSubset<T, ContentmapUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Contentmap.
-     * @param {ContentmapUpsertArgs} args - Arguments to update or create a Contentmap.
-     * @example
-     * // Update or create a Contentmap
-     * const contentmap = await prisma.contentmap.upsert({
-     *   create: {
-     *     // ... data to create a Contentmap
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Contentmap we want to update
-     *   }
-     * })
-    **/
-    upsert<T extends ContentmapUpsertArgs>(
-      args: SelectSubset<T, ContentmapUpsertArgs>
-    ): Prisma__ContentmapClient<ContentmapGetPayload<T>>
-
-    /**
-     * Count the number of Contentmaps.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapCountArgs} args - Arguments to filter Contentmaps to count.
-     * @example
-     * // Count the number of Contentmaps
-     * const count = await prisma.contentmap.count({
-     *   where: {
-     *     // ... the filter for the Contentmaps we want to count
-     *   }
-     * })
-    **/
-    count<T extends ContentmapCountArgs>(
-      args?: Subset<T, ContentmapCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ContentmapCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Contentmap.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ContentmapAggregateArgs>(args: Subset<T, ContentmapAggregateArgs>): PrismaPromise<GetContentmapAggregateType<T>>
-
-    /**
-     * Group by Contentmap.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentmapGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ContentmapGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ContentmapGroupByArgs['orderBy'] }
-        : { orderBy?: ContentmapGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ContentmapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContentmapGroupByPayload<T> : PrismaPromise<InputErrors>
-
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Contentmap.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export class Prisma__ContentmapClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
-
-    colmap<T extends ColmapArgs= {}>(args?: Subset<T, ColmapArgs>): Prisma__ColmapClient<ColmapGetPayload<T> | Null>;
-
-    rowmap<T extends RowmapArgs= {}>(args?: Subset<T, RowmapArgs>): Prisma__RowmapClient<RowmapGetPayload<T> | Null>;
-
-    private get _document();
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
-  }
-
-
-
-  // Custom InputTypes
-
-  /**
-   * Contentmap base type for findUnique actions
-   */
-  export type ContentmapFindUniqueArgsBase = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * Filter, which Contentmap to fetch.
-     * 
-    **/
-    where: ContentmapWhereUniqueInput
-  }
-
-  /**
-   * Contentmap findUnique
-   */
-  export interface ContentmapFindUniqueArgs extends ContentmapFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Contentmap findUniqueOrThrow
-   */
-  export type ContentmapFindUniqueOrThrowArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * Filter, which Contentmap to fetch.
-     * 
-    **/
-    where: ContentmapWhereUniqueInput
-  }
-
-
-  /**
-   * Contentmap base type for findFirst actions
-   */
-  export type ContentmapFindFirstArgsBase = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * Filter, which Contentmap to fetch.
-     * 
-    **/
-    where?: ContentmapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contentmaps to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ContentmapOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Contentmaps.
-     * 
-    **/
-    cursor?: ContentmapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contentmaps from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contentmaps.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Contentmaps.
-     * 
-    **/
-    distinct?: Enumerable<ContentmapScalarFieldEnum>
-  }
-
-  /**
-   * Contentmap findFirst
-   */
-  export interface ContentmapFindFirstArgs extends ContentmapFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Contentmap findFirstOrThrow
-   */
-  export type ContentmapFindFirstOrThrowArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * Filter, which Contentmap to fetch.
-     * 
-    **/
-    where?: ContentmapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contentmaps to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ContentmapOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Contentmaps.
-     * 
-    **/
-    cursor?: ContentmapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contentmaps from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contentmaps.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Contentmaps.
-     * 
-    **/
-    distinct?: Enumerable<ContentmapScalarFieldEnum>
-  }
-
-
-  /**
-   * Contentmap findMany
-   */
-  export type ContentmapFindManyArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * Filter, which Contentmaps to fetch.
-     * 
-    **/
-    where?: ContentmapWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contentmaps to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ContentmapOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Contentmaps.
-     * 
-    **/
-    cursor?: ContentmapWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contentmaps from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contentmaps.
-     * 
-    **/
-    skip?: number
-    distinct?: Enumerable<ContentmapScalarFieldEnum>
-  }
-
-
-  /**
-   * Contentmap create
-   */
-  export type ContentmapCreateArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * The data needed to create a Contentmap.
-     * 
-    **/
-    data: XOR<ContentmapCreateInput, ContentmapUncheckedCreateInput>
-  }
-
-
-  /**
-   * Contentmap createMany
-   */
-  export type ContentmapCreateManyArgs = {
-    /**
-     * The data used to create many Contentmaps.
-     * 
-    **/
-    data: Enumerable<ContentmapCreateManyInput>
-    skipDuplicates?: boolean
-  }
-
-
-  /**
-   * Contentmap update
-   */
-  export type ContentmapUpdateArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * The data needed to update a Contentmap.
-     * 
-    **/
-    data: XOR<ContentmapUpdateInput, ContentmapUncheckedUpdateInput>
-    /**
-     * Choose, which Contentmap to update.
-     * 
-    **/
-    where: ContentmapWhereUniqueInput
-  }
-
-
-  /**
-   * Contentmap updateMany
-   */
-  export type ContentmapUpdateManyArgs = {
-    /**
-     * The data used to update Contentmaps.
-     * 
-    **/
-    data: XOR<ContentmapUpdateManyMutationInput, ContentmapUncheckedUpdateManyInput>
-    /**
-     * Filter which Contentmaps to update
-     * 
-    **/
-    where?: ContentmapWhereInput
-  }
-
-
-  /**
-   * Contentmap upsert
-   */
-  export type ContentmapUpsertArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * The filter to search for the Contentmap to update in case it exists.
-     * 
-    **/
-    where: ContentmapWhereUniqueInput
-    /**
-     * In case the Contentmap found by the `where` argument doesn't exist, create a new Contentmap with this data.
-     * 
-    **/
-    create: XOR<ContentmapCreateInput, ContentmapUncheckedCreateInput>
-    /**
-     * In case the Contentmap was found with the provided `where` argument, update it with this data.
-     * 
-    **/
-    update: XOR<ContentmapUpdateInput, ContentmapUncheckedUpdateInput>
-  }
-
-
-  /**
-   * Contentmap delete
-   */
-  export type ContentmapDeleteArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-    /**
-     * Filter which Contentmap to delete.
-     * 
-    **/
-    where: ContentmapWhereUniqueInput
-  }
-
-
-  /**
-   * Contentmap deleteMany
-   */
-  export type ContentmapDeleteManyArgs = {
-    /**
-     * Filter which Contentmaps to delete
-     * 
-    **/
-    where?: ContentmapWhereInput
-  }
-
-
-  /**
-   * Contentmap without action
-   */
-  export type ContentmapArgs = {
-    /**
-     * Select specific fields to fetch from the Contentmap
-     * 
-    **/
-    select?: ContentmapSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: ContentmapInclude | null
-  }
-
-
-
-  /**
-   * Model Items
-   */
-
-
-  export type AggregateItems = {
-    _count: ItemsCountAggregateOutputType | null
-    _min: ItemsMinAggregateOutputType | null
-    _max: ItemsMaxAggregateOutputType | null
-  }
-
-  export type ItemsMinAggregateOutputType = {
-    value: string | null
-  }
-
-  export type ItemsMaxAggregateOutputType = {
-    value: string | null
-  }
-
-  export type ItemsCountAggregateOutputType = {
-    value: number
-    _all: number
-  }
-
-
-  export type ItemsMinAggregateInputType = {
-    value?: true
-  }
-
-  export type ItemsMaxAggregateInputType = {
-    value?: true
-  }
-
-  export type ItemsCountAggregateInputType = {
-    value?: true
-    _all?: true
-  }
-
-  export type ItemsAggregateArgs = {
-    /**
-     * Filter which Items to aggregate.
-     * 
-    **/
-    where?: ItemsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Items to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ItemsOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     * 
-    **/
-    cursor?: ItemsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Items from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Items.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Items
-    **/
-    _count?: true | ItemsCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ItemsMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ItemsMaxAggregateInputType
-  }
-
-  export type GetItemsAggregateType<T extends ItemsAggregateArgs> = {
-        [P in keyof T & keyof AggregateItems]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateItems[P]>
-      : GetScalarType<T[P], AggregateItems[P]>
-  }
-
-
-
-
-  export type ItemsGroupByArgs = {
-    where?: ItemsWhereInput
-    orderBy?: Enumerable<ItemsOrderByWithAggregationInput>
-    by: Array<ItemsScalarFieldEnum>
-    having?: ItemsScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ItemsCountAggregateInputType | true
-    _min?: ItemsMinAggregateInputType
-    _max?: ItemsMaxAggregateInputType
-  }
-
-
-  export type ItemsGroupByOutputType = {
-    value: string
-    _count: ItemsCountAggregateOutputType | null
-    _min: ItemsMinAggregateOutputType | null
-    _max: ItemsMaxAggregateOutputType | null
-  }
-
-  type GetItemsGroupByPayload<T extends ItemsGroupByArgs> = PrismaPromise<
-    Array<
-      PickArray<ItemsGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ItemsGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ItemsGroupByOutputType[P]>
-            : GetScalarType<T[P], ItemsGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ItemsSelect = {
-    value?: boolean
-  }
-
-
-  export type ItemsGetPayload<S extends boolean | null | undefined | ItemsArgs> =
-    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
-    S extends true ? Items :
-    S extends undefined ? never :
-    S extends { include: any } & (ItemsArgs | ItemsFindManyArgs)
-    ? Items 
-    : S extends { select: any } & (ItemsArgs | ItemsFindManyArgs)
-      ? {
-    [P in TruthyKeys<S['select']>]:
-    P extends keyof Items ? Items[P] : never
-  } 
-      : Items
-
-
-  type ItemsCountArgs = Merge<
-    Omit<ItemsFindManyArgs, 'select' | 'include'> & {
-      select?: ItemsCountAggregateInputType | true
-    }
-  >
-
-  export interface ItemsDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-    /**
-     * Find zero or one Items that matches the filter.
-     * @param {ItemsFindUniqueArgs} args - Arguments to find a Items
-     * @example
-     * // Get one Items
-     * const items = await prisma.items.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUnique<T extends ItemsFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, ItemsFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Items'> extends True ? Prisma__ItemsClient<ItemsGetPayload<T>> : Prisma__ItemsClient<ItemsGetPayload<T> | null, null>
-
-    /**
-     * Find one Items that matches the filter or throw an error  with `error.code='P2025'` 
-     *     if no matches were found.
-     * @param {ItemsFindUniqueOrThrowArgs} args - Arguments to find a Items
-     * @example
-     * // Get one Items
-     * const items = await prisma.items.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends ItemsFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, ItemsFindUniqueOrThrowArgs>
-    ): Prisma__ItemsClient<ItemsGetPayload<T>>
-
-    /**
-     * Find the first Items that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsFindFirstArgs} args - Arguments to find a Items
-     * @example
-     * // Get one Items
-     * const items = await prisma.items.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirst<T extends ItemsFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, ItemsFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Items'> extends True ? Prisma__ItemsClient<ItemsGetPayload<T>> : Prisma__ItemsClient<ItemsGetPayload<T> | null, null>
-
-    /**
-     * Find the first Items that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsFindFirstOrThrowArgs} args - Arguments to find a Items
-     * @example
-     * // Get one Items
-     * const items = await prisma.items.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends ItemsFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, ItemsFindFirstOrThrowArgs>
-    ): Prisma__ItemsClient<ItemsGetPayload<T>>
-
-    /**
-     * Find zero or more Items that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsFindManyArgs=} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Items
-     * const items = await prisma.items.findMany()
-     * 
-     * // Get first 10 Items
-     * const items = await prisma.items.findMany({ take: 10 })
-     * 
-     * // Only select the `value`
-     * const itemsWithValueOnly = await prisma.items.findMany({ select: { value: true } })
-     * 
-    **/
-    findMany<T extends ItemsFindManyArgs>(
-      args?: SelectSubset<T, ItemsFindManyArgs>
-    ): PrismaPromise<Array<ItemsGetPayload<T>>>
-
-    /**
-     * Create a Items.
-     * @param {ItemsCreateArgs} args - Arguments to create a Items.
-     * @example
-     * // Create one Items
-     * const Items = await prisma.items.create({
-     *   data: {
-     *     // ... data to create a Items
-     *   }
-     * })
-     * 
-    **/
-    create<T extends ItemsCreateArgs>(
-      args: SelectSubset<T, ItemsCreateArgs>
-    ): Prisma__ItemsClient<ItemsGetPayload<T>>
-
-    /**
-     * Create many Items.
-     *     @param {ItemsCreateManyArgs} args - Arguments to create many Items.
-     *     @example
-     *     // Create many Items
-     *     const items = await prisma.items.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
-     *     
-    **/
-    createMany<T extends ItemsCreateManyArgs>(
-      args?: SelectSubset<T, ItemsCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Items.
-     * @param {ItemsDeleteArgs} args - Arguments to delete one Items.
-     * @example
-     * // Delete one Items
-     * const Items = await prisma.items.delete({
-     *   where: {
-     *     // ... filter to delete one Items
-     *   }
-     * })
-     * 
-    **/
-    delete<T extends ItemsDeleteArgs>(
-      args: SelectSubset<T, ItemsDeleteArgs>
-    ): Prisma__ItemsClient<ItemsGetPayload<T>>
-
-    /**
-     * Update one Items.
-     * @param {ItemsUpdateArgs} args - Arguments to update one Items.
-     * @example
-     * // Update one Items
-     * const items = await prisma.items.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    update<T extends ItemsUpdateArgs>(
-      args: SelectSubset<T, ItemsUpdateArgs>
-    ): Prisma__ItemsClient<ItemsGetPayload<T>>
-
-    /**
-     * Delete zero or more Items.
-     * @param {ItemsDeleteManyArgs} args - Arguments to filter Items to delete.
-     * @example
-     * // Delete a few Items
-     * const { count } = await prisma.items.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-    **/
-    deleteMany<T extends ItemsDeleteManyArgs>(
-      args?: SelectSubset<T, ItemsDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Items.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Items
-     * const items = await prisma.items.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    updateMany<T extends ItemsUpdateManyArgs>(
-      args: SelectSubset<T, ItemsUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Items.
-     * @param {ItemsUpsertArgs} args - Arguments to update or create a Items.
-     * @example
-     * // Update or create a Items
-     * const items = await prisma.items.upsert({
-     *   create: {
-     *     // ... data to create a Items
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Items we want to update
-     *   }
-     * })
-    **/
-    upsert<T extends ItemsUpsertArgs>(
-      args: SelectSubset<T, ItemsUpsertArgs>
-    ): Prisma__ItemsClient<ItemsGetPayload<T>>
-
-    /**
-     * Count the number of Items.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsCountArgs} args - Arguments to filter Items to count.
-     * @example
-     * // Count the number of Items
-     * const count = await prisma.items.count({
-     *   where: {
-     *     // ... the filter for the Items we want to count
-     *   }
-     * })
-    **/
-    count<T extends ItemsCountArgs>(
-      args?: Subset<T, ItemsCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ItemsCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Items.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ItemsAggregateArgs>(args: Subset<T, ItemsAggregateArgs>): PrismaPromise<GetItemsAggregateType<T>>
-
-    /**
-     * Group by Items.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ItemsGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ItemsGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ItemsGroupByArgs['orderBy'] }
-        : { orderBy?: ItemsGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ItemsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetItemsGroupByPayload<T> : PrismaPromise<InputErrors>
-
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Items.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export class Prisma__ItemsClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
-
-
-    private get _document();
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
-  }
-
-
-
-  // Custom InputTypes
-
-  /**
-   * Items base type for findUnique actions
-   */
-  export type ItemsFindUniqueArgsBase = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * Filter, which Items to fetch.
-     * 
-    **/
-    where: ItemsWhereUniqueInput
-  }
-
-  /**
-   * Items findUnique
-   */
-  export interface ItemsFindUniqueArgs extends ItemsFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Items findUniqueOrThrow
-   */
-  export type ItemsFindUniqueOrThrowArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * Filter, which Items to fetch.
-     * 
-    **/
-    where: ItemsWhereUniqueInput
-  }
-
-
-  /**
-   * Items base type for findFirst actions
-   */
-  export type ItemsFindFirstArgsBase = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * Filter, which Items to fetch.
-     * 
-    **/
-    where?: ItemsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Items to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ItemsOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Items.
-     * 
-    **/
-    cursor?: ItemsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Items from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Items.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Items.
-     * 
-    **/
-    distinct?: Enumerable<ItemsScalarFieldEnum>
-  }
-
-  /**
-   * Items findFirst
-   */
-  export interface ItemsFindFirstArgs extends ItemsFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Items findFirstOrThrow
-   */
-  export type ItemsFindFirstOrThrowArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * Filter, which Items to fetch.
-     * 
-    **/
-    where?: ItemsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Items to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ItemsOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Items.
-     * 
-    **/
-    cursor?: ItemsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Items from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Items.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Items.
-     * 
-    **/
-    distinct?: Enumerable<ItemsScalarFieldEnum>
-  }
-
-
-  /**
-   * Items findMany
-   */
-  export type ItemsFindManyArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * Filter, which Items to fetch.
-     * 
-    **/
-    where?: ItemsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Items to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<ItemsOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Items.
-     * 
-    **/
-    cursor?: ItemsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Items from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Items.
-     * 
-    **/
-    skip?: number
-    distinct?: Enumerable<ItemsScalarFieldEnum>
-  }
-
-
-  /**
-   * Items create
-   */
-  export type ItemsCreateArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * The data needed to create a Items.
-     * 
-    **/
-    data: XOR<ItemsCreateInput, ItemsUncheckedCreateInput>
-  }
-
-
-  /**
-   * Items createMany
-   */
-  export type ItemsCreateManyArgs = {
-    /**
-     * The data used to create many Items.
-     * 
-    **/
-    data: Enumerable<ItemsCreateManyInput>
-    skipDuplicates?: boolean
-  }
-
-
-  /**
-   * Items update
-   */
-  export type ItemsUpdateArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * The data needed to update a Items.
-     * 
-    **/
-    data: XOR<ItemsUpdateInput, ItemsUncheckedUpdateInput>
-    /**
-     * Choose, which Items to update.
-     * 
-    **/
-    where: ItemsWhereUniqueInput
-  }
-
-
-  /**
-   * Items updateMany
-   */
-  export type ItemsUpdateManyArgs = {
-    /**
-     * The data used to update Items.
-     * 
-    **/
-    data: XOR<ItemsUpdateManyMutationInput, ItemsUncheckedUpdateManyInput>
-    /**
-     * Filter which Items to update
-     * 
-    **/
-    where?: ItemsWhereInput
-  }
-
-
-  /**
-   * Items upsert
-   */
-  export type ItemsUpsertArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * The filter to search for the Items to update in case it exists.
-     * 
-    **/
-    where: ItemsWhereUniqueInput
-    /**
-     * In case the Items found by the `where` argument doesn't exist, create a new Items with this data.
-     * 
-    **/
-    create: XOR<ItemsCreateInput, ItemsUncheckedCreateInput>
-    /**
-     * In case the Items was found with the provided `where` argument, update it with this data.
-     * 
-    **/
-    update: XOR<ItemsUpdateInput, ItemsUncheckedUpdateInput>
-  }
-
-
-  /**
-   * Items delete
-   */
-  export type ItemsDeleteArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-    /**
-     * Filter which Items to delete.
-     * 
-    **/
-    where: ItemsWhereUniqueInput
-  }
-
-
-  /**
-   * Items deleteMany
-   */
-  export type ItemsDeleteManyArgs = {
-    /**
-     * Filter which Items to delete
-     * 
-    **/
-    where?: ItemsWhereInput
-  }
-
-
-  /**
-   * Items without action
-   */
-  export type ItemsArgs = {
-    /**
-     * Select specific fields to fetch from the Items
-     * 
-    **/
-    select?: ItemsSelect | null
-  }
-
-
-
-  /**
    * Model Rowmap
    */
 
 
   export type AggregateRowmap = {
     _count: RowmapCountAggregateOutputType | null
-    _avg: RowmapAvgAggregateOutputType | null
-    _sum: RowmapSumAggregateOutputType | null
     _min: RowmapMinAggregateOutputType | null
     _max: RowmapMaxAggregateOutputType | null
   }
 
-  export type RowmapAvgAggregateOutputType = {
-    pos: number | null
-  }
-
-  export type RowmapSumAggregateOutputType = {
-    pos: number | null
-  }
-
   export type RowmapMinAggregateOutputType = {
     id: string | null
-    pos: number | null
+    sheet_id: string | null
+    startmarker: string | null
+    endmarker: string | null
   }
 
   export type RowmapMaxAggregateOutputType = {
     id: string | null
-    pos: number | null
+    sheet_id: string | null
+    startmarker: string | null
+    endmarker: string | null
   }
 
   export type RowmapCountAggregateOutputType = {
     id: number
-    pos: number
+    sheet_id: number
+    startmarker: number
+    endmarker: number
     _all: number
   }
 
 
-  export type RowmapAvgAggregateInputType = {
-    pos?: true
-  }
-
-  export type RowmapSumAggregateInputType = {
-    pos?: true
-  }
-
   export type RowmapMinAggregateInputType = {
     id?: true
-    pos?: true
+    sheet_id?: true
+    startmarker?: true
+    endmarker?: true
   }
 
   export type RowmapMaxAggregateInputType = {
     id?: true
-    pos?: true
+    sheet_id?: true
+    startmarker?: true
+    endmarker?: true
   }
 
   export type RowmapCountAggregateInputType = {
     id?: true
-    pos?: true
+    sheet_id?: true
+    startmarker?: true
+    endmarker?: true
     _all?: true
   }
 
@@ -3972,18 +3129,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: RowmapAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RowmapSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: RowmapMinAggregateInputType
@@ -4014,8 +3159,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     take?: number
     skip?: number
     _count?: RowmapCountAggregateInputType | true
-    _avg?: RowmapAvgAggregateInputType
-    _sum?: RowmapSumAggregateInputType
     _min?: RowmapMinAggregateInputType
     _max?: RowmapMaxAggregateInputType
   }
@@ -4023,10 +3166,10 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type RowmapGroupByOutputType = {
     id: string
-    pos: number | null
+    sheet_id: string
+    startmarker: string
+    endmarker: string
     _count: RowmapCountAggregateOutputType | null
-    _avg: RowmapAvgAggregateOutputType | null
-    _sum: RowmapSumAggregateOutputType | null
     _min: RowmapMinAggregateOutputType | null
     _max: RowmapMaxAggregateOutputType | null
   }
@@ -4047,14 +3190,18 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type RowmapSelect = {
     id?: boolean
-    pos?: boolean
-    contentmap?: boolean | Rowmap$contentmapArgs
+    sheet_id?: boolean
+    startmarker?: boolean
+    endmarker?: boolean
+    cellmap?: boolean | Rowmap$cellmapArgs
+    sheets?: boolean | SheetsArgs
     _count?: boolean | RowmapCountOutputTypeArgs
   }
 
 
   export type RowmapInclude = {
-    contentmap?: boolean | Rowmap$contentmapArgs
+    cellmap?: boolean | Rowmap$cellmapArgs
+    sheets?: boolean | SheetsArgs
     _count?: boolean | RowmapCountOutputTypeArgs
   } 
 
@@ -4065,13 +3212,15 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     S extends { include: any } & (RowmapArgs | RowmapFindManyArgs)
     ? Rowmap  & {
     [P in TruthyKeys<S['include']>]:
-        P extends 'contentmap' ? Array < ContentmapGetPayload<S['include'][P]>>  :
+        P extends 'cellmap' ? Array < CellmapGetPayload<S['include'][P]>>  :
+        P extends 'sheets' ? SheetsGetPayload<S['include'][P]> :
         P extends '_count' ? RowmapCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (RowmapArgs | RowmapFindManyArgs)
       ? {
     [P in TruthyKeys<S['select']>]:
-        P extends 'contentmap' ? Array < ContentmapGetPayload<S['select'][P]>>  :
+        P extends 'cellmap' ? Array < CellmapGetPayload<S['select'][P]>>  :
+        P extends 'sheets' ? SheetsGetPayload<S['select'][P]> :
         P extends '_count' ? RowmapCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Rowmap ? Rowmap[P] : never
   } 
       : Rowmap
@@ -4446,7 +3595,9 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
-    contentmap<T extends Rowmap$contentmapArgs= {}>(args?: Subset<T, Rowmap$contentmapArgs>): PrismaPromise<Array<ContentmapGetPayload<T>>| Null>;
+    cellmap<T extends Rowmap$cellmapArgs= {}>(args?: Subset<T, Rowmap$cellmapArgs>): PrismaPromise<Array<CellmapGetPayload<T>>| Null>;
+
+    sheets<T extends SheetsArgs= {}>(args?: Subset<T, SheetsArgs>): Prisma__SheetsClient<SheetsGetPayload<T> | Null>;
 
     private get _document();
     /**
@@ -4852,25 +4003,25 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   /**
-   * Rowmap.contentmap
+   * Rowmap.cellmap
    */
-  export type Rowmap$contentmapArgs = {
+  export type Rowmap$cellmapArgs = {
     /**
-     * Select specific fields to fetch from the Contentmap
+     * Select specific fields to fetch from the Cellmap
      * 
     **/
-    select?: ContentmapSelect | null
+    select?: CellmapSelect | null
     /**
      * Choose, which related nodes to fetch as well.
      * 
     **/
-    include?: ContentmapInclude | null
-    where?: ContentmapWhereInput
-    orderBy?: Enumerable<ContentmapOrderByWithRelationInput>
-    cursor?: ContentmapWhereUniqueInput
+    include?: CellmapInclude | null
+    where?: CellmapWhereInput
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    cursor?: CellmapWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: Enumerable<ContentmapScalarFieldEnum>
+    distinct?: Enumerable<CellmapScalarFieldEnum>
   }
 
 
@@ -4893,34 +4044,1174 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
 
   /**
+   * Model Sheets
+   */
+
+
+  export type AggregateSheets = {
+    _count: SheetsCountAggregateOutputType | null
+    _avg: SheetsAvgAggregateOutputType | null
+    _sum: SheetsSumAggregateOutputType | null
+    _min: SheetsMinAggregateOutputType | null
+    _max: SheetsMaxAggregateOutputType | null
+  }
+
+  export type SheetsAvgAggregateOutputType = {
+    rows: number | null
+    cols: number | null
+  }
+
+  export type SheetsSumAggregateOutputType = {
+    rows: number | null
+    cols: number | null
+  }
+
+  export type SheetsMinAggregateOutputType = {
+    id: string | null
+    rows: number | null
+    cols: number | null
+    startrow: string | null
+    endrow: string | null
+    startrol: string | null
+    endrol: string | null
+    created_at: Date | null
+    title: string | null
+  }
+
+  export type SheetsMaxAggregateOutputType = {
+    id: string | null
+    rows: number | null
+    cols: number | null
+    startrow: string | null
+    endrow: string | null
+    startrol: string | null
+    endrol: string | null
+    created_at: Date | null
+    title: string | null
+  }
+
+  export type SheetsCountAggregateOutputType = {
+    id: number
+    rows: number
+    cols: number
+    startrow: number
+    endrow: number
+    startrol: number
+    endrol: number
+    created_at: number
+    title: number
+    _all: number
+  }
+
+
+  export type SheetsAvgAggregateInputType = {
+    rows?: true
+    cols?: true
+  }
+
+  export type SheetsSumAggregateInputType = {
+    rows?: true
+    cols?: true
+  }
+
+  export type SheetsMinAggregateInputType = {
+    id?: true
+    rows?: true
+    cols?: true
+    startrow?: true
+    endrow?: true
+    startrol?: true
+    endrol?: true
+    created_at?: true
+    title?: true
+  }
+
+  export type SheetsMaxAggregateInputType = {
+    id?: true
+    rows?: true
+    cols?: true
+    startrow?: true
+    endrow?: true
+    startrol?: true
+    endrol?: true
+    created_at?: true
+    title?: true
+  }
+
+  export type SheetsCountAggregateInputType = {
+    id?: true
+    rows?: true
+    cols?: true
+    startrow?: true
+    endrow?: true
+    startrol?: true
+    endrol?: true
+    created_at?: true
+    title?: true
+    _all?: true
+  }
+
+  export type SheetsAggregateArgs = {
+    /**
+     * Filter which Sheets to aggregate.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Sheets
+    **/
+    _count?: true | SheetsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SheetsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SheetsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SheetsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SheetsMaxAggregateInputType
+  }
+
+  export type GetSheetsAggregateType<T extends SheetsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSheets]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSheets[P]>
+      : GetScalarType<T[P], AggregateSheets[P]>
+  }
+
+
+
+
+  export type SheetsGroupByArgs = {
+    where?: SheetsWhereInput
+    orderBy?: Enumerable<SheetsOrderByWithAggregationInput>
+    by: Array<SheetsScalarFieldEnum>
+    having?: SheetsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SheetsCountAggregateInputType | true
+    _avg?: SheetsAvgAggregateInputType
+    _sum?: SheetsSumAggregateInputType
+    _min?: SheetsMinAggregateInputType
+    _max?: SheetsMaxAggregateInputType
+  }
+
+
+  export type SheetsGroupByOutputType = {
+    id: string
+    rows: number
+    cols: number
+    startrow: string | null
+    endrow: string | null
+    startrol: string | null
+    endrol: string | null
+    created_at: Date
+    title: string | null
+    _count: SheetsCountAggregateOutputType | null
+    _avg: SheetsAvgAggregateOutputType | null
+    _sum: SheetsSumAggregateOutputType | null
+    _min: SheetsMinAggregateOutputType | null
+    _max: SheetsMaxAggregateOutputType | null
+  }
+
+  type GetSheetsGroupByPayload<T extends SheetsGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<SheetsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SheetsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SheetsGroupByOutputType[P]>
+            : GetScalarType<T[P], SheetsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SheetsSelect = {
+    id?: boolean
+    rows?: boolean
+    cols?: boolean
+    startrow?: boolean
+    endrow?: boolean
+    startrol?: boolean
+    endrol?: boolean
+    created_at?: boolean
+    title?: boolean
+    cellmap?: boolean | Sheets$cellmapArgs
+    colmap?: boolean | Sheets$colmapArgs
+    rowmap?: boolean | Sheets$rowmapArgs
+    _count?: boolean | SheetsCountOutputTypeArgs
+  }
+
+
+  export type SheetsInclude = {
+    cellmap?: boolean | Sheets$cellmapArgs
+    colmap?: boolean | Sheets$colmapArgs
+    rowmap?: boolean | Sheets$rowmapArgs
+    _count?: boolean | SheetsCountOutputTypeArgs
+  } 
+
+  export type SheetsGetPayload<S extends boolean | null | undefined | SheetsArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? Sheets :
+    S extends undefined ? never :
+    S extends { include: any } & (SheetsArgs | SheetsFindManyArgs)
+    ? Sheets  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'cellmap' ? Array < CellmapGetPayload<S['include'][P]>>  :
+        P extends 'colmap' ? Array < ColmapGetPayload<S['include'][P]>>  :
+        P extends 'rowmap' ? Array < RowmapGetPayload<S['include'][P]>>  :
+        P extends '_count' ? SheetsCountOutputTypeGetPayload<S['include'][P]> :  never
+  } 
+    : S extends { select: any } & (SheetsArgs | SheetsFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'cellmap' ? Array < CellmapGetPayload<S['select'][P]>>  :
+        P extends 'colmap' ? Array < ColmapGetPayload<S['select'][P]>>  :
+        P extends 'rowmap' ? Array < RowmapGetPayload<S['select'][P]>>  :
+        P extends '_count' ? SheetsCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Sheets ? Sheets[P] : never
+  } 
+      : Sheets
+
+
+  type SheetsCountArgs = Merge<
+    Omit<SheetsFindManyArgs, 'select' | 'include'> & {
+      select?: SheetsCountAggregateInputType | true
+    }
+  >
+
+  export interface SheetsDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Sheets that matches the filter.
+     * @param {SheetsFindUniqueArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends SheetsFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, SheetsFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Sheets'> extends True ? Prisma__SheetsClient<SheetsGetPayload<T>> : Prisma__SheetsClient<SheetsGetPayload<T> | null, null>
+
+    /**
+     * Find one Sheets that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {SheetsFindUniqueOrThrowArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends SheetsFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, SheetsFindUniqueOrThrowArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Find the first Sheets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsFindFirstArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends SheetsFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, SheetsFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Sheets'> extends True ? Prisma__SheetsClient<SheetsGetPayload<T>> : Prisma__SheetsClient<SheetsGetPayload<T> | null, null>
+
+    /**
+     * Find the first Sheets that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsFindFirstOrThrowArgs} args - Arguments to find a Sheets
+     * @example
+     * // Get one Sheets
+     * const sheets = await prisma.sheets.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends SheetsFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, SheetsFindFirstOrThrowArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Find zero or more Sheets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sheets
+     * const sheets = await prisma.sheets.findMany()
+     * 
+     * // Get first 10 Sheets
+     * const sheets = await prisma.sheets.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sheetsWithIdOnly = await prisma.sheets.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends SheetsFindManyArgs>(
+      args?: SelectSubset<T, SheetsFindManyArgs>
+    ): PrismaPromise<Array<SheetsGetPayload<T>>>
+
+    /**
+     * Create a Sheets.
+     * @param {SheetsCreateArgs} args - Arguments to create a Sheets.
+     * @example
+     * // Create one Sheets
+     * const Sheets = await prisma.sheets.create({
+     *   data: {
+     *     // ... data to create a Sheets
+     *   }
+     * })
+     * 
+    **/
+    create<T extends SheetsCreateArgs>(
+      args: SelectSubset<T, SheetsCreateArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Create many Sheets.
+     *     @param {SheetsCreateManyArgs} args - Arguments to create many Sheets.
+     *     @example
+     *     // Create many Sheets
+     *     const sheets = await prisma.sheets.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends SheetsCreateManyArgs>(
+      args?: SelectSubset<T, SheetsCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Sheets.
+     * @param {SheetsDeleteArgs} args - Arguments to delete one Sheets.
+     * @example
+     * // Delete one Sheets
+     * const Sheets = await prisma.sheets.delete({
+     *   where: {
+     *     // ... filter to delete one Sheets
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends SheetsDeleteArgs>(
+      args: SelectSubset<T, SheetsDeleteArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Update one Sheets.
+     * @param {SheetsUpdateArgs} args - Arguments to update one Sheets.
+     * @example
+     * // Update one Sheets
+     * const sheets = await prisma.sheets.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends SheetsUpdateArgs>(
+      args: SelectSubset<T, SheetsUpdateArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Delete zero or more Sheets.
+     * @param {SheetsDeleteManyArgs} args - Arguments to filter Sheets to delete.
+     * @example
+     * // Delete a few Sheets
+     * const { count } = await prisma.sheets.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends SheetsDeleteManyArgs>(
+      args?: SelectSubset<T, SheetsDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sheets
+     * const sheets = await prisma.sheets.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends SheetsUpdateManyArgs>(
+      args: SelectSubset<T, SheetsUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Sheets.
+     * @param {SheetsUpsertArgs} args - Arguments to update or create a Sheets.
+     * @example
+     * // Update or create a Sheets
+     * const sheets = await prisma.sheets.upsert({
+     *   create: {
+     *     // ... data to create a Sheets
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sheets we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends SheetsUpsertArgs>(
+      args: SelectSubset<T, SheetsUpsertArgs>
+    ): Prisma__SheetsClient<SheetsGetPayload<T>>
+
+    /**
+     * Count the number of Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsCountArgs} args - Arguments to filter Sheets to count.
+     * @example
+     * // Count the number of Sheets
+     * const count = await prisma.sheets.count({
+     *   where: {
+     *     // ... the filter for the Sheets we want to count
+     *   }
+     * })
+    **/
+    count<T extends SheetsCountArgs>(
+      args?: Subset<T, SheetsCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SheetsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SheetsAggregateArgs>(args: Subset<T, SheetsAggregateArgs>): PrismaPromise<GetSheetsAggregateType<T>>
+
+    /**
+     * Group by Sheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SheetsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SheetsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SheetsGroupByArgs['orderBy'] }
+        : { orderBy?: SheetsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SheetsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSheetsGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Sheets.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__SheetsClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    cellmap<T extends Sheets$cellmapArgs= {}>(args?: Subset<T, Sheets$cellmapArgs>): PrismaPromise<Array<CellmapGetPayload<T>>| Null>;
+
+    colmap<T extends Sheets$colmapArgs= {}>(args?: Subset<T, Sheets$colmapArgs>): PrismaPromise<Array<ColmapGetPayload<T>>| Null>;
+
+    rowmap<T extends Sheets$rowmapArgs= {}>(args?: Subset<T, Sheets$rowmapArgs>): PrismaPromise<Array<RowmapGetPayload<T>>| Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Sheets base type for findUnique actions
+   */
+  export type SheetsFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+  /**
+   * Sheets findUnique
+   */
+  export interface SheetsFindUniqueArgs extends SheetsFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Sheets findUniqueOrThrow
+   */
+  export type SheetsFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+
+  /**
+   * Sheets base type for findFirst actions
+   */
+  export type SheetsFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sheets.
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sheets.
+     * 
+    **/
+    distinct?: Enumerable<SheetsScalarFieldEnum>
+  }
+
+  /**
+   * Sheets findFirst
+   */
+  export interface SheetsFindFirstArgs extends SheetsFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Sheets findFirstOrThrow
+   */
+  export type SheetsFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sheets.
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sheets.
+     * 
+    **/
+    distinct?: Enumerable<SheetsScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets findMany
+   */
+  export type SheetsFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter, which Sheets to fetch.
+     * 
+    **/
+    where?: SheetsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sheets to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SheetsOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Sheets.
+     * 
+    **/
+    cursor?: SheetsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sheets from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sheets.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<SheetsScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets create
+   */
+  export type SheetsCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * The data needed to create a Sheets.
+     * 
+    **/
+    data: XOR<SheetsCreateInput, SheetsUncheckedCreateInput>
+  }
+
+
+  /**
+   * Sheets createMany
+   */
+  export type SheetsCreateManyArgs = {
+    /**
+     * The data used to create many Sheets.
+     * 
+    **/
+    data: Enumerable<SheetsCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Sheets update
+   */
+  export type SheetsUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * The data needed to update a Sheets.
+     * 
+    **/
+    data: XOR<SheetsUpdateInput, SheetsUncheckedUpdateInput>
+    /**
+     * Choose, which Sheets to update.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+
+  /**
+   * Sheets updateMany
+   */
+  export type SheetsUpdateManyArgs = {
+    /**
+     * The data used to update Sheets.
+     * 
+    **/
+    data: XOR<SheetsUpdateManyMutationInput, SheetsUncheckedUpdateManyInput>
+    /**
+     * Filter which Sheets to update
+     * 
+    **/
+    where?: SheetsWhereInput
+  }
+
+
+  /**
+   * Sheets upsert
+   */
+  export type SheetsUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * The filter to search for the Sheets to update in case it exists.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+    /**
+     * In case the Sheets found by the `where` argument doesn't exist, create a new Sheets with this data.
+     * 
+    **/
+    create: XOR<SheetsCreateInput, SheetsUncheckedCreateInput>
+    /**
+     * In case the Sheets was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<SheetsUpdateInput, SheetsUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Sheets delete
+   */
+  export type SheetsDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+    /**
+     * Filter which Sheets to delete.
+     * 
+    **/
+    where: SheetsWhereUniqueInput
+  }
+
+
+  /**
+   * Sheets deleteMany
+   */
+  export type SheetsDeleteManyArgs = {
+    /**
+     * Filter which Sheets to delete
+     * 
+    **/
+    where?: SheetsWhereInput
+  }
+
+
+  /**
+   * Sheets.cellmap
+   */
+  export type Sheets$cellmapArgs = {
+    /**
+     * Select specific fields to fetch from the Cellmap
+     * 
+    **/
+    select?: CellmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CellmapInclude | null
+    where?: CellmapWhereInput
+    orderBy?: Enumerable<CellmapOrderByWithRelationInput>
+    cursor?: CellmapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<CellmapScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets.colmap
+   */
+  export type Sheets$colmapArgs = {
+    /**
+     * Select specific fields to fetch from the Colmap
+     * 
+    **/
+    select?: ColmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ColmapInclude | null
+    where?: ColmapWhereInput
+    orderBy?: Enumerable<ColmapOrderByWithRelationInput>
+    cursor?: ColmapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<ColmapScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets.rowmap
+   */
+  export type Sheets$rowmapArgs = {
+    /**
+     * Select specific fields to fetch from the Rowmap
+     * 
+    **/
+    select?: RowmapSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: RowmapInclude | null
+    where?: RowmapWhereInput
+    orderBy?: Enumerable<RowmapOrderByWithRelationInput>
+    cursor?: RowmapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<RowmapScalarFieldEnum>
+  }
+
+
+  /**
+   * Sheets without action
+   */
+  export type SheetsArgs = {
+    /**
+     * Select specific fields to fetch from the Sheets
+     * 
+    **/
+    select?: SheetsSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: SheetsInclude | null
+  }
+
+
+
+  /**
    * Enums
    */
 
   // Based on
   // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
 
-  export const ColmapScalarFieldEnum: {
+  export const CellmapScalarFieldEnum: {
     id: 'id',
-    pos: 'pos'
-  };
-
-  export type ColmapScalarFieldEnum = (typeof ColmapScalarFieldEnum)[keyof typeof ColmapScalarFieldEnum]
-
-
-  export const ContentmapScalarFieldEnum: {
-    rowIndex: 'rowIndex',
-    colIndex: 'colIndex',
+    sheet_id: 'sheet_id',
+    row_id: 'row_id',
+    col_id: 'col_id',
     content: 'content'
   };
 
-  export type ContentmapScalarFieldEnum = (typeof ContentmapScalarFieldEnum)[keyof typeof ContentmapScalarFieldEnum]
+  export type CellmapScalarFieldEnum = (typeof CellmapScalarFieldEnum)[keyof typeof CellmapScalarFieldEnum]
 
 
-  export const ItemsScalarFieldEnum: {
-    value: 'value'
+  export const ColmapScalarFieldEnum: {
+    id: 'id',
+    sheet_id: 'sheet_id',
+    startmarker: 'startmarker',
+    endmarker: 'endmarker'
   };
 
-  export type ItemsScalarFieldEnum = (typeof ItemsScalarFieldEnum)[keyof typeof ItemsScalarFieldEnum]
+  export type ColmapScalarFieldEnum = (typeof ColmapScalarFieldEnum)[keyof typeof ColmapScalarFieldEnum]
 
 
   export const QueryMode: {
@@ -4933,10 +5224,27 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export const RowmapScalarFieldEnum: {
     id: 'id',
-    pos: 'pos'
+    sheet_id: 'sheet_id',
+    startmarker: 'startmarker',
+    endmarker: 'endmarker'
   };
 
   export type RowmapScalarFieldEnum = (typeof RowmapScalarFieldEnum)[keyof typeof RowmapScalarFieldEnum]
+
+
+  export const SheetsScalarFieldEnum: {
+    id: 'id',
+    rows: 'rows',
+    cols: 'cols',
+    startrow: 'startrow',
+    endrow: 'endrow',
+    startrol: 'startrol',
+    endrol: 'endrol',
+    created_at: 'created_at',
+    title: 'title'
+  };
+
+  export type SheetsScalarFieldEnum = (typeof SheetsScalarFieldEnum)[keyof typeof SheetsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4962,19 +5270,76 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
    */
 
 
+  export type CellmapWhereInput = {
+    AND?: Enumerable<CellmapWhereInput>
+    OR?: Enumerable<CellmapWhereInput>
+    NOT?: Enumerable<CellmapWhereInput>
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    row_id?: StringFilter | string
+    col_id?: StringFilter | string
+    content?: StringNullableFilter | string | null
+    colmap?: XOR<ColmapRelationFilter, ColmapWhereInput>
+    rowmap?: XOR<RowmapRelationFilter, RowmapWhereInput>
+    sheets?: XOR<SheetsRelationFilter, SheetsWhereInput>
+  }
+
+  export type CellmapOrderByWithRelationInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row_id?: SortOrder
+    col_id?: SortOrder
+    content?: SortOrder
+    colmap?: ColmapOrderByWithRelationInput
+    rowmap?: RowmapOrderByWithRelationInput
+    sheets?: SheetsOrderByWithRelationInput
+  }
+
+  export type CellmapWhereUniqueInput = {
+    id?: string
+  }
+
+  export type CellmapOrderByWithAggregationInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row_id?: SortOrder
+    col_id?: SortOrder
+    content?: SortOrder
+    _count?: CellmapCountOrderByAggregateInput
+    _max?: CellmapMaxOrderByAggregateInput
+    _min?: CellmapMinOrderByAggregateInput
+  }
+
+  export type CellmapScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<CellmapScalarWhereWithAggregatesInput>
+    OR?: Enumerable<CellmapScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<CellmapScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    sheet_id?: StringWithAggregatesFilter | string
+    row_id?: StringWithAggregatesFilter | string
+    col_id?: StringWithAggregatesFilter | string
+    content?: StringNullableWithAggregatesFilter | string | null
+  }
+
   export type ColmapWhereInput = {
     AND?: Enumerable<ColmapWhereInput>
     OR?: Enumerable<ColmapWhereInput>
     NOT?: Enumerable<ColmapWhereInput>
-    id?: UuidFilter | string
-    pos?: IntNullableFilter | number | null
-    contentmap?: ContentmapListRelationFilter
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    startmarker?: StringFilter | string
+    endmarker?: StringFilter | string
+    cellmap?: CellmapListRelationFilter
+    sheets?: XOR<SheetsRelationFilter, SheetsWhereInput>
   }
 
   export type ColmapOrderByWithRelationInput = {
     id?: SortOrder
-    pos?: SortOrder
-    contentmap?: ContentmapOrderByRelationAggregateInput
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
+    cellmap?: CellmapOrderByRelationAggregateInput
+    sheets?: SheetsOrderByWithRelationInput
   }
 
   export type ColmapWhereUniqueInput = {
@@ -4983,105 +5348,43 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type ColmapOrderByWithAggregationInput = {
     id?: SortOrder
-    pos?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
     _count?: ColmapCountOrderByAggregateInput
-    _avg?: ColmapAvgOrderByAggregateInput
     _max?: ColmapMaxOrderByAggregateInput
     _min?: ColmapMinOrderByAggregateInput
-    _sum?: ColmapSumOrderByAggregateInput
   }
 
   export type ColmapScalarWhereWithAggregatesInput = {
     AND?: Enumerable<ColmapScalarWhereWithAggregatesInput>
     OR?: Enumerable<ColmapScalarWhereWithAggregatesInput>
     NOT?: Enumerable<ColmapScalarWhereWithAggregatesInput>
-    id?: UuidWithAggregatesFilter | string
-    pos?: IntNullableWithAggregatesFilter | number | null
-  }
-
-  export type ContentmapWhereInput = {
-    AND?: Enumerable<ContentmapWhereInput>
-    OR?: Enumerable<ContentmapWhereInput>
-    NOT?: Enumerable<ContentmapWhereInput>
-    rowIndex?: UuidFilter | string
-    colIndex?: UuidFilter | string
-    content?: StringNullableFilter | string | null
-    colmap?: XOR<ColmapRelationFilter, ColmapWhereInput>
-    rowmap?: XOR<RowmapRelationFilter, RowmapWhereInput>
-  }
-
-  export type ContentmapOrderByWithRelationInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
-    content?: SortOrder
-    colmap?: ColmapOrderByWithRelationInput
-    rowmap?: RowmapOrderByWithRelationInput
-  }
-
-  export type ContentmapWhereUniqueInput = {
-    rowIndex_colIndex?: ContentmapRowIndexColIndexCompoundUniqueInput
-  }
-
-  export type ContentmapOrderByWithAggregationInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
-    content?: SortOrder
-    _count?: ContentmapCountOrderByAggregateInput
-    _max?: ContentmapMaxOrderByAggregateInput
-    _min?: ContentmapMinOrderByAggregateInput
-  }
-
-  export type ContentmapScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<ContentmapScalarWhereWithAggregatesInput>
-    OR?: Enumerable<ContentmapScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<ContentmapScalarWhereWithAggregatesInput>
-    rowIndex?: UuidWithAggregatesFilter | string
-    colIndex?: UuidWithAggregatesFilter | string
-    content?: StringNullableWithAggregatesFilter | string | null
-  }
-
-  export type ItemsWhereInput = {
-    AND?: Enumerable<ItemsWhereInput>
-    OR?: Enumerable<ItemsWhereInput>
-    NOT?: Enumerable<ItemsWhereInput>
-    value?: StringFilter | string
-  }
-
-  export type ItemsOrderByWithRelationInput = {
-    value?: SortOrder
-  }
-
-  export type ItemsWhereUniqueInput = {
-    value?: string
-  }
-
-  export type ItemsOrderByWithAggregationInput = {
-    value?: SortOrder
-    _count?: ItemsCountOrderByAggregateInput
-    _max?: ItemsMaxOrderByAggregateInput
-    _min?: ItemsMinOrderByAggregateInput
-  }
-
-  export type ItemsScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<ItemsScalarWhereWithAggregatesInput>
-    OR?: Enumerable<ItemsScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<ItemsScalarWhereWithAggregatesInput>
-    value?: StringWithAggregatesFilter | string
+    id?: StringWithAggregatesFilter | string
+    sheet_id?: StringWithAggregatesFilter | string
+    startmarker?: StringWithAggregatesFilter | string
+    endmarker?: StringWithAggregatesFilter | string
   }
 
   export type RowmapWhereInput = {
     AND?: Enumerable<RowmapWhereInput>
     OR?: Enumerable<RowmapWhereInput>
     NOT?: Enumerable<RowmapWhereInput>
-    id?: UuidFilter | string
-    pos?: IntNullableFilter | number | null
-    contentmap?: ContentmapListRelationFilter
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    startmarker?: StringFilter | string
+    endmarker?: StringFilter | string
+    cellmap?: CellmapListRelationFilter
+    sheets?: XOR<SheetsRelationFilter, SheetsWhereInput>
   }
 
   export type RowmapOrderByWithRelationInput = {
     id?: SortOrder
-    pos?: SortOrder
-    contentmap?: ContentmapOrderByRelationAggregateInput
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
+    cellmap?: CellmapOrderByRelationAggregateInput
+    sheets?: SheetsOrderByWithRelationInput
   }
 
   export type RowmapWhereUniqueInput = {
@@ -5090,169 +5393,347 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type RowmapOrderByWithAggregationInput = {
     id?: SortOrder
-    pos?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
     _count?: RowmapCountOrderByAggregateInput
-    _avg?: RowmapAvgOrderByAggregateInput
     _max?: RowmapMaxOrderByAggregateInput
     _min?: RowmapMinOrderByAggregateInput
-    _sum?: RowmapSumOrderByAggregateInput
   }
 
   export type RowmapScalarWhereWithAggregatesInput = {
     AND?: Enumerable<RowmapScalarWhereWithAggregatesInput>
     OR?: Enumerable<RowmapScalarWhereWithAggregatesInput>
     NOT?: Enumerable<RowmapScalarWhereWithAggregatesInput>
-    id?: UuidWithAggregatesFilter | string
-    pos?: IntNullableWithAggregatesFilter | number | null
+    id?: StringWithAggregatesFilter | string
+    sheet_id?: StringWithAggregatesFilter | string
+    startmarker?: StringWithAggregatesFilter | string
+    endmarker?: StringWithAggregatesFilter | string
+  }
+
+  export type SheetsWhereInput = {
+    AND?: Enumerable<SheetsWhereInput>
+    OR?: Enumerable<SheetsWhereInput>
+    NOT?: Enumerable<SheetsWhereInput>
+    id?: StringFilter | string
+    rows?: IntFilter | number
+    cols?: IntFilter | number
+    startrow?: StringNullableFilter | string | null
+    endrow?: StringNullableFilter | string | null
+    startrol?: StringNullableFilter | string | null
+    endrol?: StringNullableFilter | string | null
+    created_at?: DateTimeFilter | Date | string
+    title?: StringNullableFilter | string | null
+    cellmap?: CellmapListRelationFilter
+    colmap?: ColmapListRelationFilter
+    rowmap?: RowmapListRelationFilter
+  }
+
+  export type SheetsOrderByWithRelationInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    startrow?: SortOrder
+    endrow?: SortOrder
+    startrol?: SortOrder
+    endrol?: SortOrder
+    created_at?: SortOrder
+    title?: SortOrder
+    cellmap?: CellmapOrderByRelationAggregateInput
+    colmap?: ColmapOrderByRelationAggregateInput
+    rowmap?: RowmapOrderByRelationAggregateInput
+  }
+
+  export type SheetsWhereUniqueInput = {
+    id?: string
+  }
+
+  export type SheetsOrderByWithAggregationInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    startrow?: SortOrder
+    endrow?: SortOrder
+    startrol?: SortOrder
+    endrol?: SortOrder
+    created_at?: SortOrder
+    title?: SortOrder
+    _count?: SheetsCountOrderByAggregateInput
+    _avg?: SheetsAvgOrderByAggregateInput
+    _max?: SheetsMaxOrderByAggregateInput
+    _min?: SheetsMinOrderByAggregateInput
+    _sum?: SheetsSumOrderByAggregateInput
+  }
+
+  export type SheetsScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<SheetsScalarWhereWithAggregatesInput>
+    OR?: Enumerable<SheetsScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<SheetsScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    rows?: IntWithAggregatesFilter | number
+    cols?: IntWithAggregatesFilter | number
+    startrow?: StringNullableWithAggregatesFilter | string | null
+    endrow?: StringNullableWithAggregatesFilter | string | null
+    startrol?: StringNullableWithAggregatesFilter | string | null
+    endrol?: StringNullableWithAggregatesFilter | string | null
+    created_at?: DateTimeWithAggregatesFilter | Date | string
+    title?: StringNullableWithAggregatesFilter | string | null
+  }
+
+  export type CellmapCreateInput = {
+    id: string
+    content?: string | null
+    colmap: ColmapCreateNestedOneWithoutCellmapInput
+    rowmap: RowmapCreateNestedOneWithoutCellmapInput
+    sheets: SheetsCreateNestedOneWithoutCellmapInput
+  }
+
+  export type CellmapUncheckedCreateInput = {
+    id: string
+    sheet_id: string
+    row_id: string
+    col_id: string
+    content?: string | null
+  }
+
+  export type CellmapUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    colmap?: ColmapUpdateOneRequiredWithoutCellmapNestedInput
+    rowmap?: RowmapUpdateOneRequiredWithoutCellmapNestedInput
+    sheets?: SheetsUpdateOneRequiredWithoutCellmapNestedInput
+  }
+
+  export type CellmapUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    row_id?: StringFieldUpdateOperationsInput | string
+    col_id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CellmapCreateManyInput = {
+    id: string
+    sheet_id: string
+    row_id: string
+    col_id: string
+    content?: string | null
+  }
+
+  export type CellmapUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CellmapUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    row_id?: StringFieldUpdateOperationsInput | string
+    col_id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ColmapCreateInput = {
     id: string
-    pos?: number | null
-    contentmap?: ContentmapCreateNestedManyWithoutColmapInput
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapCreateNestedManyWithoutColmapInput
+    sheets: SheetsCreateNestedOneWithoutColmapInput
   }
 
   export type ColmapUncheckedCreateInput = {
     id: string
-    pos?: number | null
-    contentmap?: ContentmapUncheckedCreateNestedManyWithoutColmapInput
+    sheet_id: string
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutColmapInput
   }
 
   export type ColmapUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-    contentmap?: ContentmapUpdateManyWithoutColmapNestedInput
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUpdateManyWithoutColmapNestedInput
+    sheets?: SheetsUpdateOneRequiredWithoutColmapNestedInput
   }
 
   export type ColmapUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-    contentmap?: ContentmapUncheckedUpdateManyWithoutColmapNestedInput
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUncheckedUpdateManyWithoutColmapNestedInput
   }
 
   export type ColmapCreateManyInput = {
     id: string
-    pos?: number | null
+    sheet_id: string
+    startmarker: string
+    endmarker: string
   }
 
   export type ColmapUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
   }
 
   export type ColmapUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type ContentmapCreateInput = {
-    content?: string | null
-    colmap: ColmapCreateNestedOneWithoutContentmapInput
-    rowmap: RowmapCreateNestedOneWithoutContentmapInput
-  }
-
-  export type ContentmapUncheckedCreateInput = {
-    rowIndex: string
-    colIndex: string
-    content?: string | null
-  }
-
-  export type ContentmapUpdateInput = {
-    content?: NullableStringFieldUpdateOperationsInput | string | null
-    colmap?: ColmapUpdateOneRequiredWithoutContentmapNestedInput
-    rowmap?: RowmapUpdateOneRequiredWithoutContentmapNestedInput
-  }
-
-  export type ContentmapUncheckedUpdateInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
-    colIndex?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ContentmapCreateManyInput = {
-    rowIndex: string
-    colIndex: string
-    content?: string | null
-  }
-
-  export type ContentmapUpdateManyMutationInput = {
-    content?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ContentmapUncheckedUpdateManyInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
-    colIndex?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ItemsCreateInput = {
-    value: string
-  }
-
-  export type ItemsUncheckedCreateInput = {
-    value: string
-  }
-
-  export type ItemsUpdateInput = {
-    value?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type ItemsUncheckedUpdateInput = {
-    value?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type ItemsCreateManyInput = {
-    value: string
-  }
-
-  export type ItemsUpdateManyMutationInput = {
-    value?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type ItemsUncheckedUpdateManyInput = {
-    value?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
   }
 
   export type RowmapCreateInput = {
     id: string
-    pos?: number | null
-    contentmap?: ContentmapCreateNestedManyWithoutRowmapInput
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapCreateNestedManyWithoutRowmapInput
+    sheets: SheetsCreateNestedOneWithoutRowmapInput
   }
 
   export type RowmapUncheckedCreateInput = {
     id: string
-    pos?: number | null
-    contentmap?: ContentmapUncheckedCreateNestedManyWithoutRowmapInput
+    sheet_id: string
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutRowmapInput
   }
 
   export type RowmapUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-    contentmap?: ContentmapUpdateManyWithoutRowmapNestedInput
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUpdateManyWithoutRowmapNestedInput
+    sheets?: SheetsUpdateOneRequiredWithoutRowmapNestedInput
   }
 
   export type RowmapUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-    contentmap?: ContentmapUncheckedUpdateManyWithoutRowmapNestedInput
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUncheckedUpdateManyWithoutRowmapNestedInput
   }
 
   export type RowmapCreateManyInput = {
     id: string
-    pos?: number | null
+    sheet_id: string
+    startmarker: string
+    endmarker: string
   }
 
   export type RowmapUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
   }
 
   export type RowmapUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UuidFilter = {
+  export type SheetsCreateInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    cellmap?: CellmapCreateNestedManyWithoutSheetsInput
+    colmap?: ColmapCreateNestedManyWithoutSheetsInput
+    rowmap?: RowmapCreateNestedManyWithoutSheetsInput
+  }
+
+  export type SheetsUncheckedCreateInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutSheetsInput
+    colmap?: ColmapUncheckedCreateNestedManyWithoutSheetsInput
+    rowmap?: RowmapUncheckedCreateNestedManyWithoutSheetsInput
+  }
+
+  export type SheetsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    cellmap?: CellmapUpdateManyWithoutSheetsNestedInput
+    colmap?: ColmapUpdateManyWithoutSheetsNestedInput
+    rowmap?: RowmapUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type SheetsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    cellmap?: CellmapUncheckedUpdateManyWithoutSheetsNestedInput
+    colmap?: ColmapUncheckedUpdateManyWithoutSheetsNestedInput
+    rowmap?: RowmapUncheckedUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type SheetsCreateManyInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+  }
+
+  export type SheetsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SheetsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type StringFilter = {
     equals?: string
     in?: Enumerable<string>
     notIn?: Enumerable<string>
@@ -5260,83 +5741,11 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     lte?: string
     gt?: string
     gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
     mode?: QueryMode
-    not?: NestedUuidFilter | string
-  }
-
-  export type IntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-  }
-
-  export type ContentmapListRelationFilter = {
-    every?: ContentmapWhereInput
-    some?: ContentmapWhereInput
-    none?: ContentmapWhereInput
-  }
-
-  export type ContentmapOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ColmapCountOrderByAggregateInput = {
-    id?: SortOrder
-    pos?: SortOrder
-  }
-
-  export type ColmapAvgOrderByAggregateInput = {
-    pos?: SortOrder
-  }
-
-  export type ColmapMaxOrderByAggregateInput = {
-    id?: SortOrder
-    pos?: SortOrder
-  }
-
-  export type ColmapMinOrderByAggregateInput = {
-    id?: SortOrder
-    pos?: SortOrder
-  }
-
-  export type ColmapSumOrderByAggregateInput = {
-    pos?: SortOrder
-  }
-
-  export type UuidWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    mode?: QueryMode
-    not?: NestedUuidWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
-  }
-
-  export type IntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
+    not?: NestedStringFilter | string
   }
 
   export type StringNullableFilter = {
@@ -5364,72 +5773,33 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     isNot?: RowmapWhereInput
   }
 
-  export type ContentmapRowIndexColIndexCompoundUniqueInput = {
-    rowIndex: string
-    colIndex: string
+  export type SheetsRelationFilter = {
+    is?: SheetsWhereInput
+    isNot?: SheetsWhereInput
   }
 
-  export type ContentmapCountOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+  export type CellmapCountOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row_id?: SortOrder
+    col_id?: SortOrder
     content?: SortOrder
   }
 
-  export type ContentmapMaxOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+  export type CellmapMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row_id?: SortOrder
+    col_id?: SortOrder
     content?: SortOrder
   }
 
-  export type ContentmapMinOrderByAggregateInput = {
-    rowIndex?: SortOrder
-    colIndex?: SortOrder
+  export type CellmapMinOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    row_id?: SortOrder
+    col_id?: SortOrder
     content?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
-  }
-
-  export type StringFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    mode?: QueryMode
-    not?: NestedStringFilter | string
-  }
-
-  export type ItemsCountOrderByAggregateInput = {
-    value?: SortOrder
-  }
-
-  export type ItemsMaxOrderByAggregateInput = {
-    value?: SortOrder
-  }
-
-  export type ItemsMinOrderByAggregateInput = {
-    value?: SortOrder
   }
 
   export type StringWithAggregatesFilter = {
@@ -5450,194 +5820,77 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     _max?: NestedStringFilter
   }
 
-  export type RowmapCountOrderByAggregateInput = {
-    id?: SortOrder
-    pos?: SortOrder
+  export type StringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
   }
 
-  export type RowmapAvgOrderByAggregateInput = {
-    pos?: SortOrder
+  export type CellmapListRelationFilter = {
+    every?: CellmapWhereInput
+    some?: CellmapWhereInput
+    none?: CellmapWhereInput
+  }
+
+  export type CellmapOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ColmapCountOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
+  }
+
+  export type ColmapMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
+  }
+
+  export type ColmapMinOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
+  }
+
+  export type RowmapCountOrderByAggregateInput = {
+    id?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
   }
 
   export type RowmapMaxOrderByAggregateInput = {
     id?: SortOrder
-    pos?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
   }
 
   export type RowmapMinOrderByAggregateInput = {
     id?: SortOrder
-    pos?: SortOrder
+    sheet_id?: SortOrder
+    startmarker?: SortOrder
+    endmarker?: SortOrder
   }
 
-  export type RowmapSumOrderByAggregateInput = {
-    pos?: SortOrder
-  }
-
-  export type ContentmapCreateNestedManyWithoutColmapInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutColmapInput>, Enumerable<ContentmapUncheckedCreateWithoutColmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutColmapInput>
-    createMany?: ContentmapCreateManyColmapInputEnvelope
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-  }
-
-  export type ContentmapUncheckedCreateNestedManyWithoutColmapInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutColmapInput>, Enumerable<ContentmapUncheckedCreateWithoutColmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutColmapInput>
-    createMany?: ContentmapCreateManyColmapInputEnvelope
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-  }
-
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type ContentmapUpdateManyWithoutColmapNestedInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutColmapInput>, Enumerable<ContentmapUncheckedCreateWithoutColmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutColmapInput>
-    upsert?: Enumerable<ContentmapUpsertWithWhereUniqueWithoutColmapInput>
-    createMany?: ContentmapCreateManyColmapInputEnvelope
-    set?: Enumerable<ContentmapWhereUniqueInput>
-    disconnect?: Enumerable<ContentmapWhereUniqueInput>
-    delete?: Enumerable<ContentmapWhereUniqueInput>
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-    update?: Enumerable<ContentmapUpdateWithWhereUniqueWithoutColmapInput>
-    updateMany?: Enumerable<ContentmapUpdateManyWithWhereWithoutColmapInput>
-    deleteMany?: Enumerable<ContentmapScalarWhereInput>
-  }
-
-  export type ContentmapUncheckedUpdateManyWithoutColmapNestedInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutColmapInput>, Enumerable<ContentmapUncheckedCreateWithoutColmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutColmapInput>
-    upsert?: Enumerable<ContentmapUpsertWithWhereUniqueWithoutColmapInput>
-    createMany?: ContentmapCreateManyColmapInputEnvelope
-    set?: Enumerable<ContentmapWhereUniqueInput>
-    disconnect?: Enumerable<ContentmapWhereUniqueInput>
-    delete?: Enumerable<ContentmapWhereUniqueInput>
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-    update?: Enumerable<ContentmapUpdateWithWhereUniqueWithoutColmapInput>
-    updateMany?: Enumerable<ContentmapUpdateManyWithWhereWithoutColmapInput>
-    deleteMany?: Enumerable<ContentmapScalarWhereInput>
-  }
-
-  export type ColmapCreateNestedOneWithoutContentmapInput = {
-    create?: XOR<ColmapCreateWithoutContentmapInput, ColmapUncheckedCreateWithoutContentmapInput>
-    connectOrCreate?: ColmapCreateOrConnectWithoutContentmapInput
-    connect?: ColmapWhereUniqueInput
-  }
-
-  export type RowmapCreateNestedOneWithoutContentmapInput = {
-    create?: XOR<RowmapCreateWithoutContentmapInput, RowmapUncheckedCreateWithoutContentmapInput>
-    connectOrCreate?: RowmapCreateOrConnectWithoutContentmapInput
-    connect?: RowmapWhereUniqueInput
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
-  export type ColmapUpdateOneRequiredWithoutContentmapNestedInput = {
-    create?: XOR<ColmapCreateWithoutContentmapInput, ColmapUncheckedCreateWithoutContentmapInput>
-    connectOrCreate?: ColmapCreateOrConnectWithoutContentmapInput
-    upsert?: ColmapUpsertWithoutContentmapInput
-    connect?: ColmapWhereUniqueInput
-    update?: XOR<ColmapUpdateWithoutContentmapInput, ColmapUncheckedUpdateWithoutContentmapInput>
-  }
-
-  export type RowmapUpdateOneRequiredWithoutContentmapNestedInput = {
-    create?: XOR<RowmapCreateWithoutContentmapInput, RowmapUncheckedCreateWithoutContentmapInput>
-    connectOrCreate?: RowmapCreateOrConnectWithoutContentmapInput
-    upsert?: RowmapUpsertWithoutContentmapInput
-    connect?: RowmapWhereUniqueInput
-    update?: XOR<RowmapUpdateWithoutContentmapInput, RowmapUncheckedUpdateWithoutContentmapInput>
-  }
-
-  export type ContentmapCreateNestedManyWithoutRowmapInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutRowmapInput>, Enumerable<ContentmapUncheckedCreateWithoutRowmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutRowmapInput>
-    createMany?: ContentmapCreateManyRowmapInputEnvelope
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-  }
-
-  export type ContentmapUncheckedCreateNestedManyWithoutRowmapInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutRowmapInput>, Enumerable<ContentmapUncheckedCreateWithoutRowmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutRowmapInput>
-    createMany?: ContentmapCreateManyRowmapInputEnvelope
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-  }
-
-  export type ContentmapUpdateManyWithoutRowmapNestedInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutRowmapInput>, Enumerable<ContentmapUncheckedCreateWithoutRowmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutRowmapInput>
-    upsert?: Enumerable<ContentmapUpsertWithWhereUniqueWithoutRowmapInput>
-    createMany?: ContentmapCreateManyRowmapInputEnvelope
-    set?: Enumerable<ContentmapWhereUniqueInput>
-    disconnect?: Enumerable<ContentmapWhereUniqueInput>
-    delete?: Enumerable<ContentmapWhereUniqueInput>
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-    update?: Enumerable<ContentmapUpdateWithWhereUniqueWithoutRowmapInput>
-    updateMany?: Enumerable<ContentmapUpdateManyWithWhereWithoutRowmapInput>
-    deleteMany?: Enumerable<ContentmapScalarWhereInput>
-  }
-
-  export type ContentmapUncheckedUpdateManyWithoutRowmapNestedInput = {
-    create?: XOR<Enumerable<ContentmapCreateWithoutRowmapInput>, Enumerable<ContentmapUncheckedCreateWithoutRowmapInput>>
-    connectOrCreate?: Enumerable<ContentmapCreateOrConnectWithoutRowmapInput>
-    upsert?: Enumerable<ContentmapUpsertWithWhereUniqueWithoutRowmapInput>
-    createMany?: ContentmapCreateManyRowmapInputEnvelope
-    set?: Enumerable<ContentmapWhereUniqueInput>
-    disconnect?: Enumerable<ContentmapWhereUniqueInput>
-    delete?: Enumerable<ContentmapWhereUniqueInput>
-    connect?: Enumerable<ContentmapWhereUniqueInput>
-    update?: Enumerable<ContentmapUpdateWithWhereUniqueWithoutRowmapInput>
-    updateMany?: Enumerable<ContentmapUpdateManyWithWhereWithoutRowmapInput>
-    deleteMany?: Enumerable<ContentmapScalarWhereInput>
-  }
-
-  export type NestedUuidFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    not?: NestedUuidFilter | string
-  }
-
-  export type NestedIntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-  }
-
-  export type NestedUuidWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    not?: NestedUuidWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
-  }
-
-  export type NestedIntFilter = {
+  export type IntFilter = {
     equals?: number
     in?: Enumerable<number>
     notIn?: Enumerable<number>
@@ -5646,6 +5899,413 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     gt?: number
     gte?: number
     not?: NestedIntFilter | number
+  }
+
+  export type DateTimeFilter = {
+    equals?: Date | string
+    in?: Enumerable<Date> | Enumerable<string>
+    notIn?: Enumerable<Date> | Enumerable<string>
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeFilter | Date | string
+  }
+
+  export type ColmapListRelationFilter = {
+    every?: ColmapWhereInput
+    some?: ColmapWhereInput
+    none?: ColmapWhereInput
+  }
+
+  export type RowmapListRelationFilter = {
+    every?: RowmapWhereInput
+    some?: RowmapWhereInput
+    none?: RowmapWhereInput
+  }
+
+  export type ColmapOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RowmapOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SheetsCountOrderByAggregateInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    startrow?: SortOrder
+    endrow?: SortOrder
+    startrol?: SortOrder
+    endrol?: SortOrder
+    created_at?: SortOrder
+    title?: SortOrder
+  }
+
+  export type SheetsAvgOrderByAggregateInput = {
+    rows?: SortOrder
+    cols?: SortOrder
+  }
+
+  export type SheetsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    startrow?: SortOrder
+    endrow?: SortOrder
+    startrol?: SortOrder
+    endrol?: SortOrder
+    created_at?: SortOrder
+    title?: SortOrder
+  }
+
+  export type SheetsMinOrderByAggregateInput = {
+    id?: SortOrder
+    rows?: SortOrder
+    cols?: SortOrder
+    startrow?: SortOrder
+    endrow?: SortOrder
+    startrol?: SortOrder
+    endrol?: SortOrder
+    created_at?: SortOrder
+    title?: SortOrder
+  }
+
+  export type SheetsSumOrderByAggregateInput = {
+    rows?: SortOrder
+    cols?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
+  }
+
+  export type DateTimeWithAggregatesFilter = {
+    equals?: Date | string
+    in?: Enumerable<Date> | Enumerable<string>
+    notIn?: Enumerable<Date> | Enumerable<string>
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeWithAggregatesFilter | Date | string
+    _count?: NestedIntFilter
+    _min?: NestedDateTimeFilter
+    _max?: NestedDateTimeFilter
+  }
+
+  export type ColmapCreateNestedOneWithoutCellmapInput = {
+    create?: XOR<ColmapCreateWithoutCellmapInput, ColmapUncheckedCreateWithoutCellmapInput>
+    connectOrCreate?: ColmapCreateOrConnectWithoutCellmapInput
+    connect?: ColmapWhereUniqueInput
+  }
+
+  export type RowmapCreateNestedOneWithoutCellmapInput = {
+    create?: XOR<RowmapCreateWithoutCellmapInput, RowmapUncheckedCreateWithoutCellmapInput>
+    connectOrCreate?: RowmapCreateOrConnectWithoutCellmapInput
+    connect?: RowmapWhereUniqueInput
+  }
+
+  export type SheetsCreateNestedOneWithoutCellmapInput = {
+    create?: XOR<SheetsCreateWithoutCellmapInput, SheetsUncheckedCreateWithoutCellmapInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutCellmapInput
+    connect?: SheetsWhereUniqueInput
+  }
+
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type ColmapUpdateOneRequiredWithoutCellmapNestedInput = {
+    create?: XOR<ColmapCreateWithoutCellmapInput, ColmapUncheckedCreateWithoutCellmapInput>
+    connectOrCreate?: ColmapCreateOrConnectWithoutCellmapInput
+    upsert?: ColmapUpsertWithoutCellmapInput
+    connect?: ColmapWhereUniqueInput
+    update?: XOR<ColmapUpdateWithoutCellmapInput, ColmapUncheckedUpdateWithoutCellmapInput>
+  }
+
+  export type RowmapUpdateOneRequiredWithoutCellmapNestedInput = {
+    create?: XOR<RowmapCreateWithoutCellmapInput, RowmapUncheckedCreateWithoutCellmapInput>
+    connectOrCreate?: RowmapCreateOrConnectWithoutCellmapInput
+    upsert?: RowmapUpsertWithoutCellmapInput
+    connect?: RowmapWhereUniqueInput
+    update?: XOR<RowmapUpdateWithoutCellmapInput, RowmapUncheckedUpdateWithoutCellmapInput>
+  }
+
+  export type SheetsUpdateOneRequiredWithoutCellmapNestedInput = {
+    create?: XOR<SheetsCreateWithoutCellmapInput, SheetsUncheckedCreateWithoutCellmapInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutCellmapInput
+    upsert?: SheetsUpsertWithoutCellmapInput
+    connect?: SheetsWhereUniqueInput
+    update?: XOR<SheetsUpdateWithoutCellmapInput, SheetsUncheckedUpdateWithoutCellmapInput>
+  }
+
+  export type CellmapCreateNestedManyWithoutColmapInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutColmapInput>, Enumerable<CellmapUncheckedCreateWithoutColmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutColmapInput>
+    createMany?: CellmapCreateManyColmapInputEnvelope
+    connect?: Enumerable<CellmapWhereUniqueInput>
+  }
+
+  export type SheetsCreateNestedOneWithoutColmapInput = {
+    create?: XOR<SheetsCreateWithoutColmapInput, SheetsUncheckedCreateWithoutColmapInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutColmapInput
+    connect?: SheetsWhereUniqueInput
+  }
+
+  export type CellmapUncheckedCreateNestedManyWithoutColmapInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutColmapInput>, Enumerable<CellmapUncheckedCreateWithoutColmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutColmapInput>
+    createMany?: CellmapCreateManyColmapInputEnvelope
+    connect?: Enumerable<CellmapWhereUniqueInput>
+  }
+
+  export type CellmapUpdateManyWithoutColmapNestedInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutColmapInput>, Enumerable<CellmapUncheckedCreateWithoutColmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutColmapInput>
+    upsert?: Enumerable<CellmapUpsertWithWhereUniqueWithoutColmapInput>
+    createMany?: CellmapCreateManyColmapInputEnvelope
+    set?: Enumerable<CellmapWhereUniqueInput>
+    disconnect?: Enumerable<CellmapWhereUniqueInput>
+    delete?: Enumerable<CellmapWhereUniqueInput>
+    connect?: Enumerable<CellmapWhereUniqueInput>
+    update?: Enumerable<CellmapUpdateWithWhereUniqueWithoutColmapInput>
+    updateMany?: Enumerable<CellmapUpdateManyWithWhereWithoutColmapInput>
+    deleteMany?: Enumerable<CellmapScalarWhereInput>
+  }
+
+  export type SheetsUpdateOneRequiredWithoutColmapNestedInput = {
+    create?: XOR<SheetsCreateWithoutColmapInput, SheetsUncheckedCreateWithoutColmapInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutColmapInput
+    upsert?: SheetsUpsertWithoutColmapInput
+    connect?: SheetsWhereUniqueInput
+    update?: XOR<SheetsUpdateWithoutColmapInput, SheetsUncheckedUpdateWithoutColmapInput>
+  }
+
+  export type CellmapUncheckedUpdateManyWithoutColmapNestedInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutColmapInput>, Enumerable<CellmapUncheckedCreateWithoutColmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutColmapInput>
+    upsert?: Enumerable<CellmapUpsertWithWhereUniqueWithoutColmapInput>
+    createMany?: CellmapCreateManyColmapInputEnvelope
+    set?: Enumerable<CellmapWhereUniqueInput>
+    disconnect?: Enumerable<CellmapWhereUniqueInput>
+    delete?: Enumerable<CellmapWhereUniqueInput>
+    connect?: Enumerable<CellmapWhereUniqueInput>
+    update?: Enumerable<CellmapUpdateWithWhereUniqueWithoutColmapInput>
+    updateMany?: Enumerable<CellmapUpdateManyWithWhereWithoutColmapInput>
+    deleteMany?: Enumerable<CellmapScalarWhereInput>
+  }
+
+  export type CellmapCreateNestedManyWithoutRowmapInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutRowmapInput>, Enumerable<CellmapUncheckedCreateWithoutRowmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutRowmapInput>
+    createMany?: CellmapCreateManyRowmapInputEnvelope
+    connect?: Enumerable<CellmapWhereUniqueInput>
+  }
+
+  export type SheetsCreateNestedOneWithoutRowmapInput = {
+    create?: XOR<SheetsCreateWithoutRowmapInput, SheetsUncheckedCreateWithoutRowmapInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutRowmapInput
+    connect?: SheetsWhereUniqueInput
+  }
+
+  export type CellmapUncheckedCreateNestedManyWithoutRowmapInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutRowmapInput>, Enumerable<CellmapUncheckedCreateWithoutRowmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutRowmapInput>
+    createMany?: CellmapCreateManyRowmapInputEnvelope
+    connect?: Enumerable<CellmapWhereUniqueInput>
+  }
+
+  export type CellmapUpdateManyWithoutRowmapNestedInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutRowmapInput>, Enumerable<CellmapUncheckedCreateWithoutRowmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutRowmapInput>
+    upsert?: Enumerable<CellmapUpsertWithWhereUniqueWithoutRowmapInput>
+    createMany?: CellmapCreateManyRowmapInputEnvelope
+    set?: Enumerable<CellmapWhereUniqueInput>
+    disconnect?: Enumerable<CellmapWhereUniqueInput>
+    delete?: Enumerable<CellmapWhereUniqueInput>
+    connect?: Enumerable<CellmapWhereUniqueInput>
+    update?: Enumerable<CellmapUpdateWithWhereUniqueWithoutRowmapInput>
+    updateMany?: Enumerable<CellmapUpdateManyWithWhereWithoutRowmapInput>
+    deleteMany?: Enumerable<CellmapScalarWhereInput>
+  }
+
+  export type SheetsUpdateOneRequiredWithoutRowmapNestedInput = {
+    create?: XOR<SheetsCreateWithoutRowmapInput, SheetsUncheckedCreateWithoutRowmapInput>
+    connectOrCreate?: SheetsCreateOrConnectWithoutRowmapInput
+    upsert?: SheetsUpsertWithoutRowmapInput
+    connect?: SheetsWhereUniqueInput
+    update?: XOR<SheetsUpdateWithoutRowmapInput, SheetsUncheckedUpdateWithoutRowmapInput>
+  }
+
+  export type CellmapUncheckedUpdateManyWithoutRowmapNestedInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutRowmapInput>, Enumerable<CellmapUncheckedCreateWithoutRowmapInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutRowmapInput>
+    upsert?: Enumerable<CellmapUpsertWithWhereUniqueWithoutRowmapInput>
+    createMany?: CellmapCreateManyRowmapInputEnvelope
+    set?: Enumerable<CellmapWhereUniqueInput>
+    disconnect?: Enumerable<CellmapWhereUniqueInput>
+    delete?: Enumerable<CellmapWhereUniqueInput>
+    connect?: Enumerable<CellmapWhereUniqueInput>
+    update?: Enumerable<CellmapUpdateWithWhereUniqueWithoutRowmapInput>
+    updateMany?: Enumerable<CellmapUpdateManyWithWhereWithoutRowmapInput>
+    deleteMany?: Enumerable<CellmapScalarWhereInput>
+  }
+
+  export type CellmapCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutSheetsInput>, Enumerable<CellmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutSheetsInput>
+    createMany?: CellmapCreateManySheetsInputEnvelope
+    connect?: Enumerable<CellmapWhereUniqueInput>
+  }
+
+  export type ColmapCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<ColmapCreateWithoutSheetsInput>, Enumerable<ColmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ColmapCreateOrConnectWithoutSheetsInput>
+    createMany?: ColmapCreateManySheetsInputEnvelope
+    connect?: Enumerable<ColmapWhereUniqueInput>
+  }
+
+  export type RowmapCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<RowmapCreateWithoutSheetsInput>, Enumerable<RowmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<RowmapCreateOrConnectWithoutSheetsInput>
+    createMany?: RowmapCreateManySheetsInputEnvelope
+    connect?: Enumerable<RowmapWhereUniqueInput>
+  }
+
+  export type CellmapUncheckedCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutSheetsInput>, Enumerable<CellmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutSheetsInput>
+    createMany?: CellmapCreateManySheetsInputEnvelope
+    connect?: Enumerable<CellmapWhereUniqueInput>
+  }
+
+  export type ColmapUncheckedCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<ColmapCreateWithoutSheetsInput>, Enumerable<ColmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ColmapCreateOrConnectWithoutSheetsInput>
+    createMany?: ColmapCreateManySheetsInputEnvelope
+    connect?: Enumerable<ColmapWhereUniqueInput>
+  }
+
+  export type RowmapUncheckedCreateNestedManyWithoutSheetsInput = {
+    create?: XOR<Enumerable<RowmapCreateWithoutSheetsInput>, Enumerable<RowmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<RowmapCreateOrConnectWithoutSheetsInput>
+    createMany?: RowmapCreateManySheetsInputEnvelope
+    connect?: Enumerable<RowmapWhereUniqueInput>
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type CellmapUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutSheetsInput>, Enumerable<CellmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<CellmapUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: CellmapCreateManySheetsInputEnvelope
+    set?: Enumerable<CellmapWhereUniqueInput>
+    disconnect?: Enumerable<CellmapWhereUniqueInput>
+    delete?: Enumerable<CellmapWhereUniqueInput>
+    connect?: Enumerable<CellmapWhereUniqueInput>
+    update?: Enumerable<CellmapUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<CellmapUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<CellmapScalarWhereInput>
+  }
+
+  export type ColmapUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<ColmapCreateWithoutSheetsInput>, Enumerable<ColmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ColmapCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<ColmapUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: ColmapCreateManySheetsInputEnvelope
+    set?: Enumerable<ColmapWhereUniqueInput>
+    disconnect?: Enumerable<ColmapWhereUniqueInput>
+    delete?: Enumerable<ColmapWhereUniqueInput>
+    connect?: Enumerable<ColmapWhereUniqueInput>
+    update?: Enumerable<ColmapUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<ColmapUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<ColmapScalarWhereInput>
+  }
+
+  export type RowmapUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<RowmapCreateWithoutSheetsInput>, Enumerable<RowmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<RowmapCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<RowmapUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: RowmapCreateManySheetsInputEnvelope
+    set?: Enumerable<RowmapWhereUniqueInput>
+    disconnect?: Enumerable<RowmapWhereUniqueInput>
+    delete?: Enumerable<RowmapWhereUniqueInput>
+    connect?: Enumerable<RowmapWhereUniqueInput>
+    update?: Enumerable<RowmapUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<RowmapUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<RowmapScalarWhereInput>
+  }
+
+  export type CellmapUncheckedUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<CellmapCreateWithoutSheetsInput>, Enumerable<CellmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<CellmapCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<CellmapUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: CellmapCreateManySheetsInputEnvelope
+    set?: Enumerable<CellmapWhereUniqueInput>
+    disconnect?: Enumerable<CellmapWhereUniqueInput>
+    delete?: Enumerable<CellmapWhereUniqueInput>
+    connect?: Enumerable<CellmapWhereUniqueInput>
+    update?: Enumerable<CellmapUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<CellmapUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<CellmapScalarWhereInput>
+  }
+
+  export type ColmapUncheckedUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<ColmapCreateWithoutSheetsInput>, Enumerable<ColmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<ColmapCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<ColmapUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: ColmapCreateManySheetsInputEnvelope
+    set?: Enumerable<ColmapWhereUniqueInput>
+    disconnect?: Enumerable<ColmapWhereUniqueInput>
+    delete?: Enumerable<ColmapWhereUniqueInput>
+    connect?: Enumerable<ColmapWhereUniqueInput>
+    update?: Enumerable<ColmapUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<ColmapUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<ColmapScalarWhereInput>
+  }
+
+  export type RowmapUncheckedUpdateManyWithoutSheetsNestedInput = {
+    create?: XOR<Enumerable<RowmapCreateWithoutSheetsInput>, Enumerable<RowmapUncheckedCreateWithoutSheetsInput>>
+    connectOrCreate?: Enumerable<RowmapCreateOrConnectWithoutSheetsInput>
+    upsert?: Enumerable<RowmapUpsertWithWhereUniqueWithoutSheetsInput>
+    createMany?: RowmapCreateManySheetsInputEnvelope
+    set?: Enumerable<RowmapWhereUniqueInput>
+    disconnect?: Enumerable<RowmapWhereUniqueInput>
+    delete?: Enumerable<RowmapWhereUniqueInput>
+    connect?: Enumerable<RowmapWhereUniqueInput>
+    update?: Enumerable<RowmapUpdateWithWhereUniqueWithoutSheetsInput>
+    updateMany?: Enumerable<RowmapUpdateManyWithWhereWithoutSheetsInput>
+    deleteMany?: Enumerable<RowmapScalarWhereInput>
   }
 
   export type NestedStringFilter = {
@@ -5662,33 +6322,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     not?: NestedStringFilter | string
   }
 
-  export type NestedIntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
-  }
-
-  export type NestedFloatNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatNullableFilter | number | null
-  }
-
   export type NestedStringNullableFilter = {
     equals?: string | null
     in?: Enumerable<string> | null
@@ -5701,23 +6334,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     startsWith?: string
     endsWith?: string
     not?: NestedStringNullableFilter | string | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
   }
 
   export type NestedStringWithAggregatesFilter = {
@@ -5737,180 +6353,722 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     _max?: NestedStringFilter
   }
 
-  export type ContentmapCreateWithoutColmapInput = {
+  export type NestedIntFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntFilter | number
+  }
+
+  export type NestedStringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
+  }
+
+  export type NestedIntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableFilter | number | null
+  }
+
+  export type NestedDateTimeFilter = {
+    equals?: Date | string
+    in?: Enumerable<Date> | Enumerable<string>
+    notIn?: Enumerable<Date> | Enumerable<string>
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeFilter | Date | string
+  }
+
+  export type NestedIntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
+  }
+
+  export type NestedFloatFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatFilter | number
+  }
+
+  export type NestedDateTimeWithAggregatesFilter = {
+    equals?: Date | string
+    in?: Enumerable<Date> | Enumerable<string>
+    notIn?: Enumerable<Date> | Enumerable<string>
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeWithAggregatesFilter | Date | string
+    _count?: NestedIntFilter
+    _min?: NestedDateTimeFilter
+    _max?: NestedDateTimeFilter
+  }
+
+  export type ColmapCreateWithoutCellmapInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+    sheets: SheetsCreateNestedOneWithoutColmapInput
+  }
+
+  export type ColmapUncheckedCreateWithoutCellmapInput = {
+    id: string
+    sheet_id: string
+    startmarker: string
+    endmarker: string
+  }
+
+  export type ColmapCreateOrConnectWithoutCellmapInput = {
+    where: ColmapWhereUniqueInput
+    create: XOR<ColmapCreateWithoutCellmapInput, ColmapUncheckedCreateWithoutCellmapInput>
+  }
+
+  export type RowmapCreateWithoutCellmapInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+    sheets: SheetsCreateNestedOneWithoutRowmapInput
+  }
+
+  export type RowmapUncheckedCreateWithoutCellmapInput = {
+    id: string
+    sheet_id: string
+    startmarker: string
+    endmarker: string
+  }
+
+  export type RowmapCreateOrConnectWithoutCellmapInput = {
+    where: RowmapWhereUniqueInput
+    create: XOR<RowmapCreateWithoutCellmapInput, RowmapUncheckedCreateWithoutCellmapInput>
+  }
+
+  export type SheetsCreateWithoutCellmapInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    colmap?: ColmapCreateNestedManyWithoutSheetsInput
+    rowmap?: RowmapCreateNestedManyWithoutSheetsInput
+  }
+
+  export type SheetsUncheckedCreateWithoutCellmapInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    colmap?: ColmapUncheckedCreateNestedManyWithoutSheetsInput
+    rowmap?: RowmapUncheckedCreateNestedManyWithoutSheetsInput
+  }
+
+  export type SheetsCreateOrConnectWithoutCellmapInput = {
+    where: SheetsWhereUniqueInput
+    create: XOR<SheetsCreateWithoutCellmapInput, SheetsUncheckedCreateWithoutCellmapInput>
+  }
+
+  export type ColmapUpsertWithoutCellmapInput = {
+    update: XOR<ColmapUpdateWithoutCellmapInput, ColmapUncheckedUpdateWithoutCellmapInput>
+    create: XOR<ColmapCreateWithoutCellmapInput, ColmapUncheckedCreateWithoutCellmapInput>
+  }
+
+  export type ColmapUpdateWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    sheets?: SheetsUpdateOneRequiredWithoutColmapNestedInput
+  }
+
+  export type ColmapUncheckedUpdateWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RowmapUpsertWithoutCellmapInput = {
+    update: XOR<RowmapUpdateWithoutCellmapInput, RowmapUncheckedUpdateWithoutCellmapInput>
+    create: XOR<RowmapCreateWithoutCellmapInput, RowmapUncheckedCreateWithoutCellmapInput>
+  }
+
+  export type RowmapUpdateWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    sheets?: SheetsUpdateOneRequiredWithoutRowmapNestedInput
+  }
+
+  export type RowmapUncheckedUpdateWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SheetsUpsertWithoutCellmapInput = {
+    update: XOR<SheetsUpdateWithoutCellmapInput, SheetsUncheckedUpdateWithoutCellmapInput>
+    create: XOR<SheetsCreateWithoutCellmapInput, SheetsUncheckedCreateWithoutCellmapInput>
+  }
+
+  export type SheetsUpdateWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    colmap?: ColmapUpdateManyWithoutSheetsNestedInput
+    rowmap?: RowmapUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type SheetsUncheckedUpdateWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    colmap?: ColmapUncheckedUpdateManyWithoutSheetsNestedInput
+    rowmap?: RowmapUncheckedUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type CellmapCreateWithoutColmapInput = {
+    id: string
     content?: string | null
-    rowmap: RowmapCreateNestedOneWithoutContentmapInput
+    rowmap: RowmapCreateNestedOneWithoutCellmapInput
+    sheets: SheetsCreateNestedOneWithoutCellmapInput
   }
 
-  export type ContentmapUncheckedCreateWithoutColmapInput = {
-    rowIndex: string
+  export type CellmapUncheckedCreateWithoutColmapInput = {
+    id: string
+    sheet_id: string
+    row_id: string
     content?: string | null
   }
 
-  export type ContentmapCreateOrConnectWithoutColmapInput = {
-    where: ContentmapWhereUniqueInput
-    create: XOR<ContentmapCreateWithoutColmapInput, ContentmapUncheckedCreateWithoutColmapInput>
+  export type CellmapCreateOrConnectWithoutColmapInput = {
+    where: CellmapWhereUniqueInput
+    create: XOR<CellmapCreateWithoutColmapInput, CellmapUncheckedCreateWithoutColmapInput>
   }
 
-  export type ContentmapCreateManyColmapInputEnvelope = {
-    data: Enumerable<ContentmapCreateManyColmapInput>
+  export type CellmapCreateManyColmapInputEnvelope = {
+    data: Enumerable<CellmapCreateManyColmapInput>
     skipDuplicates?: boolean
   }
 
-  export type ContentmapUpsertWithWhereUniqueWithoutColmapInput = {
-    where: ContentmapWhereUniqueInput
-    update: XOR<ContentmapUpdateWithoutColmapInput, ContentmapUncheckedUpdateWithoutColmapInput>
-    create: XOR<ContentmapCreateWithoutColmapInput, ContentmapUncheckedCreateWithoutColmapInput>
+  export type SheetsCreateWithoutColmapInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    cellmap?: CellmapCreateNestedManyWithoutSheetsInput
+    rowmap?: RowmapCreateNestedManyWithoutSheetsInput
   }
 
-  export type ContentmapUpdateWithWhereUniqueWithoutColmapInput = {
-    where: ContentmapWhereUniqueInput
-    data: XOR<ContentmapUpdateWithoutColmapInput, ContentmapUncheckedUpdateWithoutColmapInput>
+  export type SheetsUncheckedCreateWithoutColmapInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutSheetsInput
+    rowmap?: RowmapUncheckedCreateNestedManyWithoutSheetsInput
   }
 
-  export type ContentmapUpdateManyWithWhereWithoutColmapInput = {
-    where: ContentmapScalarWhereInput
-    data: XOR<ContentmapUpdateManyMutationInput, ContentmapUncheckedUpdateManyWithoutContentmapInput>
+  export type SheetsCreateOrConnectWithoutColmapInput = {
+    where: SheetsWhereUniqueInput
+    create: XOR<SheetsCreateWithoutColmapInput, SheetsUncheckedCreateWithoutColmapInput>
   }
 
-  export type ContentmapScalarWhereInput = {
-    AND?: Enumerable<ContentmapScalarWhereInput>
-    OR?: Enumerable<ContentmapScalarWhereInput>
-    NOT?: Enumerable<ContentmapScalarWhereInput>
-    rowIndex?: UuidFilter | string
-    colIndex?: UuidFilter | string
+  export type CellmapUpsertWithWhereUniqueWithoutColmapInput = {
+    where: CellmapWhereUniqueInput
+    update: XOR<CellmapUpdateWithoutColmapInput, CellmapUncheckedUpdateWithoutColmapInput>
+    create: XOR<CellmapCreateWithoutColmapInput, CellmapUncheckedCreateWithoutColmapInput>
+  }
+
+  export type CellmapUpdateWithWhereUniqueWithoutColmapInput = {
+    where: CellmapWhereUniqueInput
+    data: XOR<CellmapUpdateWithoutColmapInput, CellmapUncheckedUpdateWithoutColmapInput>
+  }
+
+  export type CellmapUpdateManyWithWhereWithoutColmapInput = {
+    where: CellmapScalarWhereInput
+    data: XOR<CellmapUpdateManyMutationInput, CellmapUncheckedUpdateManyWithoutCellmapInput>
+  }
+
+  export type CellmapScalarWhereInput = {
+    AND?: Enumerable<CellmapScalarWhereInput>
+    OR?: Enumerable<CellmapScalarWhereInput>
+    NOT?: Enumerable<CellmapScalarWhereInput>
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    row_id?: StringFilter | string
+    col_id?: StringFilter | string
     content?: StringNullableFilter | string | null
   }
 
-  export type ColmapCreateWithoutContentmapInput = {
-    id: string
-    pos?: number | null
+  export type SheetsUpsertWithoutColmapInput = {
+    update: XOR<SheetsUpdateWithoutColmapInput, SheetsUncheckedUpdateWithoutColmapInput>
+    create: XOR<SheetsCreateWithoutColmapInput, SheetsUncheckedCreateWithoutColmapInput>
   }
 
-  export type ColmapUncheckedCreateWithoutContentmapInput = {
-    id: string
-    pos?: number | null
-  }
-
-  export type ColmapCreateOrConnectWithoutContentmapInput = {
-    where: ColmapWhereUniqueInput
-    create: XOR<ColmapCreateWithoutContentmapInput, ColmapUncheckedCreateWithoutContentmapInput>
-  }
-
-  export type RowmapCreateWithoutContentmapInput = {
-    id: string
-    pos?: number | null
-  }
-
-  export type RowmapUncheckedCreateWithoutContentmapInput = {
-    id: string
-    pos?: number | null
-  }
-
-  export type RowmapCreateOrConnectWithoutContentmapInput = {
-    where: RowmapWhereUniqueInput
-    create: XOR<RowmapCreateWithoutContentmapInput, RowmapUncheckedCreateWithoutContentmapInput>
-  }
-
-  export type ColmapUpsertWithoutContentmapInput = {
-    update: XOR<ColmapUpdateWithoutContentmapInput, ColmapUncheckedUpdateWithoutContentmapInput>
-    create: XOR<ColmapCreateWithoutContentmapInput, ColmapUncheckedCreateWithoutContentmapInput>
-  }
-
-  export type ColmapUpdateWithoutContentmapInput = {
+  export type SheetsUpdateWithoutColmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    cellmap?: CellmapUpdateManyWithoutSheetsNestedInput
+    rowmap?: RowmapUpdateManyWithoutSheetsNestedInput
   }
 
-  export type ColmapUncheckedUpdateWithoutContentmapInput = {
+  export type SheetsUncheckedUpdateWithoutColmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    cellmap?: CellmapUncheckedUpdateManyWithoutSheetsNestedInput
+    rowmap?: RowmapUncheckedUpdateManyWithoutSheetsNestedInput
   }
 
-  export type RowmapUpsertWithoutContentmapInput = {
-    update: XOR<RowmapUpdateWithoutContentmapInput, RowmapUncheckedUpdateWithoutContentmapInput>
-    create: XOR<RowmapCreateWithoutContentmapInput, RowmapUncheckedCreateWithoutContentmapInput>
-  }
-
-  export type RowmapUpdateWithoutContentmapInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type RowmapUncheckedUpdateWithoutContentmapInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pos?: NullableIntFieldUpdateOperationsInput | number | null
-  }
-
-  export type ContentmapCreateWithoutRowmapInput = {
+  export type CellmapCreateWithoutRowmapInput = {
+    id: string
     content?: string | null
-    colmap: ColmapCreateNestedOneWithoutContentmapInput
+    colmap: ColmapCreateNestedOneWithoutCellmapInput
+    sheets: SheetsCreateNestedOneWithoutCellmapInput
   }
 
-  export type ContentmapUncheckedCreateWithoutRowmapInput = {
-    colIndex: string
+  export type CellmapUncheckedCreateWithoutRowmapInput = {
+    id: string
+    sheet_id: string
+    col_id: string
     content?: string | null
   }
 
-  export type ContentmapCreateOrConnectWithoutRowmapInput = {
-    where: ContentmapWhereUniqueInput
-    create: XOR<ContentmapCreateWithoutRowmapInput, ContentmapUncheckedCreateWithoutRowmapInput>
+  export type CellmapCreateOrConnectWithoutRowmapInput = {
+    where: CellmapWhereUniqueInput
+    create: XOR<CellmapCreateWithoutRowmapInput, CellmapUncheckedCreateWithoutRowmapInput>
   }
 
-  export type ContentmapCreateManyRowmapInputEnvelope = {
-    data: Enumerable<ContentmapCreateManyRowmapInput>
+  export type CellmapCreateManyRowmapInputEnvelope = {
+    data: Enumerable<CellmapCreateManyRowmapInput>
     skipDuplicates?: boolean
   }
 
-  export type ContentmapUpsertWithWhereUniqueWithoutRowmapInput = {
-    where: ContentmapWhereUniqueInput
-    update: XOR<ContentmapUpdateWithoutRowmapInput, ContentmapUncheckedUpdateWithoutRowmapInput>
-    create: XOR<ContentmapCreateWithoutRowmapInput, ContentmapUncheckedCreateWithoutRowmapInput>
+  export type SheetsCreateWithoutRowmapInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    cellmap?: CellmapCreateNestedManyWithoutSheetsInput
+    colmap?: ColmapCreateNestedManyWithoutSheetsInput
   }
 
-  export type ContentmapUpdateWithWhereUniqueWithoutRowmapInput = {
-    where: ContentmapWhereUniqueInput
-    data: XOR<ContentmapUpdateWithoutRowmapInput, ContentmapUncheckedUpdateWithoutRowmapInput>
+  export type SheetsUncheckedCreateWithoutRowmapInput = {
+    id: string
+    rows: number
+    cols: number
+    startrow?: string | null
+    endrow?: string | null
+    startrol?: string | null
+    endrol?: string | null
+    created_at: Date | string
+    title?: string | null
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutSheetsInput
+    colmap?: ColmapUncheckedCreateNestedManyWithoutSheetsInput
   }
 
-  export type ContentmapUpdateManyWithWhereWithoutRowmapInput = {
-    where: ContentmapScalarWhereInput
-    data: XOR<ContentmapUpdateManyMutationInput, ContentmapUncheckedUpdateManyWithoutContentmapInput>
+  export type SheetsCreateOrConnectWithoutRowmapInput = {
+    where: SheetsWhereUniqueInput
+    create: XOR<SheetsCreateWithoutRowmapInput, SheetsUncheckedCreateWithoutRowmapInput>
   }
 
-  export type ContentmapCreateManyColmapInput = {
-    rowIndex: string
+  export type CellmapUpsertWithWhereUniqueWithoutRowmapInput = {
+    where: CellmapWhereUniqueInput
+    update: XOR<CellmapUpdateWithoutRowmapInput, CellmapUncheckedUpdateWithoutRowmapInput>
+    create: XOR<CellmapCreateWithoutRowmapInput, CellmapUncheckedCreateWithoutRowmapInput>
+  }
+
+  export type CellmapUpdateWithWhereUniqueWithoutRowmapInput = {
+    where: CellmapWhereUniqueInput
+    data: XOR<CellmapUpdateWithoutRowmapInput, CellmapUncheckedUpdateWithoutRowmapInput>
+  }
+
+  export type CellmapUpdateManyWithWhereWithoutRowmapInput = {
+    where: CellmapScalarWhereInput
+    data: XOR<CellmapUpdateManyMutationInput, CellmapUncheckedUpdateManyWithoutCellmapInput>
+  }
+
+  export type SheetsUpsertWithoutRowmapInput = {
+    update: XOR<SheetsUpdateWithoutRowmapInput, SheetsUncheckedUpdateWithoutRowmapInput>
+    create: XOR<SheetsCreateWithoutRowmapInput, SheetsUncheckedCreateWithoutRowmapInput>
+  }
+
+  export type SheetsUpdateWithoutRowmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    cellmap?: CellmapUpdateManyWithoutSheetsNestedInput
+    colmap?: ColmapUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type SheetsUncheckedUpdateWithoutRowmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rows?: IntFieldUpdateOperationsInput | number
+    cols?: IntFieldUpdateOperationsInput | number
+    startrow?: NullableStringFieldUpdateOperationsInput | string | null
+    endrow?: NullableStringFieldUpdateOperationsInput | string | null
+    startrol?: NullableStringFieldUpdateOperationsInput | string | null
+    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    cellmap?: CellmapUncheckedUpdateManyWithoutSheetsNestedInput
+    colmap?: ColmapUncheckedUpdateManyWithoutSheetsNestedInput
+  }
+
+  export type CellmapCreateWithoutSheetsInput = {
+    id: string
+    content?: string | null
+    colmap: ColmapCreateNestedOneWithoutCellmapInput
+    rowmap: RowmapCreateNestedOneWithoutCellmapInput
+  }
+
+  export type CellmapUncheckedCreateWithoutSheetsInput = {
+    id: string
+    row_id: string
+    col_id: string
     content?: string | null
   }
 
-  export type ContentmapUpdateWithoutColmapInput = {
-    content?: NullableStringFieldUpdateOperationsInput | string | null
-    rowmap?: RowmapUpdateOneRequiredWithoutContentmapNestedInput
+  export type CellmapCreateOrConnectWithoutSheetsInput = {
+    where: CellmapWhereUniqueInput
+    create: XOR<CellmapCreateWithoutSheetsInput, CellmapUncheckedCreateWithoutSheetsInput>
   }
 
-  export type ContentmapUncheckedUpdateWithoutColmapInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
+  export type CellmapCreateManySheetsInputEnvelope = {
+    data: Enumerable<CellmapCreateManySheetsInput>
+    skipDuplicates?: boolean
   }
 
-  export type ContentmapUncheckedUpdateManyWithoutContentmapInput = {
-    rowIndex?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
+  export type ColmapCreateWithoutSheetsInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapCreateNestedManyWithoutColmapInput
   }
 
-  export type ContentmapCreateManyRowmapInput = {
-    colIndex: string
+  export type ColmapUncheckedCreateWithoutSheetsInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutColmapInput
+  }
+
+  export type ColmapCreateOrConnectWithoutSheetsInput = {
+    where: ColmapWhereUniqueInput
+    create: XOR<ColmapCreateWithoutSheetsInput, ColmapUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type ColmapCreateManySheetsInputEnvelope = {
+    data: Enumerable<ColmapCreateManySheetsInput>
+    skipDuplicates?: boolean
+  }
+
+  export type RowmapCreateWithoutSheetsInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapCreateNestedManyWithoutRowmapInput
+  }
+
+  export type RowmapUncheckedCreateWithoutSheetsInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+    cellmap?: CellmapUncheckedCreateNestedManyWithoutRowmapInput
+  }
+
+  export type RowmapCreateOrConnectWithoutSheetsInput = {
+    where: RowmapWhereUniqueInput
+    create: XOR<RowmapCreateWithoutSheetsInput, RowmapUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type RowmapCreateManySheetsInputEnvelope = {
+    data: Enumerable<RowmapCreateManySheetsInput>
+    skipDuplicates?: boolean
+  }
+
+  export type CellmapUpsertWithWhereUniqueWithoutSheetsInput = {
+    where: CellmapWhereUniqueInput
+    update: XOR<CellmapUpdateWithoutSheetsInput, CellmapUncheckedUpdateWithoutSheetsInput>
+    create: XOR<CellmapCreateWithoutSheetsInput, CellmapUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type CellmapUpdateWithWhereUniqueWithoutSheetsInput = {
+    where: CellmapWhereUniqueInput
+    data: XOR<CellmapUpdateWithoutSheetsInput, CellmapUncheckedUpdateWithoutSheetsInput>
+  }
+
+  export type CellmapUpdateManyWithWhereWithoutSheetsInput = {
+    where: CellmapScalarWhereInput
+    data: XOR<CellmapUpdateManyMutationInput, CellmapUncheckedUpdateManyWithoutCellmapInput>
+  }
+
+  export type ColmapUpsertWithWhereUniqueWithoutSheetsInput = {
+    where: ColmapWhereUniqueInput
+    update: XOR<ColmapUpdateWithoutSheetsInput, ColmapUncheckedUpdateWithoutSheetsInput>
+    create: XOR<ColmapCreateWithoutSheetsInput, ColmapUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type ColmapUpdateWithWhereUniqueWithoutSheetsInput = {
+    where: ColmapWhereUniqueInput
+    data: XOR<ColmapUpdateWithoutSheetsInput, ColmapUncheckedUpdateWithoutSheetsInput>
+  }
+
+  export type ColmapUpdateManyWithWhereWithoutSheetsInput = {
+    where: ColmapScalarWhereInput
+    data: XOR<ColmapUpdateManyMutationInput, ColmapUncheckedUpdateManyWithoutColmapInput>
+  }
+
+  export type ColmapScalarWhereInput = {
+    AND?: Enumerable<ColmapScalarWhereInput>
+    OR?: Enumerable<ColmapScalarWhereInput>
+    NOT?: Enumerable<ColmapScalarWhereInput>
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    startmarker?: StringFilter | string
+    endmarker?: StringFilter | string
+  }
+
+  export type RowmapUpsertWithWhereUniqueWithoutSheetsInput = {
+    where: RowmapWhereUniqueInput
+    update: XOR<RowmapUpdateWithoutSheetsInput, RowmapUncheckedUpdateWithoutSheetsInput>
+    create: XOR<RowmapCreateWithoutSheetsInput, RowmapUncheckedCreateWithoutSheetsInput>
+  }
+
+  export type RowmapUpdateWithWhereUniqueWithoutSheetsInput = {
+    where: RowmapWhereUniqueInput
+    data: XOR<RowmapUpdateWithoutSheetsInput, RowmapUncheckedUpdateWithoutSheetsInput>
+  }
+
+  export type RowmapUpdateManyWithWhereWithoutSheetsInput = {
+    where: RowmapScalarWhereInput
+    data: XOR<RowmapUpdateManyMutationInput, RowmapUncheckedUpdateManyWithoutRowmapInput>
+  }
+
+  export type RowmapScalarWhereInput = {
+    AND?: Enumerable<RowmapScalarWhereInput>
+    OR?: Enumerable<RowmapScalarWhereInput>
+    NOT?: Enumerable<RowmapScalarWhereInput>
+    id?: StringFilter | string
+    sheet_id?: StringFilter | string
+    startmarker?: StringFilter | string
+    endmarker?: StringFilter | string
+  }
+
+  export type CellmapCreateManyColmapInput = {
+    id: string
+    sheet_id: string
+    row_id: string
     content?: string | null
   }
 
-  export type ContentmapUpdateWithoutRowmapInput = {
+  export type CellmapUpdateWithoutColmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    colmap?: ColmapUpdateOneRequiredWithoutContentmapNestedInput
+    rowmap?: RowmapUpdateOneRequiredWithoutCellmapNestedInput
+    sheets?: SheetsUpdateOneRequiredWithoutCellmapNestedInput
   }
 
-  export type ContentmapUncheckedUpdateWithoutRowmapInput = {
-    colIndex?: StringFieldUpdateOperationsInput | string
+  export type CellmapUncheckedUpdateWithoutColmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    row_id?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CellmapUncheckedUpdateManyWithoutCellmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    row_id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CellmapCreateManyRowmapInput = {
+    id: string
+    sheet_id: string
+    col_id: string
+    content?: string | null
+  }
+
+  export type CellmapUpdateWithoutRowmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    colmap?: ColmapUpdateOneRequiredWithoutCellmapNestedInput
+    sheets?: SheetsUpdateOneRequiredWithoutCellmapNestedInput
+  }
+
+  export type CellmapUncheckedUpdateWithoutRowmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sheet_id?: StringFieldUpdateOperationsInput | string
+    col_id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CellmapCreateManySheetsInput = {
+    id: string
+    row_id: string
+    col_id: string
+    content?: string | null
+  }
+
+  export type ColmapCreateManySheetsInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+  }
+
+  export type RowmapCreateManySheetsInput = {
+    id: string
+    startmarker: string
+    endmarker: string
+  }
+
+  export type CellmapUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    colmap?: ColmapUpdateOneRequiredWithoutCellmapNestedInput
+    rowmap?: RowmapUpdateOneRequiredWithoutCellmapNestedInput
+  }
+
+  export type CellmapUncheckedUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    row_id?: StringFieldUpdateOperationsInput | string
+    col_id?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ColmapUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUpdateManyWithoutColmapNestedInput
+  }
+
+  export type ColmapUncheckedUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUncheckedUpdateManyWithoutColmapNestedInput
+  }
+
+  export type ColmapUncheckedUpdateManyWithoutColmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RowmapUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUpdateManyWithoutRowmapNestedInput
+  }
+
+  export type RowmapUncheckedUpdateWithoutSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
+    cellmap?: CellmapUncheckedUpdateManyWithoutRowmapNestedInput
+  }
+
+  export type RowmapUncheckedUpdateManyWithoutRowmapInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startmarker?: StringFieldUpdateOperationsInput | string
+    endmarker?: StringFieldUpdateOperationsInput | string
   }
 
 
