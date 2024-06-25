@@ -72,9 +72,36 @@ export const Example = () => {
   };
 
 
+  const orderRows = (rows: Rowmap[], marker: string, sheet_id: string): Rowmap[] => {
+    const currentRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === marker);
+    if (!currentRow) return;
+    orderedRows.push(currentRow);
+    currentMarker = currentRow.endmarker
 
+    while (currentMarker) {
+      const currentRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentMarker);
+      if (!currentRow) return;
+      orderedRows.push(currentRow);
+      currentMarker = currentRow.endmarker;
+    }
+  
+    return orderedRows;
+  };
 
-  const getRowLabel = (row: Rowmap) => row? row.id : [];
+  //const getRowLabel = (row: Rowmap) => row? row.id : [];
+
+  const getRowLabel = (rows: Rowmap[], row: Rowmap, sheet: string) => {
+    const orderedRows: Rowmap[] = [];
+    const currentRow = rows.find(r => r.sheet_id === sheet.sheet_id && r.id === sheet.startrow);
+    if (!currentRow) return;
+    orderedRows.push(currentRow);
+
+    //following is the endmarker of the first row of spreadsheet
+    orderedRows.push(orderRows(rows, currentRow.endmarker, sheet.id));
+    const foundRow = orderedRows.findIndex(r => r.id === row.id);
+    //return foundRow?.label ?? foundRow?.pos ?? '';
+    return orderedRows[foundRow];
+  };
 
   const onAddRow = async (sheet_id: string, id: string, position: 'before' | 'after' = 'after') => {
     
@@ -126,15 +153,24 @@ export const Example = () => {
         const nextRow = rows.find(r => r.startmarker === referenceRow.endmarker);
         if (nextRow) nextRow.startmarker = newRow.endmarker;
           
-        const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
-        await db.unsafeExec({ sql });
+        //const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
+        //await db.unsafeExec({ sql });
 
         await db.sheets.update({
           where: { id: sheet_id },
           data: {
-            endrow: newRow.endmarker,
+            endrow: newRowId,
           }
         });
+
+        await db.rowmap.update({
+          where: { id: sheet_id, startmarker: referenceRow.endmarker },
+          data: {
+            startmarker: newRow.endmarker,
+          }
+        });
+
+        console.log("sheets", sheet);
 
 
         //PENDING -> update sheet_id endRow or startRow 
@@ -186,7 +222,7 @@ export const Example = () => {
   //const getSheetCols = (sheet_id: string) => cols?.filter((c) => c.sheet_id === sheet_id)
   //  .sort((a,b) => a.pos - b.pos) ?? [];
   
-  const getSheetCols = (sheet_id: string, startCol: string): Row[] => {
+  const getSheetCols = (sheet_id: string, startCol: string): Col[] => {
     // Find the starting row based on sheet_id and row_last
     if (!cols) {
       return [];
@@ -206,7 +242,7 @@ export const Example = () => {
       orderedCols.push(currentCol);
       
       // Find the next Col where the startmarker matches the endmarker of the current Col
-      const nextCol = Cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentCol.endmarker);
+      const nextCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentCol.endmarker);
       
       return orderCols(nextCol, orderedCols);
     };
@@ -215,7 +251,36 @@ export const Example = () => {
     return orderCols(startingCol);
   };
 
-  const getColLabel = (col: Colmap) => col? col.id : [];
+  const orderCols = (cols: Colmap[], marker: string, sheet_id: string): Colmap[] => {
+    const currentCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === marker);
+    if (!currentCol) return;
+    orderedCols.push(currentCol);
+    currentMarker = currentCol.endmarker
+
+    while (currentMarker) {
+      const currentCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentMarker);
+      if (!currentCol) return;
+      orderedCols.push(currentCol);
+      currentMarker = currentCol.endmarker;
+    }
+  
+    return orderedCols;
+  };
+
+  const getColLabel = (cols: Colmap[], col: Colmap, sheet: string) => {
+    const orderedCols: Colmap[] = [];
+    const currentCol = cols.find(c => c.sheet_id === sheet.sheet_id && c.id === sheet.startcol);
+    if (!currentCol) return;
+    orderedCols.push(currentCol);
+
+    //following is the endmarker of the first col of spreadsheet
+    orderedCols.push(orderCols(cols, currentCol.endmarker, sheet.id));
+    const foundCol = orderedCols.findIndex(c => c.id === col.id);
+    //return foundCol?.label ?? foundCols?.pos ?? '';
+    return orderedCols[foundCol];
+  };
+
+  //const getColLabel = (col: Colmap) => col? col.id : [];
   
   const onAddCol = async (sheet_id: string, pos = -1) => {
     const sheet = sheets?.find((s) => s.id === sheet_id);
@@ -389,7 +454,7 @@ export const Example = () => {
                     <img alt='MR' height='16em' src='https://cdn-icons-png.flaticon.com/512/3645/3645851.png'/>
                 </th>
                 {cols.map((col) => 
-                  <th key={col.id} onContextMenu={event => onColHeaderContext(event, col)}>{getColLabel(col)}</th>
+                  <th key={col.id} onContextMenu={event => onColHeaderContext(event, col)}>{getColLabel(col,sheet)}</th>
                 )}
                 <th key="button" className="addButtons addColumnButton" rowSpan={2} onClick={() => onAddCol(sheet.id,-1) }>+</th>
             </tr>
@@ -397,7 +462,7 @@ export const Example = () => {
           <tbody>
             {rows.map((row) => 
               <tr key={row.id}>
-                <th  onContextMenu={event => onRowHeaderContext(event, row)}>{getRowLabel(row)}</th>
+                <th  onContextMenu={event => onRowHeaderContext(event, row)}>{getRowLabel(row, sheet)}</th>
                 {cols.map((col) => {
                   const cell = getCell(sheet.id, row.id, col.id);
                   return (
