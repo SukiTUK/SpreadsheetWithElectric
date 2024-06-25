@@ -47,41 +47,63 @@
   padding: 10px;
 }
 
-#spreadsheetSim {
+table.spreadsheetSim {
   height: fit-content;
   width: fit-content;
-  border-spacing: 0px;
+  border-spacing: 0;
+  border-collapse: collapse;
   color: #999;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 4px;
   margin-bottom: 10px;
 }
 
-#spreadsheetSim td,th {
+.spreadsheetSim td,th {
   border: 1px solid #e7e7e7;
+  padding: 0;
   min-width: 3em;
   max-width: 6em;
 }
 
-#spreadsheetSim .firstRow th {
+.spreadsheetSim .firstRow th {
   background: #afafaf;
 }
 
-#spreadsheetSim th {
+.spreadsheetSim th {
   background-color: #f5f5f5;
 }
 
-#spreadsheetSim th.addButtons {
+.spreadsheetSim .titleRow th {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* .spreadsheetSim th.addButtons { */
+.addButtons {
   background: #afafaf;
   min-width: 1.6em;
   color: #004a96;
 }
 
-#spreadsheetSim input {
+.addSheetButton {
+  width: 200px;
+  margin: 0 auto;
+}
+
+.delSheetButton {
+  width: 200px;
+  margin: 0 auto;
+  color: red;
+}
+
+.spreadsheetSim input {
   border: none;
   padding: 0;
   line-height: 1.6em;
   width: -webkit-fill-available;
+  /* height: 100%;
+  display: inline-block;
+  position: relative; */
 }
 
 .json {
