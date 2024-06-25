@@ -78,6 +78,7 @@ export const Example = () => {
 
   const onAddRow = async (sheet_id: string, id: string, position: 'before' | 'after' = 'after') => {
     
+    console.log("onAddRow ", sheet_id, id , position);
     const sheet = sheets?.find((s) => s.id === sheet_id);
     if (!sheet) return;
     
@@ -94,7 +95,7 @@ export const Example = () => {
         }
       });
       await db.rowmap.create({ data: {
-        newRowId,
+        id: newRowId,
         sheet_id,
         startmarker,
         endmarker
@@ -108,6 +109,7 @@ export const Example = () => {
     if (rowIndex !== -1) {
       const referenceRow = rows[rowIndex];
 
+      const newRow = { id: newRowId, sheet_id: sheet_id, startmarker: null, endmarker: null };
       if (position === 'after') {
         // here you need to send updates to electricSQL rowmap schema
         newRow.startmarker = referenceRow.endmarker;
@@ -126,6 +128,13 @@ export const Example = () => {
           
         const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
         await db.unsafeExec({ sql });
+
+        await db.sheets.update({
+          where: { id: sheet_id },
+          data: {
+            endrow: newRow.endmarker,
+          }
+        });
 
 
         //PENDING -> update sheet_id endRow or startRow 
@@ -402,7 +411,7 @@ export const Example = () => {
               </tr>
             )}
             <tr>
-              <th className="addButtons addRowButton" onClick={() => onAddRow(sheet.id, '', '', '') }>+</th>
+              <th className="addButtons addRowButton" onClick={() => onAddRow(sheet.id, sheet.endrow, 'after') }>+</th>
             </tr>
           </tbody>                 
         </table>
