@@ -62,8 +62,8 @@ export type Sheets = {
   cols: number
   startrow: string | null
   endrow: string | null
-  startrol: string | null
-  endrol: string | null
+  startcol: string | null
+  endcol: string | null
   created_at: Date
   title: string | null
 }
@@ -4072,8 +4072,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number | null
     startrow: string | null
     endrow: string | null
-    startrol: string | null
-    endrol: string | null
+    startcol: string | null
+    endcol: string | null
     created_at: Date | null
     title: string | null
   }
@@ -4084,8 +4084,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number | null
     startrow: string | null
     endrow: string | null
-    startrol: string | null
-    endrol: string | null
+    startcol: string | null
+    endcol: string | null
     created_at: Date | null
     title: string | null
   }
@@ -4096,8 +4096,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow: number
     endrow: number
-    startrol: number
-    endrol: number
+    startcol: number
+    endcol: number
     created_at: number
     title: number
     _all: number
@@ -4120,8 +4120,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: true
     startrow?: true
     endrow?: true
-    startrol?: true
-    endrol?: true
+    startcol?: true
+    endcol?: true
     created_at?: true
     title?: true
   }
@@ -4132,8 +4132,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: true
     startrow?: true
     endrow?: true
-    startrol?: true
-    endrol?: true
+    startcol?: true
+    endcol?: true
     created_at?: true
     title?: true
   }
@@ -4144,8 +4144,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: true
     startrow?: true
     endrow?: true
-    startrol?: true
-    endrol?: true
+    startcol?: true
+    endcol?: true
     created_at?: true
     title?: true
     _all?: true
@@ -4249,8 +4249,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow: string | null
     endrow: string | null
-    startrol: string | null
-    endrol: string | null
+    startcol: string | null
+    endcol: string | null
     created_at: Date
     title: string | null
     _count: SheetsCountAggregateOutputType | null
@@ -4280,8 +4280,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: boolean
     startrow?: boolean
     endrow?: boolean
-    startrol?: boolean
-    endrol?: boolean
+    startcol?: boolean
+    endcol?: boolean
     created_at?: boolean
     title?: boolean
     cellmap?: boolean | Sheets$cellmapArgs
@@ -5238,8 +5238,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: 'cols',
     startrow: 'startrow',
     endrow: 'endrow',
-    startrol: 'startrol',
-    endrol: 'endrol',
+    startcol: 'startcol',
+    endcol: 'endcol',
     created_at: 'created_at',
     title: 'title'
   };
@@ -5420,8 +5420,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFilter | number
     startrow?: StringNullableFilter | string | null
     endrow?: StringNullableFilter | string | null
-    startrol?: StringNullableFilter | string | null
-    endrol?: StringNullableFilter | string | null
+    startcol?: StringNullableFilter | string | null
+    endcol?: StringNullableFilter | string | null
     created_at?: DateTimeFilter | Date | string
     title?: StringNullableFilter | string | null
     cellmap?: CellmapListRelationFilter
@@ -5435,8 +5435,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
-    startrol?: SortOrder
-    endrol?: SortOrder
+    startcol?: SortOrder
+    endcol?: SortOrder
     created_at?: SortOrder
     title?: SortOrder
     cellmap?: CellmapOrderByRelationAggregateInput
@@ -5454,8 +5454,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
-    startrol?: SortOrder
-    endrol?: SortOrder
+    startcol?: SortOrder
+    endcol?: SortOrder
     created_at?: SortOrder
     title?: SortOrder
     _count?: SheetsCountOrderByAggregateInput
@@ -5474,8 +5474,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntWithAggregatesFilter | number
     startrow?: StringNullableWithAggregatesFilter | string | null
     endrow?: StringNullableWithAggregatesFilter | string | null
-    startrol?: StringNullableWithAggregatesFilter | string | null
-    endrol?: StringNullableWithAggregatesFilter | string | null
+    startcol?: StringNullableWithAggregatesFilter | string | null
+    endcol?: StringNullableWithAggregatesFilter | string | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     title?: StringNullableWithAggregatesFilter | string | null
   }
@@ -5643,8 +5643,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     cellmap?: CellmapCreateNestedManyWithoutSheetsInput
@@ -5658,8 +5658,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     cellmap?: CellmapUncheckedCreateNestedManyWithoutSheetsInput
@@ -5673,8 +5673,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     cellmap?: CellmapUpdateManyWithoutSheetsNestedInput
@@ -5688,8 +5688,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     cellmap?: CellmapUncheckedUpdateManyWithoutSheetsNestedInput
@@ -5703,8 +5703,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
   }
@@ -5715,8 +5715,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -5727,8 +5727,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -5938,8 +5938,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
-    startrol?: SortOrder
-    endrol?: SortOrder
+    startcol?: SortOrder
+    endcol?: SortOrder
     created_at?: SortOrder
     title?: SortOrder
   }
@@ -5955,8 +5955,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
-    startrol?: SortOrder
-    endrol?: SortOrder
+    startcol?: SortOrder
+    endcol?: SortOrder
     created_at?: SortOrder
     title?: SortOrder
   }
@@ -5967,8 +5967,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
-    startrol?: SortOrder
-    endrol?: SortOrder
+    startcol?: SortOrder
+    endcol?: SortOrder
     created_at?: SortOrder
     title?: SortOrder
   }
@@ -6488,8 +6488,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     colmap?: ColmapCreateNestedManyWithoutSheetsInput
@@ -6502,8 +6502,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     colmap?: ColmapUncheckedCreateNestedManyWithoutSheetsInput
@@ -6564,8 +6564,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     colmap?: ColmapUpdateManyWithoutSheetsNestedInput
@@ -6578,8 +6578,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     colmap?: ColmapUncheckedUpdateManyWithoutSheetsNestedInput
@@ -6616,8 +6616,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     cellmap?: CellmapCreateNestedManyWithoutSheetsInput
@@ -6630,8 +6630,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     cellmap?: CellmapUncheckedCreateNestedManyWithoutSheetsInput
@@ -6681,8 +6681,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     cellmap?: CellmapUpdateManyWithoutSheetsNestedInput
@@ -6695,8 +6695,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     cellmap?: CellmapUncheckedUpdateManyWithoutSheetsNestedInput
@@ -6733,8 +6733,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     cellmap?: CellmapCreateNestedManyWithoutSheetsInput
@@ -6747,8 +6747,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols: number
     startrow?: string | null
     endrow?: string | null
-    startrol?: string | null
-    endrol?: string | null
+    startcol?: string | null
+    endcol?: string | null
     created_at: Date | string
     title?: string | null
     cellmap?: CellmapUncheckedCreateNestedManyWithoutSheetsInput
@@ -6787,8 +6787,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     cellmap?: CellmapUpdateManyWithoutSheetsNestedInput
@@ -6801,8 +6801,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
-    startrol?: NullableStringFieldUpdateOperationsInput | string | null
-    endrol?: NullableStringFieldUpdateOperationsInput | string | null
+    startcol?: NullableStringFieldUpdateOperationsInput | string | null
+    endcol?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     cellmap?: CellmapUncheckedUpdateManyWithoutSheetsNestedInput

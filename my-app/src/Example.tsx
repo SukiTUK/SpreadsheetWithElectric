@@ -9,7 +9,7 @@ import { Colmap, Rowmap } from './generated/client';
 // import { genUUID } from 'electric-sql/util';
 import { nanoid } from 'nanoid';
 
-const genUUID = (size = 10) => nanoid(size);
+const genUUID = (size = 20) => nanoid(size);
 
 export const Example = () => {
 
@@ -27,8 +27,8 @@ export const Example = () => {
     cols: 0,
     startrow: '',
     endrow: '',
-    startrol: '',
-    endrol: '',
+    startcol: '',
+    endcol: '',
     created_at: new Date(),
   }});
   
@@ -61,8 +61,8 @@ export const Example = () => {
   
       orderedRows.push(currentRow);
       
-      // Find the next row where the startMarker matches the endMarker of the current row
-      const nextRow = rows.find(r => r.sheet_id === sheet_id && r.startMarker === currentRow.endMarker);
+      // Find the next row where the startmarker matches the endmarker of the current row
+      const nextRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentRow.endmarker);
       
       return orderRows(nextRow, orderedRows);
     };
@@ -84,8 +84,8 @@ export const Example = () => {
     const newRowId = genUUID();
     
     if(!sheet.startrow && !sheet.endrow) {
-      const startMarker =  genUUID();
-      const endMarker = genUUID();
+      const startmarker =  genUUID();
+      const endmarker = genUUID();
       await db.sheets.update({
         where: { id: sheet_id },
         data: {
@@ -96,9 +96,10 @@ export const Example = () => {
       await db.rowmap.create({ data: {
         newRowId,
         sheet_id,
-        startMarker,
-        endMarker
+        startmarker,
+        endmarker
       }});
+      return;
     }
       
     
@@ -109,21 +110,21 @@ export const Example = () => {
 
       if (position === 'after') {
         // here you need to send updates to electricSQL rowmap schema
-        newRow.startMarker = referenceRow.endMarker;
-        newRow.endMarker = genUUID();
+        newRow.startmarker = referenceRow.endmarker;
+        newRow.endmarker = genUUID();
 
         await db.rowmap.create({ data: {
           id: newRowId,
           sheet_id,
-          startMarker: newRow.startMarker,
-          endMarker: newRow.endMarker,
+          startmarker: newRow.startmarker,
+          endmarker: newRow.endmarker,
         }});
 
         
-        const nextRow = rows.find(r => r.startMarker === referenceRow.endMarker);
-        if (nextRow) nextRow.startMarker = newRow.endMarker;
+        const nextRow = rows.find(r => r.startmarker === referenceRow.endmarker);
+        if (nextRow) nextRow.startmarker = newRow.endmarker;
           
-        const sql = `UPDATE rowmap SET startMarker = ${newRow.endMarker} WHERE sheet_id = '${sheet_id}' AND startMarker = ${referenceRow.endMarker}`;
+        const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
         await db.unsafeExec({ sql });
 
 
@@ -132,19 +133,19 @@ export const Example = () => {
         //or referenceRow.ID is equal to endRow for position = "after"
 
       } else if (position === 'before') {
-          newRow.endMarker = referenceRow.startMarker;
-          newRow.startMarker = genUUID();
+          newRow.endmarker = referenceRow.startmarker;
+          newRow.startmarker = genUUID();
 
           await db.rowmap.create({ data: {
             id: newRowId,
             sheet_id,
-            startMarker: newRow.startMarker,
-            endMarker: newRow.endMarker,
+            startmarker: newRow.startmarker,
+            endmarker: newRow.endmarker,
           }});
             
-          const prevRow = rows.find(r => r.endMarker === referenceRow.startMarker);
-          if (prevRow) prevRow.endMarker = newRow.startMarker;
-            const sql = `UPDATE rowmap SET endMarker = ${newRow.startMarker} WHERE sheet_id = '${sheet_id}' AND endMarker = ${referenceRow.startMarker}`;
+          const prevRow = rows.find(r => r.endmarker === referenceRow.startmarker);
+          if (prevRow) prevRow.endmarker = newRow.startmarker;
+            const sql = `UPDATE rowmap SET endmarker = ${newRow.startmarker} WHERE sheet_id = '${sheet_id}' AND endmarker = ${referenceRow.startmarker}`;
             await db.unsafeExec({ sql });
           }
         }
@@ -195,8 +196,8 @@ export const Example = () => {
   
       orderedCols.push(currentCol);
       
-      // Find the next Col where the startMarker matches the endMarker of the current Col
-      const nextCol = Cols.find(c => c.sheet_id === sheet_id && c.startMarker === currentCol.endMarker);
+      // Find the next Col where the startmarker matches the endmarker of the current Col
+      const nextCol = Cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentCol.endmarker);
       
       return orderCols(nextCol, orderedCols);
     };
