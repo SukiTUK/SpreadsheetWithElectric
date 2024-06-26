@@ -69,7 +69,7 @@ export const Example = () => {
  
     console.log("getSheetCols columns", sortedRows);
     // Start the ordering with the initial row
-    return orderRows(startingRow);
+    return sorting(startingRow);
   };
 
 
