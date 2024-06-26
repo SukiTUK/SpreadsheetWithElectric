@@ -40,19 +40,21 @@ export const Example = () => {
   const { results: rows } = useLiveQuery(db.rowmap.liveMany());
   
 
-  const getSheetRows = (sheet_id: string, startRow: string): Row[] => {
+  const getSheetRows = (sheet_id: string): Rowmap[] => {
     // Find the starting row based on sheet_id and row_last
+    const sheet = sheets?.filter((s) => s.id === sheet_id);
+    if (!sheet) return [];
     if (!rows) {
       return [];
     }
-    const startingRow = rows.find(r => r.sheet_id === sheet_id && r.id === startRow);
+    const startingRow = rows.find(r => r.sheet_id === sheet_id && r.id === sheet.startRow);
     
     if (!startingRow) {
       return [];
     }
   
     // Recursive function to order rows
-    const sorting = (currentRow: Row | undefined, sortedRows: Row[] = []): Row[] => {
+    const sorting = (currentRow: Rowmap | undefined, sortedRows: Rowmap[] = []): Rowmap[] => {
       if (!currentRow) {
         return sortedRows;
       }
@@ -64,8 +66,6 @@ export const Example = () => {
       
       return sorting(nextRow, sortedRows);
     };
- 
-    console.log("getSheetCols columns", sortedRows);
     // Start the ordering with the initial row
     return sorting(startingRow);
   };
@@ -73,13 +73,13 @@ export const Example = () => {
 
   const orderRows = (rows: Rowmap[], marker: string, sheet_id: string): Rowmap[] => {
     const currentRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === marker);
-    if (!currentRow) return;
-    orderedRows.push(currentRow);
-    currentMarker = currentRow.endmarker
+    if (!currentRow) return [];
+    const orderedRows: Rowmap[] = [];
+    let currentMarker = currentRow.endmarker
 
     while (currentMarker) {
       const currentRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentMarker);
-      if (!currentRow) return;
+      if (!currentRow) return [];
       orderedRows.push(currentRow);
       currentMarker = currentRow.endmarker;
     }
@@ -89,14 +89,14 @@ export const Example = () => {
 
   //const getRowLabel = (row: Rowmap) => row? row.id : [];
 
-  const getRowLabel = (rows: Rowmap[], row: Rowmap, sheet: string) => {
-    const orderedRows: Rowmap[] = [];
-    const currentRow = rows.find(r => r.sheet_id === sheet.sheet_id && r.id === sheet.startrow);
-    if (!currentRow) return;
+  const getRowLabel = (rows: Rowmap[], row: Rowmap, sheet_id: string, sheet_startrow: string) => {
+    const orderedRows= [];
+    const currentRow = rows.find(r => r.sheet_id === sheet_id && r.id === sheet_startrow);
+    if (!currentRow) return [];
     orderedRows.push(currentRow);
 
     //following is the endmarker of the first row of spreadsheet
-    orderedRows.push(orderRows(rows, currentRow.endmarker, sheet.id));
+    orderedRows.push(orderRows(rows, currentRow.endmarker, sheet_id));
     const foundRow = orderedRows.findIndex(r => r.id === row.id);
     //return foundRow?.label ?? foundRow?.pos ?? '';
     return orderedRows[foundRow];
@@ -130,12 +130,12 @@ export const Example = () => {
     }
       
     
-    const rowIndex = rows.findIndex(r => r.sheet_id === sheet_id && r.id === id);
+    const rowIndex = rows?.findIndex(r => r.sheet_id === sheet_id && r.id === id);
 
-    if (rowIndex !== -1) {
+    if (rowIndex !== -1 && rows && rowIndex) {
       const referenceRow = rows[rowIndex];
 
-      const newRow = { id: newRowId, sheet_id: sheet_id, startmarker: null, endmarker: null };
+      const newRow = { id: newRowId, sheet_id: sheet_id, startmarker: '', endmarker: '' };
       if (position === 'after') {
         // here you need to send updates to electricSQL rowmap schema
         newRow.startmarker = referenceRow.endmarker;
@@ -149,7 +149,7 @@ export const Example = () => {
         }});
 
         
-        const nextRow = rows.find(r => r.startmarker === referenceRow.endmarker);
+        const nextRow = rows?.find(r => r.startmarker === referenceRow.endmarker);
         if (nextRow) nextRow.startmarker = newRow.endmarker;
           
         //const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
@@ -162,14 +162,17 @@ export const Example = () => {
           }
         });
 
-        await db.rowmap.update({
+        const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
+        await db.unsafeExec({ sql });
+
+        /* await db.rowmap.update({
           where: { id: sheet_id, startmarker: referenceRow.endmarker },
           data: {
             startmarker: newRow.endmarker,
           }
         });
 
-        console.log("sheets", sheet);
+        console.log("sheets", sheet); */
 
 
         //PENDING -> update sheet_id endRow or startRow 
@@ -195,24 +198,8 @@ export const Example = () => {
         }
       }
 
-  const onDeleteRow = async (sheet_id: string, pos: number) => {
-    const row = rows?.find((r) => r.sheet_id === sheet_id && r.pos === pos);
-    const sheet = sheets?.find((s) => s.id === sheet_id);
-    if (!row || !sheet) return;
-
-    await db.rowmap.delete({ where: { id: row.id } });
-    await db.sheets.update({
-      where: { id: sheet_id },
-      data: {
-        rows: sheet?.rows - 1
-      }
-    });
-
-    if (pos < sheet.rows) {
-      const sql = `UPDATE rowmap SET pos = pos - 1 WHERE sheet_id = '${sheet_id}' AND pos > ${pos}`;
-      await db.unsafeExec({ sql });
-    }
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onDeleteRow = async (_sheet_id: string, _pos: string) => {
   }
 
   // Columns
@@ -221,19 +208,21 @@ export const Example = () => {
   //const getSheetCols = (sheet_id: string) => cols?.filter((c) => c.sheet_id === sheet_id)
   //  .sort((a,b) => a.pos - b.pos) ?? [];
   
-  const getSheetCols = (sheet_id: string, startCol: string): Col[] => {
+  const getSheetCols = (sheet_id: string): Colmap[] => {
     // Find the starting row based on sheet_id and row_last
+    const sheet = sheets?.filter((s) => s.id === sheet_id);
+    if (!sheet) return [];
     if (!cols) {
       return [];
     }
-    const startingCol = cols.find(c => c.sheet_id === sheet_id && c.id === startCol);
+    const startingCol = cols.find(c => c.sheet_id === sheet_id && c.id === sheet.startCol);
     
     if (!startingCol) {
       return [];
     }
   
     // Recursive function to order cols
-    const sorting = (currentCol: Col | undefined, sortedCols: Col[] = []): Col[] => {
+    const sorting = (currentCol: Colmap | undefined, sortedCols: Colmap[] = []): Colmap[] => {
       if (!currentCol) {
         return sortedCols;
       }
@@ -243,23 +232,22 @@ export const Example = () => {
       // Find the next Col where the startmarker matches the endmarker of the current Col
       const nextCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentCol.endmarker);
       
-      return sorting(nextCol, orderedCols);
+      return sorting(nextCol, sortedCols);
     };
- 
-    console.log("getSheetCols columns", sortedCols);
     // Start the ordering with the initial Col
     return sorting(startingCol);
   };
 
   const orderCols = (cols: Colmap[], marker: string, sheet_id: string): Colmap[] => {
     const currentCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === marker);
-    if (!currentCol) return;
+    const orderedCols: Colmap[] = [];
+    if (!currentCol) return [];
     orderedCols.push(currentCol);
-    currentMarker = currentCol.endmarker
+    let currentMarker = currentCol.endmarker
 
     while (currentMarker) {
       const currentCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentMarker);
-      if (!currentCol) return;
+      if (!currentCol) return [];
       orderedCols.push(currentCol);
       currentMarker = currentCol.endmarker;
     }
@@ -267,14 +255,14 @@ export const Example = () => {
     return orderedCols;
   };
 
-  const getColLabel = (cols: Colmap[], col: Colmap, sheet: string) => {
+  const getColLabel = (cols: Colmap[], col: Colmap, sheet_id: string, sheet_startcol: string) => {
     const orderedCols: Colmap[] = [];
-    const currentCol = cols.find(c => c.sheet_id === sheet.sheet_id && c.id === sheet.startcol);
-    if (!currentCol) return;
+    const currentCol = cols.find(c => c.sheet_id === sheet_id && c.id === sheet_startcol);
+    if (!currentCol) return [];
     orderedCols.push(currentCol);
 
     //following is the endmarker of the first col of spreadsheet
-    orderedCols.push(orderCols(cols, currentCol.endmarker, sheet.id));
+    orderedCols.push(orderCols(cols, currentCol.endmarker, sheet_id));
     const foundCol = orderedCols.findIndex(c => c.id === col.id);
     //return foundCol?.label ?? foundCols?.pos ?? '';
     return orderedCols[foundCol];
@@ -283,6 +271,7 @@ export const Example = () => {
   //const getColLabel = (col: Colmap) => col? col.id : [];
   
   const onAddCol = async (sheet_id: string, id: string, position: 'before' | 'after' = 'after') => {
+    
     console.log("onAddCol ", sheet_id, id , position);
     const sheet = sheets?.find((s) => s.id === sheet_id);
     if (!sheet) return;
@@ -309,14 +298,14 @@ export const Example = () => {
     }
       
     
-    const colIndex = cols.findIndex(r => r.sheet_id === sheet_id && r.id === id);
+    const colIndex = cols?.findIndex(r => r.sheet_id === sheet_id && r.id === id);
 
-    if (colIndex !== -1) {
+    if (colIndex !== -1 && cols && colIndex) {
       const referenceCol = cols[colIndex];
 
-      const newCol = { id: newColId, sheet_id: sheet_id, startmarker: null, endmarker: null };
+      const newCol = { id: newColId, sheet_id: sheet_id, startmarker: '', endmarker: '' };
       if (position === 'after') {
-        // here you need to send updates to electricSQL Colmap schema
+        // here you need to send updates to electricSQL colmap schema
         newCol.startmarker = referenceCol.endmarker;
         newCol.endmarker = genUUID();
 
@@ -328,10 +317,10 @@ export const Example = () => {
         }});
 
         
-        const nextCol = cols.find(r => r.startmarker === referenceCol.endmarker);
+        const nextCol = cols?.find(r => r.startmarker === referenceCol.endmarker);
         if (nextCol) nextCol.startmarker = newCol.endmarker;
           
-        //const sql = `UPDATE Colmap SET startmarker = ${newCol.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceCol.endmarker}`;
+        //const sql = `UPDATE colmap SET startmarker = ${newCol.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceCol.endmarker}`;
         //await db.unsafeExec({ sql });
 
         await db.sheets.update({
@@ -341,14 +330,16 @@ export const Example = () => {
           }
         });
 
-        await db.colmap.update({
+        const sql = `UPDATE colmap SET startmarker = ${newCol.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceCol.endmarker}`;
+        await db.unsafeExec({ sql });
+        /* await db.colmap.update({
           where: { id: sheet_id, startmarker: referenceCol.endmarker },
           data: {
             startmarker: newCol.endmarker,
           }
         });
 
-        console.log("sheets", sheet);
+        console.log("sheets", sheet); */
 
 
         //PENDING -> update sheet_id endCol or startCol 
@@ -372,39 +363,22 @@ export const Example = () => {
             await db.unsafeExec({ sql });
           }
         }
-  }
-
-  const onDeleteCol = async (sheet_id: string, pos: number) => {
-    const col = cols?.find((c) => c.sheet_id === sheet_id && c.pos === pos);
-    const sheet = sheets?.find((s) => s.id === sheet_id);
-    if (!col || !sheet) return;
-
-    await db.colmap.delete({ where: { id: col.id } });    
-    await db.sheets.update({
-      where: { id: sheet_id },
-      data: {
-        cols: sheet?.cols - 1
       }
-    });
 
-    if (pos < sheet.cols) {
-      const sql = `UPDATE colmap SET pos = pos - 1 WHERE sheet_id = '${sheet_id}' AND pos > ${pos}`;
-      await db.unsafeExec({ sql });
-    }
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onDeleteCol = async (_sheet_id: string, _pos: string) => {
+    
   }
 
   // Cell Content
   const { results: content } = useLiveQuery(db.cellmap.liveMany());
 
   const getCell = (sheet_id: string, row_id: string, col_id: string) => {
-    console.log("getCell>>>>>", row, col);
     return (content ?? []).find((c) => c.sheet_id === sheet_id && c.row_id === row_id && c.col_id === col_id);
   };
 
   const onCellBlur = async (sheet_id: string, row_id: string, col_id: string, content: string) => {
     const cell = getCell(sheet_id, row_id, col_id);
-    console.log("CellBlur>>>>>", row, col);
     if (content && !cell) {
       await db.cellmap.create({ data: {
         id: genUUID(), sheet_id, row_id, col_id, content
@@ -509,8 +483,8 @@ export const Example = () => {
     <div className="split">
       {sheets?.map((sheet) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const rows = getSheetRows(sheet.id, sheet.startRow);
-        const cols = getSheetCols(sheet.id, sheet.startCol);
+        const rows = getSheetRows(sheet.id);
+        const cols = getSheetCols(sheet.id);
         return (
         <table id={sheet.id} className="spreadsheetSim" key={sheet.id}>
           <thead>
@@ -523,7 +497,7 @@ export const Example = () => {
                     <img alt='MR' height='16em' src='https://cdn-icons-png.flaticon.com/512/3645/3645851.png'/>
                 </th>
                 {cols.map((col) => 
-                  <th key={col.id} onContextMenu={event => onColHeaderContext(event, col)}>{getColLabel(col,sheet)}</th>
+                  <th key={col.id} onContextMenu={event => onColHeaderContext(event, col)}>{getColLabel(cols, col,sheet.id, sheet.startcol)}</th>
                 )}
                 <th key="button" className="addButtons addColumnButton" rowSpan={2} onClick={() => onAddCol(sheet.id, sheet.endcol, 'after') }>+</th>
             </tr>
@@ -531,7 +505,7 @@ export const Example = () => {
           <tbody>
             {rows.map((row) => 
               <tr key={row.id} >
-                <th  onContextMenu={event => onRowHeaderContext(event, row)}>{getRowLabel(row, sheet)}</th>
+                <th  onContextMenu={event => onRowHeaderContext(event, row)}>{getRowLabel(rows, row, sheet.id, sheet.startrow)}</th>
                 {cols.map((col) => {
                   const cell = getCell(sheet.id, row.id, col.id);
                   return (
