@@ -54,19 +54,20 @@ export const Example = () => {
     }
   
     // Recursive function to order rows
-    const orderRows = (currentRow: Row | undefined, orderedRows: Row[] = []): Row[] => {
+    const sorting = (currentRow: Row | undefined, sortedRows: Row[] = []): Row[] => {
       if (!currentRow) {
-        return orderedRows;
+        return sortedRows;
       }
   
-      orderedRows.push(currentRow);
+      sortedRows.push(currentRow);
       
       // Find the next row where the startmarker matches the endmarker of the current row
       const nextRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentRow.endmarker);
       
-      return orderRows(nextRow, orderedRows);
+      return sorting(nextRow, sortedRows);
     };
-  
+ 
+    console.log("getSheetCols columns", sortedRows);
     // Start the ordering with the initial row
     return orderRows(startingRow);
   };
@@ -234,21 +235,22 @@ export const Example = () => {
     }
   
     // Recursive function to order cols
-    const orderCols = (currentCol: Col | undefined, orderedCols: Col[] = []): Col[] => {
+    const sorting = (currentCol: Col | undefined, sortedCols: Col[] = []): Col[] => {
       if (!currentCol) {
-        return orderedCols;
+        return sortedCols;
       }
   
-      orderedCols.push(currentCol);
+      sortedCols.push(currentCol);
       
       // Find the next Col where the startmarker matches the endmarker of the current Col
       const nextCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentCol.endmarker);
       
-      return orderCols(nextCol, orderedCols);
+      return sorting(nextCol, orderedCols);
     };
-  
+ 
+    console.log("getSheetCols columns", sortedCols);
     // Start the ordering with the initial Col
-    return orderCols(startingCol);
+    return sorting(startingCol);
   };
 
   const orderCols = (cols: Colmap[], marker: string, sheet_id: string): Colmap[] => {
@@ -282,29 +284,96 @@ export const Example = () => {
 
   //const getColLabel = (col: Colmap) => col? col.id : [];
   
-  const onAddCol = async (sheet_id: string, pos = -1) => {
+  const onAddCol = async (sheet_id: string, id: string, position: 'before' | 'after' = 'after') => {
+    console.log("onAddCol ", sheet_id, id , position);
     const sheet = sheets?.find((s) => s.id === sheet_id);
     if (!sheet) return;
-    if (pos < 0) pos = sheet.cols + 1;
-    pos = Math.min(sheet.cols + 1, pos);
-
-    if (pos <= sheet.cols) {
-      const sql = `UPDATE colmap SET pos = pos + 1 WHERE sheet_id = '${sheet_id}' AND pos >= ${pos}`;
-      await db.unsafeExec({ sql });
+    
+    const newColId = genUUID();
+    
+    if(!sheet.startcol && !sheet.endcol) {
+      const startmarker =  genUUID();
+      const endmarker = genUUID();
+      await db.sheets.update({
+        where: { id: sheet_id },
+        data: {
+          startcol: newColId,
+          endcol: newColId
+        }
+      });
+      await db.colmap.create({ data: {
+        id: newColId,
+        sheet_id,
+        startmarker,
+        endmarker
+      }});
+      return;
     }
+      
+    
+    const colIndex = cols.findIndex(r => r.sheet_id === sheet_id && r.id === id);
 
-    await db.colmap.create({ data: {
-      id: genUUID(),
-      sheet_id,
-      pos
-    }});
+    if (colIndex !== -1) {
+      const referenceCol = cols[colIndex];
 
-    await db.sheets.update({
-      where: { id: sheet_id },
-      data: {
-        cols: sheet.cols + 1
-      }
-    });
+      const newCol = { id: newColId, sheet_id: sheet_id, startmarker: null, endmarker: null };
+      if (position === 'after') {
+        // here you need to send updates to electricSQL Colmap schema
+        newCol.startmarker = referenceCol.endmarker;
+        newCol.endmarker = genUUID();
+
+        await db.colmap.create({ data: {
+          id: newColId,
+          sheet_id,
+          startmarker: newCol.startmarker,
+          endmarker: newCol.endmarker,
+        }});
+
+        
+        const nextCol = cols.find(r => r.startmarker === referenceCol.endmarker);
+        if (nextCol) nextCol.startmarker = newCol.endmarker;
+          
+        //const sql = `UPDATE Colmap SET startmarker = ${newCol.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceCol.endmarker}`;
+        //await db.unsafeExec({ sql });
+
+        await db.sheets.update({
+          where: { id: sheet_id },
+          data: {
+            endcol: newColId,
+          }
+        });
+
+        await db.colmap.update({
+          where: { id: sheet_id, startmarker: referenceCol.endmarker },
+          data: {
+            startmarker: newCol.endmarker,
+          }
+        });
+
+        console.log("sheets", sheet);
+
+
+        //PENDING -> update sheet_id endCol or startCol 
+        //based on the referenceCol.ID is equal to startCol for position = "before"
+        //or referenceCol.ID is equal to endCol for position = "after"
+
+      } else if (position === 'before') {
+          newCol.endmarker = referenceCol.startmarker;
+          newCol.startmarker = genUUID();
+
+          await db.colmap.create({ data: {
+            id: newColId,
+            sheet_id,
+            startmarker: newCol.startmarker,
+            endmarker: newCol.endmarker,
+          }});
+            
+          const prevCol = cols.find(r => r.endmarker === referenceCol.startmarker);
+          if (prevCol) prevCol.endmarker = newCol.startmarker;
+            const sql = `UPDATE colmap SET endmarker = ${newCol.startmarker} WHERE sheet_id = '${sheet_id}' AND endmarker = ${referenceCol.startmarker}`;
+            await db.unsafeExec({ sql });
+          }
+        }
   }
 
   const onDeleteCol = async (sheet_id: string, pos: number) => {
@@ -372,16 +441,16 @@ export const Example = () => {
 
   const onColMenuItemClick = (action: ColContextMenuAction) => {
     if (!colMenuCol) return;
-    const { pos, sheet_id } = colMenuCol;
+    const { id, sheet_id } = colMenuCol;
     switch(action) {
       case 'insertColLeft':
-        onAddCol(sheet_id, pos);
+        onAddCol(sheet_id, id, 'before');
         break;
       case 'deleteCol':
-        onDeleteCol(sheet_id, pos);
+        onDeleteCol(sheet_id, id);
         break;
       case 'insertColRight':
-        onAddCol(sheet_id, pos + 1);
+        onAddCol(sheet_id, id, 'after');
         break;
       default:
         return console.warn(`onColMenuClick called with invalid action: ${action}`);
@@ -421,7 +490,7 @@ export const Example = () => {
     console.log("inside onRowMenuItemClick", rowMenuRow);
     if (!rowMenuRow) return;
     const { id, sheet_id } = rowMenuRow;
-  switch(action) {
+    switch(action) {
     case 'insertRowAbove':
       onAddRow(sheet_id, id, 'before');
       break;
@@ -456,7 +525,7 @@ export const Example = () => {
                 {cols.map((col) => 
                   <th key={col.id} onContextMenu={event => onColHeaderContext(event, col)}>{getColLabel(col,sheet)}</th>
                 )}
-                <th key="button" className="addButtons addColumnButton" rowSpan={2} onClick={() => onAddCol(sheet.id,-1) }>+</th>
+                <th key="button" className="addButtons addColumnButton" rowSpan={2} onClick={() => onAddCol(sheet.id, sheet.endcol, 'after') }>+</th>
             </tr>
           </thead>  
           <tbody>

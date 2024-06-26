@@ -10,33 +10,117 @@
  */
 BEGIN;
 
+/* 
 -- Create a simple items table.
 CREATE TABLE IF NOT EXISTS items (
   value TEXT PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS rowmap (
-  "id" UUID PRIMARY KEY NOT NULL,
-  "pos" integer
+  id UUID PRIMARY KEY NOT NULL,
+  pos integer
 );
 
 CREATE TABLE IF NOT EXISTS colmap (
-  "id" UUID PRIMARY KEY NOT NULL,
-  "pos" integer
+  id UUID PRIMARY KEY NOT NULL,
+  pos integer
 );
 
 CREATE TABLE IF NOT EXISTS contentmap (
-  "rowIndex" UUID NOT NULL REFERENCES rowmap("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "colIndex" UUID NOT NULL REFERENCES colmap("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "content" TEXT,
-  PRIMARY KEY("rowIndex","colIndex")
+  rowIndex UUID NOT NULL REFERENCES rowmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  colIndex UUID NOT NULL REFERENCES colmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  content TEXT,
+  PRIMARY KEY(rowIndex,colIndex)
+);
+*/
+/*
+CREATE TABLE IF NOT EXISTS sheets (
+  id TEXT PRIMARY KEY NOT NULL,
+  rows SMALLINT NOT NULL,
+  cols SMALLINT NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  title TEXT
+);
+
+CREATE TABLE IF NOT EXISTS rowmap (
+  id TEXT PRIMARY KEY NOT NULL,
+  sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  pos SMALLINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS colmap (
+  id TEXT PRIMARY KEY NOT NULL,
+  sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  pos SMALLINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cellmap (
+  id TEXT PRIMARY KEY NOT NULL,  
+  sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  row_id TEXT NOT NULL REFERENCES rowmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  col_id TEXT NOT NULL REFERENCES colmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  content TEXT  
+);
+
+CREATE INDEX IF NOT EXISTS content_sheet_row_col_idx ON cellmap(sheet_id, row_id, col_id);
+*/
+/* Looks like Electric does not support composite primary keys quite yet */
+/*
+  CREATE TABLE IF NOT EXISTS content (
+    sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    row SMALLINT NOT NULL,
+    col SMALLINT NOT NULL,
+    content TEXT,
+    PRIMARY KEY(sheet_id, row, col)
+  );
+*/
+
+CREATE TABLE IF NOT EXISTS sheets (
+  id TEXT PRIMARY KEY NOT NULL,
+  rows SMALLINT NOT NULL,
+  cols SMALLINT NOT NULL,
+  startrow TEXT, /* refers to row.id which first row of spreadsheet */
+  endrow TEXT, /* refers to row.id which last row of spreadsheet */
+  startcol TEXT, /* refers to col.id which first column of spreadsheet */
+  endcol TEXT, /* refers to col.id which last column of spreadsheet */
+  created_at TIMESTAMP NOT NULL,
+  title TEXT
+);
+
+CREATE TABLE IF NOT EXISTS rowmap (
+  id TEXT PRIMARY KEY NOT NULL,
+  sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  startmarker TEXT NOT NULL,
+  endmarker TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS colmap (
+  id TEXT PRIMARY KEY NOT NULL,
+  sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  startmarker TEXT NOT NULL,
+  endmarker TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cellmap (
+  id TEXT PRIMARY KEY NOT NULL,  
+  sheet_id TEXT NOT NULL REFERENCES sheets(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  row_id TEXT NOT NULL REFERENCES rowmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  col_id TEXT NOT NULL REFERENCES colmap(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  content TEXT  
 );
 
 -- ⚡
 -- Electrify the items table
+/* 
 ALTER TABLE items ENABLE ELECTRIC;
 ALTER TABLE rowmap ENABLE ELECTRIC;
 ALTER TABLE colmap ENABLE ELECTRIC;
 ALTER TABLE contentmap ENABLE ELECTRIC;
+ */
+ALTER TABLE sheets ENABLE ELECTRIC;
+ALTER TABLE rowmap ENABLE ELECTRIC;
+ALTER TABLE colmap ENABLE ELECTRIC;
+ALTER TABLE cellmap ENABLE ELECTRIC;
+
 
 COMMIT;
