@@ -2,7 +2,6 @@ import './App.css';
 import './Example.css';
 import React, { useState } from 'react';
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-
 import { useLiveQuery } from 'electric-sql/react';
 import { useElectric } from './ElectricProvider';
 import { Colmap, Rowmap } from './generated/client';
@@ -12,7 +11,6 @@ import { nanoid } from 'nanoid';
 const genUUID = (size = 20) => nanoid(size);
 
 export const Example = () => {
-
   // Electric
   const { db } = useElectric()!; 
 
@@ -396,16 +394,17 @@ export const Example = () => {
 
   }
 
-
   // Cell Content
   const { results: content } = useLiveQuery(db.cellmap.liveMany());
 
   const getCell = (sheet_id: string, row_id: string, col_id: string) => {
+    console.log("getCell>>>>>", row, col);
     return (content ?? []).find((c) => c.sheet_id === sheet_id && c.row_id === row_id && c.col_id === col_id);
   };
 
   const onCellBlur = async (sheet_id: string, row_id: string, col_id: string, content: string) => {
     const cell = getCell(sheet_id, row_id, col_id);
+    console.log("CellBlur>>>>>", row, col);
     if (content && !cell) {
       await db.cellmap.create({ data: {
         id: genUUID(), sheet_id, row_id, col_id, content
@@ -509,6 +508,7 @@ export const Example = () => {
   return (
     <div className="split">
       {sheets?.map((sheet) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const rows = getSheetRows(sheet.id, sheet.startRow);
         const cols = getSheetCols(sheet.id, sheet.startCol);
         return (
@@ -530,16 +530,16 @@ export const Example = () => {
           </thead>  
           <tbody>
             {rows.map((row) => 
-              <tr key={row.id}>
+              <tr key={row.id} >
                 <th  onContextMenu={event => onRowHeaderContext(event, row)}>{getRowLabel(row, sheet)}</th>
                 {cols.map((col) => {
                   const cell = getCell(sheet.id, row.id, col.id);
                   return (
                     <td key={`${col.id}-${row.id}`}><input
-                        type="text"
-                        defaultValue={cell?.content ?? ''}
-                        onBlur={event => onCellBlur(sheet.id, row.id, col.id, event.target.value)}
-                    /></td>
+                      type="text"
+                      defaultValue={cell?.content ?? ''}
+                      onBlur={event => onCellBlur(sheet.id, row.id, col.id, event.target.value)}/>
+                    </td>
                   )
                 })}
               </tr>

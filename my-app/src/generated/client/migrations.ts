@@ -62,6 +62,6 @@ export default [
       "DROP TRIGGER IF EXISTS compensation_update_main_cellmap_sheet_id_into_oplog;",
       "CREATE TRIGGER compensation_update_main_cellmap_sheet_id_into_oplog\n   AFTER UPDATE ON \"main\".\"cellmap\"\n   WHEN 1 == (SELECT flag from _electric_trigger_settings WHERE tablename == 'main.sheets') AND\n        1 == (SELECT value from _electric_meta WHERE key == 'compensations')\nBEGIN\n  INSERT INTO _electric_oplog (namespace, tablename, optype, primaryKey, newRow, oldRow, timestamp)\n  SELECT 'main', 'sheets', 'COMPENSATION', json_object('id', \"id\"), json_object('id', \"id\"), NULL, NULL\n  FROM \"main\".\"sheets\" WHERE \"id\" = new.\"sheet_id\";\nEND;"
     ],
-    "version": "20240625120911_192"
+    "version": "20240626065841_227"
   }
 ]
