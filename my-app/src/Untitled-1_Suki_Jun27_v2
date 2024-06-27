@@ -61,6 +61,7 @@ export const Example = () => {
       }
   
       sortedRows.push(currentRow);
+      
       // Find the next row where the startmarker matches the endmarker of the current row
       const nextRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentRow.endmarker);
       
@@ -83,6 +84,7 @@ export const Example = () => {
     if (!sheet) return;
     
     const newRowId = genUUID();
+    
     console.log("newRowId", newRowId);
     //if there are no starting row and ending row unique id -> means there is no row created yet
     if(!sheet.startrow && !sheet.endrow) {
@@ -142,6 +144,11 @@ export const Example = () => {
           console.log("newRow.endmarker", newRow.endmarker);
           newRow.startmarker = genUUID();
 
+            
+          //const prevRow = rows.find(r => r.endmarker === referenceRow.startmarker);
+          /* const prevRow = await db.rowmap.findFirst({
+            where: { id: sheet_id, endmarker: referenceRow.startmarker },
+          }); */
           const prevRow = await db.rowmap.findFirst({
             where: {
               endmarker: referenceRow.startmarker,
@@ -175,7 +182,25 @@ export const Example = () => {
                 endmarker: newRow.startmarker,
               }
             });
+
+            /* const sql = `UPDATE rowmap SET endmarker = ${newRow.startmarker} WHERE sheet_id = '${sheet_id}' AND endmarker = ${referenceRow.startmarker}`;
+            await db.unsafeExec({ sql }); */
           }
+          /* const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.startmarker}`;
+          await db.unsafeExec({ sql }); */
+          /* const nextTonextRow = await db.rowmap.findFirst({
+            where: { id: sheet_id, startmarker: referenceRow.startmarker },
+          });
+
+          console.log("nextTonextRow", nextTonextRow)
+          if(nextTonextRow) {
+            await db.rowmap.update({
+              where: { id: nextTonextRow.id },
+              data: {
+                startmarker: newRow.endmarker,
+              }
+            });
+          } */
         }
       }
     }
@@ -282,48 +307,23 @@ export const Example = () => {
           }
         });
       } else if (position === 'before') {
-        newCol.endmarker = referenceCol.startmarker;
-        console.log(">>>position === 'before");
-        console.log("newCol.endmarker", newCol.endmarker);
-        newCol.startmarker = genUUID();
+          newCol.endmarker = referenceCol.startmarker;
+          newCol.startmarker = genUUID();
 
-        const prevCol = await db.colmap.findFirst({
-          where: {
-            endmarker: referenceCol.startmarker,
-          },
-        });
-        
-        console.log("prevCol findfirst", prevCol)
-        if (prevCol) {
-          await db.colmap.update({
-            where: { id: prevCol.id },
-            data: {
-              endmarker: '',
-            }
-          });
-        }
-
-        await db.colmap.create({ data: {
-          id: newColId,
-          sheet_id,
-          startmarker: newCol.startmarker,
-          endmarker: newCol.endmarker,
-        }});
-
-        const prevCol_ = await db.colmap.findFirst({
-          where: { endmarker: '' },
-        });
-        if (prevCol_) {
-          await db.colmap.update({
-            where: { id: prevCol_.id },
-            data: {
-              endmarker: newCol.startmarker,
-            }
-          });
+          await db.colmap.create({ data: {
+            id: newColId,
+            sheet_id,
+            startmarker: newCol.startmarker,
+            endmarker: newCol.endmarker,
+          }});
+            
+          const prevCol = cols.find(r => r.endmarker === referenceCol.startmarker);
+          if (prevCol) prevCol.endmarker = newCol.startmarker;
+            const sql = `UPDATE colmap SET endmarker = ${newCol.startmarker} WHERE sheet_id = '${sheet_id}' AND endmarker = ${referenceCol.startmarker}`;
+            await db.unsafeExec({ sql });
+          }
         }
       }
-    }
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onDeleteCol = async (_sheet_id: string, _pos: string) => {

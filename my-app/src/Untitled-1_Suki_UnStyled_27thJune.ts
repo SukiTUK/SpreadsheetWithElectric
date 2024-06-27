@@ -61,6 +61,7 @@ export const Example = () => {
       }
   
       sortedRows.push(currentRow);
+      
       // Find the next row where the startmarker matches the endmarker of the current row
       const nextRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentRow.endmarker);
       
@@ -68,6 +69,23 @@ export const Example = () => {
     };
     // Start the ordering with the initial row
     return sorting(startingRow);
+  };
+
+
+  const orderRows = (rows: Rowmap[], marker: string, sheet_id: string): Rowmap[] => {
+    const currentRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === marker);
+    if (!currentRow) return [];
+    const orderedRows: Rowmap[] = [];
+    let currentMarker = currentRow.endmarker
+
+    while (currentMarker) {
+      const currentRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentMarker);
+      if (!currentRow) return [];
+      orderedRows.push(currentRow);
+      currentMarker = currentRow.endmarker;
+    }
+  
+    return orderedRows;
   };
 
   const getRowLabel = (rows: Rowmap[], row: Rowmap) => {
@@ -83,6 +101,7 @@ export const Example = () => {
     if (!sheet) return;
     
     const newRowId = genUUID();
+    
     console.log("newRowId", newRowId);
     //if there are no starting row and ending row unique id -> means there is no row created yet
     if(!sheet.startrow && !sheet.endrow) {
@@ -103,11 +122,15 @@ export const Example = () => {
       }});
       return;
     }
+      
+    
     const rowIndex = rows?.findIndex(r => r.sheet_id === sheet_id && r.id === id);
 
     console.log("rowIndex", rowIndex);
+
     if (rowIndex !== undefined && rowIndex !== -1 && rows) {
       const referenceRow = rows[rowIndex];
+
       console.log("referenceRow", referenceRow);
       const newRow = { id: newRowId, sheet_id: sheet_id, startmarker: '', endmarker: '' };
       if (position === 'after') {
@@ -128,6 +151,9 @@ export const Example = () => {
           const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
           await db.unsafeExec({ sql });
         }
+          
+        //const sql = `UPDATE rowmap SET startmarker = ${newRow.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceRow.endmarker}`;
+        //await db.unsafeExec({ sql });
 
         await db.sheets.update({
           where: { id: sheet_id },
@@ -136,27 +162,25 @@ export const Example = () => {
           }
         });
 
+        
+
+        /* await db.rowmap.update({
+          where: { id: sheet_id, startmarker: referenceRow.endmarker },
+          data: {
+            startmarker: newRow.endmarker,
+          }
+        });
+
+        console.log("sheets", sheet); */
+
+
+        //PENDING -> update sheet_id endRow or startRow 
+        //based on the referenceRow.ID is equal to startRow for position = "before"
+        //or referenceRow.ID is equal to endRow for position = "after"
+
       } else if (position === 'before') {
           newRow.endmarker = referenceRow.startmarker;
-          console.log(">>>position === 'before");
-          console.log("newRow.endmarker", newRow.endmarker);
           newRow.startmarker = genUUID();
-
-          const prevRow = await db.rowmap.findFirst({
-            where: {
-              endmarker: referenceRow.startmarker,
-            },
-          });
-          
-          console.log("prevRow findfirst", prevRow)
-          if (prevRow) {
-            await db.rowmap.update({
-              where: { id: prevRow.id },
-              data: {
-                endmarker: '',
-              }
-            });
-          }
 
           await db.rowmap.create({ data: {
             id: newRowId,
@@ -164,21 +188,15 @@ export const Example = () => {
             startmarker: newRow.startmarker,
             endmarker: newRow.endmarker,
           }});
-
-          const prevRow_ = await db.rowmap.findFirst({
-            where: { endmarker: '' },
-          });
-          if (prevRow_) {
-            await db.rowmap.update({
-              where: { id: prevRow_.id },
-              data: {
-                endmarker: newRow.startmarker,
-              }
-            });
+            
+          const prevRow = rows.find(r => r.endmarker === referenceRow.startmarker);
+          if (prevRow) {
+            const sql = `UPDATE rowmap SET endmarker = ${newRow.startmarker} WHERE sheet_id = '${sheet_id}' AND endmarker = ${referenceRow.startmarker}`;
+            await db.unsafeExec({ sql });
           }
         }
+        }
       }
-    }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onDeleteRow = async (_sheet_id: string, _pos: string) => {
@@ -187,6 +205,9 @@ export const Example = () => {
   // Columns
   const { results: cols } = useLiveQuery(db.colmap.liveMany());
 
+  //const getSheetCols = (sheet_id: string) => cols?.filter((c) => c.sheet_id === sheet_id)
+  //  .sort((a,b) => a.pos - b.pos) ?? [];
+  
   const getSheetCols = (sheet_id: string, startcol: string | null): Colmap[] => {
     // Find the starting row based on sheet_id and row_last
     const sheet = sheets?.filter((s) => s.id === sheet_id) ?? [];
@@ -219,10 +240,28 @@ export const Example = () => {
     return sorting(startingCol);
   };
 
+  const orderCols = (cols: Colmap[], marker: string, sheet_id: string): Colmap[] => {
+    const currentCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === marker);
+    const orderedCols: Colmap[] = [];
+    if (!currentCol) return [];
+    orderedCols.push(currentCol);
+    let currentMarker = currentCol.endmarker
+
+    while (currentMarker) {
+      const currentCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentMarker);
+      if (!currentCol) return [];
+      orderedCols.push(currentCol);
+      currentMarker = currentCol.endmarker;
+    }
+  
+    return orderedCols;
+  };
+
   const getColLabel = (cols: Colmap[], col: Colmap) => {
     const colIndex = cols.findIndex(c => c.id === col.id);
     return colIndex !== -1 ? colIndex : ''; // Return the index or an empty string if not found
   };
+  //const getColLabel = (col: Colmap) => col? col.id : [];
   
   const onAddCol = async (sheet_id: string, id: string | null, position: 'before' | 'after' = 'after') => {
     const sheet = sheets?.find((s) => s.id === sheet_id);
@@ -250,7 +289,8 @@ export const Example = () => {
       }});
       return;
     }
-
+      
+    
     const colIndex = cols?.findIndex(r => r.sheet_id === sheet_id && r.id === id);
 
     if (colIndex !== undefined && colIndex !== -1 && cols) {
@@ -269,6 +309,7 @@ export const Example = () => {
           endmarker: newCol.endmarker,
         }});
 
+        
         const nextCol = cols?.find(r => r.startmarker === referenceCol.endmarker);
         if (nextCol) {
           const sql = `UPDATE colmap SET startmarker = ${newCol.endmarker} WHERE sheet_id = '${sheet_id}' AND startmarker = ${referenceCol.endmarker}`;
@@ -281,49 +322,40 @@ export const Example = () => {
             endcol: newColId,
           }
         });
-      } else if (position === 'before') {
-        newCol.endmarker = referenceCol.startmarker;
-        console.log(">>>position === 'before");
-        console.log("newCol.endmarker", newCol.endmarker);
-        newCol.startmarker = genUUID();
 
-        const prevCol = await db.colmap.findFirst({
-          where: {
-            endmarker: referenceCol.startmarker,
-          },
-        });
         
-        console.log("prevCol findfirst", prevCol)
-        if (prevCol) {
-          await db.colmap.update({
-            where: { id: prevCol.id },
-            data: {
-              endmarker: '',
-            }
-          });
-        }
-
-        await db.colmap.create({ data: {
-          id: newColId,
-          sheet_id,
-          startmarker: newCol.startmarker,
-          endmarker: newCol.endmarker,
-        }});
-
-        const prevCol_ = await db.colmap.findFirst({
-          where: { endmarker: '' },
+        /* await db.colmap.update({
+          where: { id: sheet_id, startmarker: referenceCol.endmarker },
+          data: {
+            startmarker: newCol.endmarker,
+          }
         });
-        if (prevCol_) {
-          await db.colmap.update({
-            where: { id: prevCol_.id },
-            data: {
-              endmarker: newCol.startmarker,
-            }
-          });
+
+        console.log("sheets", sheet); */
+
+
+        //PENDING -> update sheet_id endCol or startCol 
+        //based on the referenceCol.ID is equal to startCol for position = "before"
+        //or referenceCol.ID is equal to endCol for position = "after"
+
+      } else if (position === 'before') {
+          newCol.endmarker = referenceCol.startmarker;
+          newCol.startmarker = genUUID();
+
+          await db.colmap.create({ data: {
+            id: newColId,
+            sheet_id,
+            startmarker: newCol.startmarker,
+            endmarker: newCol.endmarker,
+          }});
+            
+          const prevCol = cols.find(r => r.endmarker === referenceCol.startmarker);
+          if (prevCol) prevCol.endmarker = newCol.startmarker;
+            const sql = `UPDATE colmap SET endmarker = ${newCol.startmarker} WHERE sheet_id = '${sheet_id}' AND endmarker = ${referenceCol.startmarker}`;
+            await db.unsafeExec({ sql });
+          }
         }
       }
-    }
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onDeleteCol = async (_sheet_id: string, _pos: string) => {
@@ -375,7 +407,6 @@ export const Example = () => {
   const onColMenuItemClick = (action: ColContextMenuAction) => {
     if (!colMenuCol) return;
     const { id, sheet_id } = colMenuCol;
-
     switch(action) {
       case 'insertColLeft':
         onAddCol(sheet_id, id, 'before');
@@ -424,20 +455,14 @@ export const Example = () => {
     console.log("inside onRowMenuItemClick", rowMenuRow);
     if (!rowMenuRow) return;
     const { id, sheet_id } = rowMenuRow;
-
-    console.log(">>id, sheet_id", id, sheet_id);
-    console.log("action", action);
     switch(action) {
     case 'insertRowAbove':
-      console.log("insertRowAbove");
       onAddRow(sheet_id, id, 'before');
       break;
     case 'deleteRow':
-      console.log("deleteRow");
       onDeleteRow(sheet_id, id);
       break;
     case 'insertRowBelow':
-      console.log("insertRowBelow");
       onAddRow(sheet_id, id, 'after');
       break;
     default:
