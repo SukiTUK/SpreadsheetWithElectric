@@ -36,34 +36,22 @@ export const Example = () => {
   
   // Rows
   const { results: rows } = useLiveQuery(db.rowmap.liveMany());
-  
 
   const getSheetRows = (sheet_id: string, startrow: string | null): Rowmap[] => {
     // Find the starting row based on sheet_id and row_last
     const sheet = sheets?.filter((s) => s.id === sheet_id);
     if (!sheet) return [];
-    if (!rows) {
-      return [];
-    }
-    
+    if (!rows) return [];
     if (!startrow) return [];
-
     const startingRow = rows.find(r => r.sheet_id === sheet_id && r.id === startrow);
-    
-    if (!startingRow) {
-      return [];
-    }
-  
+    if (!startingRow) return [];
+
     // Recursive function to order rows
     const sorting = (currentRow: Rowmap | undefined, sortedRows: Rowmap[] = []): Rowmap[] => {
-      if (!currentRow) {
-        return sortedRows;
-      }
-  
+      if (!currentRow) return sortedRows;
       sortedRows.push(currentRow);
       // Find the next row where the startmarker matches the endmarker of the current row
       const nextRow = rows.find(r => r.sheet_id === sheet_id && r.startmarker === currentRow.endmarker);
-      
       return sorting(nextRow, sortedRows);
     };
     // Start the ordering with the initial row
@@ -76,7 +64,6 @@ export const Example = () => {
   };
 
   const onAddRow = async (sheet_id: string, id: string | null, position: 'before' | 'after' = 'after') => {
-
     console.log("onAddRow ", sheet_id, id , position);
     const sheet = sheets?.find((s) => s.id === sheet_id);
     console.log(sheet);
@@ -191,28 +178,17 @@ export const Example = () => {
     // Find the starting row based on sheet_id and row_last
     const sheet = sheets?.filter((s) => s.id === sheet_id) ?? [];
     if (!sheet) return [];
-    if (!cols) {
-      return [];
-    }
-
+    if (!cols) return [];
     if (!startcol) return [];
     const startingCol = cols.find(c => c.sheet_id === sheet_id && c.id === startcol);
-    
-    if (!startingCol) {
-      return [];
-    }
+    if (!startingCol) return [];
   
     // Recursive function to order cols
     const sorting = (currentCol: Colmap | undefined, sortedCols: Colmap[] = []): Colmap[] => {
-      if (!currentCol) {
-        return sortedCols;
-      }
-  
+      if (!currentCol) return sortedCols;
       sortedCols.push(currentCol);
-      
       // Find the next Col where the startmarker matches the endmarker of the current Col
       const nextCol = cols.find(c => c.sheet_id === sheet_id && c.startmarker === currentCol.endmarker);
-      
       return sorting(nextCol, sortedCols);
     };
     // Start the ordering with the initial Col
@@ -327,7 +303,6 @@ export const Example = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onDeleteCol = async (_sheet_id: string, _pos: string) => {
-    
   }
 
   // Cell Content
@@ -534,7 +509,6 @@ export const Example = () => {
                 </MenuItem>
             ))}
         </Menu>      
-
     </div>
   );
 }
