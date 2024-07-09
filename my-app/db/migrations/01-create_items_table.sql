@@ -77,12 +77,10 @@ CREATE INDEX IF NOT EXISTS content_sheet_row_col_idx ON cellmap(sheet_id, row_id
 
 CREATE TABLE IF NOT EXISTS sheets (
   id TEXT PRIMARY KEY NOT NULL,
-  rows SMALLINT NOT NULL,
-  cols SMALLINT NOT NULL,
-  startrow TEXT, /* refers to row.id which first row of spreadsheet */
-  endrow TEXT, /* refers to row.id which last row of spreadsheet */
-  startcol TEXT, /* refers to col.id which first column of spreadsheet */
-  endcol TEXT, /* refers to col.id which last column of spreadsheet */
+  startrow TEXT, 
+  endrow TEXT, 
+  startcol TEXT,
+  endcol TEXT, 
   created_at TIMESTAMP NOT NULL,
   title TEXT
 );

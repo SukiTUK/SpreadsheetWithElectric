@@ -21,8 +21,6 @@ export const Example = () => {
   
   const onAddSheet = () => db.sheets.create({ data: {
     id: genUUID(),
-    rows: 0,
-    cols: 0,
     startrow: '',
     endrow: '',
     startcol: '',
@@ -433,7 +431,7 @@ export const Example = () => {
           <thead>
             <tr className="titleRow">
               <th style={{color: 'red'}} onClick={() => onDelSheet(sheet.id)}>X</th>
-              <th colSpan={sheet.cols + 1}>{sheet.id}</th>
+              <th >{sheet.id}</th>
             </tr>
             <tr className="firstRow">
                 <th key="icon" title='Right click for options'>                  

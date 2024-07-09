@@ -20,7 +20,7 @@ export const QueryModeSchema = z.enum(['default','insensitive']);
 
 export const RowmapScalarFieldEnumSchema = z.enum(['id','sheet_id','startmarker','endmarker']);
 
-export const SheetsScalarFieldEnumSchema = z.enum(['id','rows','cols','startrow','endrow','startcol','endcol','created_at','title']);
+export const SheetsScalarFieldEnumSchema = z.enum(['id','startrow','endrow','startcol','endcol','created_at','title']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -75,8 +75,6 @@ export type Rowmap = z.infer<typeof RowmapSchema>
 
 export const SheetsSchema = z.object({
   id: z.string(),
-  rows: z.number().int().gte(-32768).lte(32767),
-  cols: z.number().int().gte(-32768).lte(32767),
   startrow: z.string().nullable(),
   endrow: z.string().nullable(),
   startcol: z.string().nullable(),
@@ -207,8 +205,6 @@ export const SheetsCountOutputTypeSelectSchema: z.ZodType<Prisma.SheetsCountOutp
 
 export const SheetsSelectSchema: z.ZodType<Prisma.SheetsSelect> = z.object({
   id: z.boolean().optional(),
-  rows: z.boolean().optional(),
-  cols: z.boolean().optional(),
   startrow: z.boolean().optional(),
   endrow: z.boolean().optional(),
   startcol: z.boolean().optional(),
@@ -372,8 +368,6 @@ export const SheetsWhereInputSchema: z.ZodType<Prisma.SheetsWhereInput> = z.obje
   OR: z.lazy(() => SheetsWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SheetsWhereInputSchema),z.lazy(() => SheetsWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  rows: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  cols: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   startrow: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   endrow: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   startcol: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
@@ -387,8 +381,6 @@ export const SheetsWhereInputSchema: z.ZodType<Prisma.SheetsWhereInput> = z.obje
 
 export const SheetsOrderByWithRelationInputSchema: z.ZodType<Prisma.SheetsOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional(),
   startrow: z.lazy(() => SortOrderSchema).optional(),
   endrow: z.lazy(() => SortOrderSchema).optional(),
   startcol: z.lazy(() => SortOrderSchema).optional(),
@@ -406,8 +398,6 @@ export const SheetsWhereUniqueInputSchema: z.ZodType<Prisma.SheetsWhereUniqueInp
 
 export const SheetsOrderByWithAggregationInputSchema: z.ZodType<Prisma.SheetsOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional(),
   startrow: z.lazy(() => SortOrderSchema).optional(),
   endrow: z.lazy(() => SortOrderSchema).optional(),
   startcol: z.lazy(() => SortOrderSchema).optional(),
@@ -415,10 +405,8 @@ export const SheetsOrderByWithAggregationInputSchema: z.ZodType<Prisma.SheetsOrd
   created_at: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SheetsCountOrderByAggregateInputSchema).optional(),
-  _avg: z.lazy(() => SheetsAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SheetsMaxOrderByAggregateInputSchema).optional(),
-  _min: z.lazy(() => SheetsMinOrderByAggregateInputSchema).optional(),
-  _sum: z.lazy(() => SheetsSumOrderByAggregateInputSchema).optional()
+  _min: z.lazy(() => SheetsMinOrderByAggregateInputSchema).optional()
 }).strict();
 
 export const SheetsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.SheetsScalarWhereWithAggregatesInput> = z.object({
@@ -426,8 +414,6 @@ export const SheetsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Sheets
   OR: z.lazy(() => SheetsScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => SheetsScalarWhereWithAggregatesInputSchema),z.lazy(() => SheetsScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  rows: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
-  cols: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   startrow: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   endrow: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   startcol: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
@@ -595,8 +581,6 @@ export const RowmapUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RowmapUnchec
 
 export const SheetsCreateInputSchema: z.ZodType<Prisma.SheetsCreateInput> = z.object({
   id: z.string(),
-  rows: z.number().int().gte(-32768).lte(32767),
-  cols: z.number().int().gte(-32768).lte(32767),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -610,8 +594,6 @@ export const SheetsCreateInputSchema: z.ZodType<Prisma.SheetsCreateInput> = z.ob
 
 export const SheetsUncheckedCreateInputSchema: z.ZodType<Prisma.SheetsUncheckedCreateInput> = z.object({
   id: z.string(),
-  rows: z.number().int().gte(-32768).lte(32767),
-  cols: z.number().int().gte(-32768).lte(32767),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -625,8 +607,6 @@ export const SheetsUncheckedCreateInputSchema: z.ZodType<Prisma.SheetsUncheckedC
 
 export const SheetsUpdateInputSchema: z.ZodType<Prisma.SheetsUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -640,8 +620,6 @@ export const SheetsUpdateInputSchema: z.ZodType<Prisma.SheetsUpdateInput> = z.ob
 
 export const SheetsUncheckedUpdateInputSchema: z.ZodType<Prisma.SheetsUncheckedUpdateInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -655,8 +633,6 @@ export const SheetsUncheckedUpdateInputSchema: z.ZodType<Prisma.SheetsUncheckedU
 
 export const SheetsCreateManyInputSchema: z.ZodType<Prisma.SheetsCreateManyInput> = z.object({
   id: z.string(),
-  rows: z.number().int().gte(-32768).lte(32767),
-  cols: z.number().int().gte(-32768).lte(32767),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -667,8 +643,6 @@ export const SheetsCreateManyInputSchema: z.ZodType<Prisma.SheetsCreateManyInput
 
 export const SheetsUpdateManyMutationInputSchema: z.ZodType<Prisma.SheetsUpdateManyMutationInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -679,8 +653,6 @@ export const SheetsUpdateManyMutationInputSchema: z.ZodType<Prisma.SheetsUpdateM
 
 export const SheetsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SheetsUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number().int().gte(-32768).lte(32767),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -846,17 +818,6 @@ export const RowmapMinOrderByAggregateInputSchema: z.ZodType<Prisma.RowmapMinOrd
   endmarker: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const IntFilterSchema: z.ZodType<Prisma.IntFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedIntFilterSchema) ]).optional(),
-}).strict();
-
 export const DateTimeFilterSchema: z.ZodType<Prisma.DateTimeFilter> = z.object({
   equals: z.coerce.date().optional(),
   in: z.coerce.date().array().optional(),
@@ -890,8 +851,6 @@ export const RowmapOrderByRelationAggregateInputSchema: z.ZodType<Prisma.RowmapO
 
 export const SheetsCountOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional(),
   startrow: z.lazy(() => SortOrderSchema).optional(),
   endrow: z.lazy(() => SortOrderSchema).optional(),
   startcol: z.lazy(() => SortOrderSchema).optional(),
@@ -900,15 +859,8 @@ export const SheetsCountOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsCoun
   title: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const SheetsAvgOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsAvgOrderByAggregateInput> = z.object({
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
 export const SheetsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional(),
   startrow: z.lazy(() => SortOrderSchema).optional(),
   endrow: z.lazy(() => SortOrderSchema).optional(),
   startcol: z.lazy(() => SortOrderSchema).optional(),
@@ -919,35 +871,12 @@ export const SheetsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsMaxOrd
 
 export const SheetsMinOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional(),
   startrow: z.lazy(() => SortOrderSchema).optional(),
   endrow: z.lazy(() => SortOrderSchema).optional(),
   startcol: z.lazy(() => SortOrderSchema).optional(),
   endcol: z.lazy(() => SortOrderSchema).optional(),
   created_at: z.lazy(() => SortOrderSchema).optional(),
   title: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const SheetsSumOrderByAggregateInputSchema: z.ZodType<Prisma.SheetsSumOrderByAggregateInput> = z.object({
-  rows: z.lazy(() => SortOrderSchema).optional(),
-  cols: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const IntWithAggregatesFilterSchema: z.ZodType<Prisma.IntWithAggregatesFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
-  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedIntFilterSchema).optional(),
-  _max: z.lazy(() => NestedIntFilterSchema).optional()
 }).strict();
 
 export const DateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.DateTimeWithAggregatesFilter> = z.object({
@@ -1168,14 +1097,6 @@ export const RowmapUncheckedCreateNestedManyWithoutSheetsInputSchema: z.ZodType<
   connect: z.union([ z.lazy(() => RowmapWhereUniqueInputSchema),z.lazy(() => RowmapWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
-export const IntFieldUpdateOperationsInputSchema: z.ZodType<Prisma.IntFieldUpdateOperationsInput> = z.object({
-  set: z.number().optional(),
-  increment: z.number().optional(),
-  decrement: z.number().optional(),
-  multiply: z.number().optional(),
-  divide: z.number().optional()
-}).strict();
-
 export const DateTimeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.DateTimeFieldUpdateOperationsInput> = z.object({
   set: z.coerce.date().optional()
 }).strict();
@@ -1359,33 +1280,6 @@ export const NestedDateTimeFilterSchema: z.ZodType<Prisma.NestedDateTimeFilter> 
   not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeFilterSchema) ]).optional(),
 }).strict();
 
-export const NestedIntWithAggregatesFilterSchema: z.ZodType<Prisma.NestedIntWithAggregatesFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedIntWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
-  _sum: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedIntFilterSchema).optional(),
-  _max: z.lazy(() => NestedIntFilterSchema).optional()
-}).strict();
-
-export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.object({
-  equals: z.number().optional(),
-  in: z.number().array().optional(),
-  notIn: z.number().array().optional(),
-  lt: z.number().optional(),
-  lte: z.number().optional(),
-  gt: z.number().optional(),
-  gte: z.number().optional(),
-  not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
-}).strict();
-
 export const NestedDateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDateTimeWithAggregatesFilter> = z.object({
   equals: z.coerce.date().optional(),
   in: z.coerce.date().array().optional(),
@@ -1440,8 +1334,6 @@ export const RowmapCreateOrConnectWithoutCellmapInputSchema: z.ZodType<Prisma.Ro
 
 export const SheetsCreateWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsCreateWithoutCellmapInput> = z.object({
   id: z.string(),
-  rows: z.number(),
-  cols: z.number(),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -1454,8 +1346,6 @@ export const SheetsCreateWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsCreat
 
 export const SheetsUncheckedCreateWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsUncheckedCreateWithoutCellmapInput> = z.object({
   id: z.string(),
-  rows: z.number(),
-  cols: z.number(),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -1516,8 +1406,6 @@ export const SheetsUpsertWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsUpser
 
 export const SheetsUpdateWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsUpdateWithoutCellmapInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1530,8 +1418,6 @@ export const SheetsUpdateWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsUpdat
 
 export const SheetsUncheckedUpdateWithoutCellmapInputSchema: z.ZodType<Prisma.SheetsUncheckedUpdateWithoutCellmapInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1568,8 +1454,6 @@ export const CellmapCreateManyColmapInputEnvelopeSchema: z.ZodType<Prisma.Cellma
 
 export const SheetsCreateWithoutColmapInputSchema: z.ZodType<Prisma.SheetsCreateWithoutColmapInput> = z.object({
   id: z.string(),
-  rows: z.number(),
-  cols: z.number(),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -1582,8 +1466,6 @@ export const SheetsCreateWithoutColmapInputSchema: z.ZodType<Prisma.SheetsCreate
 
 export const SheetsUncheckedCreateWithoutColmapInputSchema: z.ZodType<Prisma.SheetsUncheckedCreateWithoutColmapInput> = z.object({
   id: z.string(),
-  rows: z.number(),
-  cols: z.number(),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -1633,8 +1515,6 @@ export const SheetsUpsertWithoutColmapInputSchema: z.ZodType<Prisma.SheetsUpsert
 
 export const SheetsUpdateWithoutColmapInputSchema: z.ZodType<Prisma.SheetsUpdateWithoutColmapInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1647,8 +1527,6 @@ export const SheetsUpdateWithoutColmapInputSchema: z.ZodType<Prisma.SheetsUpdate
 
 export const SheetsUncheckedUpdateWithoutColmapInputSchema: z.ZodType<Prisma.SheetsUncheckedUpdateWithoutColmapInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1685,8 +1563,6 @@ export const CellmapCreateManyRowmapInputEnvelopeSchema: z.ZodType<Prisma.Cellma
 
 export const SheetsCreateWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsCreateWithoutRowmapInput> = z.object({
   id: z.string(),
-  rows: z.number(),
-  cols: z.number(),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -1699,8 +1575,6 @@ export const SheetsCreateWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsCreate
 
 export const SheetsUncheckedCreateWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsUncheckedCreateWithoutRowmapInput> = z.object({
   id: z.string(),
-  rows: z.number(),
-  cols: z.number(),
   startrow: z.string().optional().nullable(),
   endrow: z.string().optional().nullable(),
   startcol: z.string().optional().nullable(),
@@ -1739,8 +1613,6 @@ export const SheetsUpsertWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsUpsert
 
 export const SheetsUpdateWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsUpdateWithoutRowmapInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1753,8 +1625,6 @@ export const SheetsUpdateWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsUpdate
 
 export const SheetsUncheckedUpdateWithoutRowmapInputSchema: z.ZodType<Prisma.SheetsUncheckedUpdateWithoutRowmapInput> = z.object({
   id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  rows: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  cols: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   endrow: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   startcol: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2615,14 +2485,6 @@ export const tableSchemas = {
       [
         "id",
         "TEXT"
-      ],
-      [
-        "rows",
-        "INT2"
-      ],
-      [
-        "cols",
-        "INT2"
       ],
       [
         "startrow",

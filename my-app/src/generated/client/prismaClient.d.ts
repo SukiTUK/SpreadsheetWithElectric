@@ -52,14 +52,6 @@ export type Rowmap = {
  */
 export type Sheets = {
   id: string
-  /**
-   * @zod.number.int().gte(-32768).lte(32767)
-   */
-  rows: number
-  /**
-   * @zod.number.int().gte(-32768).lte(32767)
-   */
-  cols: number
   startrow: string | null
   endrow: string | null
   startcol: string | null
@@ -4050,26 +4042,12 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type AggregateSheets = {
     _count: SheetsCountAggregateOutputType | null
-    _avg: SheetsAvgAggregateOutputType | null
-    _sum: SheetsSumAggregateOutputType | null
     _min: SheetsMinAggregateOutputType | null
     _max: SheetsMaxAggregateOutputType | null
   }
 
-  export type SheetsAvgAggregateOutputType = {
-    rows: number | null
-    cols: number | null
-  }
-
-  export type SheetsSumAggregateOutputType = {
-    rows: number | null
-    cols: number | null
-  }
-
   export type SheetsMinAggregateOutputType = {
     id: string | null
-    rows: number | null
-    cols: number | null
     startrow: string | null
     endrow: string | null
     startcol: string | null
@@ -4080,8 +4058,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsMaxAggregateOutputType = {
     id: string | null
-    rows: number | null
-    cols: number | null
     startrow: string | null
     endrow: string | null
     startcol: string | null
@@ -4092,8 +4068,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCountAggregateOutputType = {
     id: number
-    rows: number
-    cols: number
     startrow: number
     endrow: number
     startcol: number
@@ -4104,20 +4078,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
   }
 
 
-  export type SheetsAvgAggregateInputType = {
-    rows?: true
-    cols?: true
-  }
-
-  export type SheetsSumAggregateInputType = {
-    rows?: true
-    cols?: true
-  }
-
   export type SheetsMinAggregateInputType = {
     id?: true
-    rows?: true
-    cols?: true
     startrow?: true
     endrow?: true
     startcol?: true
@@ -4128,8 +4090,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsMaxAggregateInputType = {
     id?: true
-    rows?: true
-    cols?: true
     startrow?: true
     endrow?: true
     startcol?: true
@@ -4140,8 +4100,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCountAggregateInputType = {
     id?: true
-    rows?: true
-    cols?: true
     startrow?: true
     endrow?: true
     startcol?: true
@@ -4194,18 +4152,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: SheetsAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: SheetsSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: SheetsMinAggregateInputType
@@ -4236,8 +4182,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     take?: number
     skip?: number
     _count?: SheetsCountAggregateInputType | true
-    _avg?: SheetsAvgAggregateInputType
-    _sum?: SheetsSumAggregateInputType
     _min?: SheetsMinAggregateInputType
     _max?: SheetsMaxAggregateInputType
   }
@@ -4245,8 +4189,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsGroupByOutputType = {
     id: string
-    rows: number
-    cols: number
     startrow: string | null
     endrow: string | null
     startcol: string | null
@@ -4254,8 +4196,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     created_at: Date
     title: string | null
     _count: SheetsCountAggregateOutputType | null
-    _avg: SheetsAvgAggregateOutputType | null
-    _sum: SheetsSumAggregateOutputType | null
     _min: SheetsMinAggregateOutputType | null
     _max: SheetsMaxAggregateOutputType | null
   }
@@ -4276,8 +4216,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsSelect = {
     id?: boolean
-    rows?: boolean
-    cols?: boolean
     startrow?: boolean
     endrow?: boolean
     startcol?: boolean
@@ -5234,8 +5172,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export const SheetsScalarFieldEnum: {
     id: 'id',
-    rows: 'rows',
-    cols: 'cols',
     startrow: 'startrow',
     endrow: 'endrow',
     startcol: 'startcol',
@@ -5416,8 +5352,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     OR?: Enumerable<SheetsWhereInput>
     NOT?: Enumerable<SheetsWhereInput>
     id?: StringFilter | string
-    rows?: IntFilter | number
-    cols?: IntFilter | number
     startrow?: StringNullableFilter | string | null
     endrow?: StringNullableFilter | string | null
     startcol?: StringNullableFilter | string | null
@@ -5431,8 +5365,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsOrderByWithRelationInput = {
     id?: SortOrder
-    rows?: SortOrder
-    cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
     startcol?: SortOrder
@@ -5450,8 +5382,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsOrderByWithAggregationInput = {
     id?: SortOrder
-    rows?: SortOrder
-    cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
     startcol?: SortOrder
@@ -5459,10 +5389,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     created_at?: SortOrder
     title?: SortOrder
     _count?: SheetsCountOrderByAggregateInput
-    _avg?: SheetsAvgOrderByAggregateInput
     _max?: SheetsMaxOrderByAggregateInput
     _min?: SheetsMinOrderByAggregateInput
-    _sum?: SheetsSumOrderByAggregateInput
   }
 
   export type SheetsScalarWhereWithAggregatesInput = {
@@ -5470,8 +5398,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     OR?: Enumerable<SheetsScalarWhereWithAggregatesInput>
     NOT?: Enumerable<SheetsScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
-    rows?: IntWithAggregatesFilter | number
-    cols?: IntWithAggregatesFilter | number
     startrow?: StringNullableWithAggregatesFilter | string | null
     endrow?: StringNullableWithAggregatesFilter | string | null
     startcol?: StringNullableWithAggregatesFilter | string | null
@@ -5639,8 +5565,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCreateInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -5654,8 +5578,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedCreateInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -5669,8 +5591,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5684,8 +5604,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5699,8 +5617,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCreateManyInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -5711,8 +5627,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5723,8 +5637,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5890,17 +5802,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     endmarker?: SortOrder
   }
 
-  export type IntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntFilter | number
-  }
-
   export type DateTimeFilter = {
     equals?: Date | string
     in?: Enumerable<Date> | Enumerable<string>
@@ -5934,8 +5835,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCountOrderByAggregateInput = {
     id?: SortOrder
-    rows?: SortOrder
-    cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
     startcol?: SortOrder
@@ -5944,15 +5843,8 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     title?: SortOrder
   }
 
-  export type SheetsAvgOrderByAggregateInput = {
-    rows?: SortOrder
-    cols?: SortOrder
-  }
-
   export type SheetsMaxOrderByAggregateInput = {
     id?: SortOrder
-    rows?: SortOrder
-    cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
     startcol?: SortOrder
@@ -5963,35 +5855,12 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsMinOrderByAggregateInput = {
     id?: SortOrder
-    rows?: SortOrder
-    cols?: SortOrder
     startrow?: SortOrder
     endrow?: SortOrder
     startcol?: SortOrder
     endcol?: SortOrder
     created_at?: SortOrder
     title?: SortOrder
-  }
-
-  export type SheetsSumOrderByAggregateInput = {
-    rows?: SortOrder
-    cols?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
   }
 
   export type DateTimeWithAggregatesFilter = {
@@ -6212,14 +6081,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     connect?: Enumerable<RowmapWhereUniqueInput>
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -6403,33 +6264,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
     not?: NestedDateTimeFilter | Date | string
   }
 
-  export type NestedIntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
-  }
-
-  export type NestedFloatFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatFilter | number
-  }
-
   export type NestedDateTimeWithAggregatesFilter = {
     equals?: Date | string
     in?: Enumerable<Date> | Enumerable<string>
@@ -6484,8 +6318,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCreateWithoutCellmapInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -6498,8 +6330,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedCreateWithoutCellmapInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -6560,8 +6390,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUpdateWithoutCellmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6574,8 +6402,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedUpdateWithoutCellmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6612,8 +6438,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCreateWithoutColmapInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -6626,8 +6450,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedCreateWithoutColmapInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -6677,8 +6499,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUpdateWithoutColmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6691,8 +6511,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedUpdateWithoutColmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6729,8 +6547,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsCreateWithoutRowmapInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -6743,8 +6559,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedCreateWithoutRowmapInput = {
     id: string
-    rows: number
-    cols: number
     startrow?: string | null
     endrow?: string | null
     startcol?: string | null
@@ -6783,8 +6597,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUpdateWithoutRowmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6797,8 +6609,6 @@ export type InputJsonValue = null | string | number | boolean | InputJsonObject 
 
   export type SheetsUncheckedUpdateWithoutRowmapInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rows?: IntFieldUpdateOperationsInput | number
-    cols?: IntFieldUpdateOperationsInput | number
     startrow?: NullableStringFieldUpdateOperationsInput | string | null
     endrow?: NullableStringFieldUpdateOperationsInput | string | null
     startcol?: NullableStringFieldUpdateOperationsInput | string | null
